@@ -8,10 +8,19 @@ $params = array_merge(
 
 return [
     'id' => 'app-backend',
+    'name' => 'Cash Project',
+    'language' => 'ru',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'rbac' =>  [
+            'class' => 'backend\modules\rbac\Module',
+        ],
+        'gridview' => [
+            'class' => 'kartik\grid\Module'
+        ]
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
