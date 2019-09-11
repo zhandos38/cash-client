@@ -5,6 +5,8 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 use yii\web\IdentityInterface;
 
 /**
@@ -17,7 +19,11 @@ use yii\web\IdentityInterface;
  * @property string $verification_token
  * @property string $email
  * @property string $auth_key
+ * @property string $full_name
+ * @property string $address
+ * @property string $phone
  * @property integer $status
+ * @property integer $role
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
@@ -28,6 +34,11 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
 
+    const ROLE_ADMIN = 'admin';
+    const ROLE_MANAGER = 'manager';
+    const ROLE_DIRECTOR = 'director';
+    const ROLE_ADMINISTRATOR = 'administrator';
+    const ROLE_CASHIER = 'cashier';
 
     /**
      * {@inheritdoc}
@@ -53,8 +64,32 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            ['username', 'trim'],
+            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'string', 'min' => 2, 'max' => 255],
+
+            ['email', 'trim'],
+            ['email', 'email'],
+            ['email', 'string', 'max' => 255],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+            ['phone', 'integer'],
+            [['full_name', 'address', 'role'], 'string'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Логин',
+            'full_name' => 'Ф.И.О',
+            'phone' => 'Телефон',
+            'code_number' => 'Номер карты',
+            'role' => 'Роль',
+            'status' => 'Статус',
+            'created_at' => 'Дата добавление',
+            'company_id' => 'Компания'
         ];
     }
 
@@ -205,5 +240,39 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public static function getStatuses() {
+        return [
+            self::STATUS_DELETED => 'Удален',
+            self::STATUS_INACTIVE => 'Отключен',
+            self::STATUS_ACTIVE => 'Включен'
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusLabel()
+    {
+        return ArrayHelper::getValue(static::getStatuses(), $this->status);
+    }
+
+    public static function getRoles() {
+        return [
+            self::ROLE_ADMIN => 'Админ',
+            self::ROLE_MANAGER => 'Менеджер',
+            self::ROLE_DIRECTOR => 'Директор',
+            self::ROLE_ADMINISTRATOR => 'Администратор',
+            self::ROLE_CASHIER => 'Кассир'
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRoleLabel()
+    {
+        return ArrayHelper::getValue(static::getRoles(), $this->status);
     }
 }
