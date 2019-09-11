@@ -4,6 +4,7 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use common\models\User;
+use yii\helpers\VarDumper;
 
 /**
  * Signup form
@@ -11,8 +12,13 @@ use common\models\User;
 class SignupForm extends Model
 {
     public $username;
+    public $full_name;
+    public $address;
     public $email;
     public $password;
+    public $role;
+    public $status;
+    public $phone;
 
 
     /**
@@ -34,6 +40,20 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+
+            [['full_name', 'address'], 'string'],
+            [['status', 'role'], 'integer']
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Логин',
+            'full_name' => 'Ф.И.О',
+            'password' => 'Пароль',
+            'phone' => 'Телефон',
+            'address' => 'Адрес'
         ];
     }
 
@@ -47,14 +67,17 @@ class SignupForm extends Model
         if (!$this->validate()) {
             return null;
         }
-        
+
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
-        return $user->save() && $this->sendEmail($user);
+        $user->full_name = $this->full_name;
+        $user->address = $this->address;
+        $user->phone = $this->phone;
+        return $user->save();
 
     }
 
