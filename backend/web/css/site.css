@@ -123,3 +123,10 @@ a.desc:after {
 .content {
     margin-top: 25px;
 }
+
+.box-header {
+    background-color: #3c8dbc !important;
+}
+.box.box-solid.box-info {
+    border-color: #3c8dbc !important;
+}

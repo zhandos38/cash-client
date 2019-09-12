@@ -4,6 +4,7 @@ use insolita\wgadminlte\LteBox;
 use insolita\wgadminlte\LteConst;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Company */
@@ -38,7 +39,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'contact_person')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'phone')->widget(MaskedInput::className(), [
+        'mask' => '+7(999)999-99-99',
+        'clientOptions' => [
+            'removeMaskOnSubmit' => true
+        ]
+    ]) ?>
 
     <?= $form->field($model, 'manager_id')->textInput() ?>
 

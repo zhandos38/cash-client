@@ -5,6 +5,8 @@ namespace backend\controllers;
 use Yii;
 use common\models\Company;
 use backend\models\CompanySearch;
+use yii\behaviors\TimestampBehavior;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,12 +22,22 @@ class CompanyController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'except' => ['login', 'error'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['viewAdminIndex']
+                    ]
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
-            ],
+            ]
         ];
     }
 

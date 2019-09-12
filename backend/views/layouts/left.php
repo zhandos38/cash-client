@@ -18,16 +18,19 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
                     ['label' => 'Разделы', 'options' => ['class' => 'header']],
-                    ['label' => 'Пользователи', 'icon' => 'fas fa-user', 'url' => ['user/index']],
+                    ['label' => 'Пользователи', 'icon' => 'fas fa-user', 'url' => ['/user/index']],
+                    ['label' => 'Компании', 'icon' => 'fas fa-cubes', 'url' => ['/company/index']],
                     ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
-                        'label' => 'Some tools',
+                        'label' => 'Rbac',
                         'icon' => 'share',
                         'url' => '#',
                         'items' => [
-                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
-                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
+                            ['label' => 'Roles', 'icon' => 'file-code-o', 'url' => ['/rbac/role'],],
+                            ['label' => 'Permissions', 'icon' => 'file-code-o', 'url' => ['/rbac/permission'],],
+                            ['label' => 'Rule', 'icon' => 'file-code-o', 'url' => ['/rbac/rule'],],
+                            ['label' => 'Assigment', 'icon' => 'file-code-o', 'url' => ['/rbac/assignment'],],
                             [
                                 'label' => 'Level One',
                                 'icon' => 'circle-o',

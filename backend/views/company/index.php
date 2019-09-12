@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Company;
 use common\models\User;
 use insolita\wgadminlte\LteBox;
 use insolita\wgadminlte\LteConst;
@@ -37,14 +38,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'address_actual',
             'ceo',
             //'contact_person',
-            'phone',
+            [
+                'attribute' => 'phone'
+            ],
             //'balance',
             //'manager_id',
-            'status',
+            [
+                'attribute' => 'status',
+                'value' => function(Company $model) {
+                    return $model->getStatusLabel();
+                }
+            ],
             //'expired_at',
             [
                 'attribute' => 'created_at',
-                'value' => function(User $model) {
+                'value' => function(Company$model) {
                     return date('m.d.Y H:i', $model->created_at);
                 }
             ],
