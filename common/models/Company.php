@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "company".
@@ -31,6 +33,9 @@ use Yii;
  */
 class Company extends \yii\db\ActiveRecord
 {
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
+
     /**
      * {@inheritdoc}
      */
@@ -39,15 +44,23 @@ class Company extends \yii\db\ActiveRecord
         return 'company';
     }
 
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['iin', 'manager_id', 'expired_at', 'created_at', 'updated_at'], 'integer'],
+            [['manager_id', 'expired_at', 'created_at', 'updated_at'], 'integer'],
             [['balance'], 'number'],
             [['name', 'address_legal', 'address_actual', 'ceo', 'contact_person', 'phone'], 'string', 'max' => 255],
+            ['iin', 'string', 'max' => 12],
             [['manager_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['manager_id' => 'id']],
         ];
     }
@@ -125,8 +138,23 @@ class Company extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStaff()
+    public function getUsers()
     {
         return $this->hasMany(User::className(), ['company_id' => 'id']);
+    }
+
+    public static function getStatuses() {
+        return [
+            self::STATUS_INACTIVE => 'Отключен',
+            self::STATUS_ACTIVE => 'Включен'
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusLabel()
+    {
+        return ArrayHelper::getValue(static::getStatuses(), $this->status);
     }
 }
