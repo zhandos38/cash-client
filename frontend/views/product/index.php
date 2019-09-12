@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Product;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -26,16 +27,44 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'barcode',
             'name',
+            'barcode',
 //            'quantity',
 //            'price_wholesale',
             //'price_retail',
             //'wholesale_value',
-            'is_partial',
-            'status',
-            //'created_at',
-            //'updated_at',
+            [
+                'attribute' => 'is_partial',
+                'value' => function(Product $model) {
+                    return $model->getBooleanStatus();
+                },
+                'filter' => Product::getBooleanStatuses()
+            ],
+            [
+                'attribute' => 'status',
+                'value' => function(Product $model) {
+                    return $model->getStatusLabel();
+                },
+                'filter' => Product::getStatuses()
+            ],
+            [
+                'attribute' => 'quantity',
+                'filter' => false
+            ],
+            [
+                'attribute' => 'price_retail',
+                'filter' => false
+            ],
+            [
+                'attribute' => 'price_wholesale',
+                'filter' => false
+            ],
+            [
+                'attribute' => 'updated_at',
+                'value' => function(Product $model) {
+                    return date('d-m-Y H:i', $model->updated_at);
+                }
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

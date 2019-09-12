@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "product".
@@ -23,6 +24,9 @@ use Yii;
  */
 class Product extends \yii\db\ActiveRecord
 {
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
+
     /**
      * {@inheritdoc}
      */
@@ -49,16 +53,16 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'barcode' => 'Barcode',
-            'name' => 'Name',
-            'quantity' => 'Quantity',
-            'price_wholesale' => 'Price Wholesale',
-            'price_retail' => 'Price Retail',
-            'wholesale_value' => 'Wholesale Value',
-            'is_partial' => 'Is Partial',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'barcode' => 'Штрих код',
+            'name' => 'Название',
+            'quantity' => 'Количество',
+            'price_wholesale' => 'Цена оптовая',
+            'price_retail' => 'Цена розничная',
+            'wholesale_value' => 'Оптом',
+            'is_partial' => 'Частичный',
+            'status' => 'Статус',
+            'created_at' => 'Дата добавление',
+            'updated_at' => 'Дата обновление',
         ];
     }
 
@@ -73,5 +77,36 @@ class Product extends \yii\db\ActiveRecord
     public function getCompany()
     {
         return $this->hasOne(Company::className(), ['company_id' => 'id']);
+    }
+
+    public static function getStatuses() {
+        return [
+            self::STATUS_INACTIVE => 'Отключен',
+            self::STATUS_ACTIVE => 'Включен'
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusLabel()
+    {
+        return ArrayHelper::getValue(static::getStatuses(), $this->status);
+    }
+
+    public static function getBooleanStatuses()
+    {
+        return [
+            0 => 'Нет',
+            1 => 'ДА'
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBooleanStatus()
+    {
+        return ArrayHelper::getValue(static::getBooleanStatuses(), $this->is_partial);
     }
 }
