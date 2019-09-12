@@ -9,7 +9,7 @@ use yii\helpers\VarDumper;
 /**
  * Signup form
  */
-class SignupForm extends Model
+class AddStaffForm extends Model
 {
     public $username;
     public $full_name;
@@ -19,6 +19,7 @@ class SignupForm extends Model
     public $role;
     public $status;
     public $phone;
+    public $company_id;
 
 
     /**
@@ -41,8 +42,8 @@ class SignupForm extends Model
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
 
-            [['full_name', 'address'], 'string'],
-            [['status', 'role'], 'integer']
+            [['full_name', 'address', 'role', 'phone'], 'string'],
+            [['status', 'company_id'], 'integer']
         ];
     }
 
@@ -53,7 +54,8 @@ class SignupForm extends Model
             'full_name' => 'Ф.И.О',
             'password' => 'Пароль',
             'phone' => 'Телефон',
-            'address' => 'Адрес'
+            'address' => 'Адрес',
+            'role' => 'Роль'
         ];
     }
 
@@ -77,6 +79,9 @@ class SignupForm extends Model
         $user->full_name = $this->full_name;
         $user->address = $this->address;
         $user->phone = $this->phone;
+        $user->role = $this->role;
+        $user->status = User::STATUS_ACTIVE;
+        $user->company_id = Yii::$app->user->identity->company_id;
         return $user->save();
 
     }
