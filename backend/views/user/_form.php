@@ -1,8 +1,10 @@
 <?php
 
+use common\models\Company;
 use common\models\User;
 use insolita\wgadminlte\LteBox;
 use insolita\wgadminlte\LteConst;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
@@ -44,6 +46,8 @@ use yii\widgets\MaskedInput;
         ]) ?>
 
         <?= $form->field($model, 'address')->textInput() ?>
+
+        <?= $form->field($model, 'company_id')->dropDownList(ArrayHelper::map(Company::find()->all(), 'id', 'name'), ['prompt' => 'Указать компанию']) ?>
 
         <?= $form->field($model, 'role')->dropDownList(User::getRoles(), ['prompt' => 'Указать роль']) ?>
 

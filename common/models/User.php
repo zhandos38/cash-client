@@ -1,12 +1,14 @@
 <?php
 namespace common\models;
 
+use backend\modules\rbac\models\AuthAssignment;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
+use yii\rbac\Assignment;
 use yii\web\IdentityInterface;
 
 /**
@@ -24,6 +26,7 @@ use yii\web\IdentityInterface;
  * @property string $phone
  * @property integer $status
  * @property integer $role
+ * @property integer $company_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
@@ -72,8 +75,9 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
-            ['phone', 'integer'],
-            [['full_name', 'address', 'role'], 'string'],
+
+            [['company_id'], 'integer'],
+            [['full_name', 'address', 'role', 'code_number', 'phone'], 'string'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
@@ -234,6 +238,10 @@ class User extends ActiveRecord implements IdentityInterface
         $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
+    public function getCompany() {
+        return $this->hasOne(Company::className(), ['id' => 'company_id']);
+    }
+
     /**
      * Removes password reset token
      */
@@ -274,5 +282,19 @@ class User extends ActiveRecord implements IdentityInterface
     public function getRoleLabel()
     {
         return ArrayHelper::getValue(static::getRoles(), $this->status);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert || $changedAttributes['role']) {
+            $role = $changedAttributes['role'] ? $changedAttributes['role'] : $this->role;
+            $oldAssignment = AuthAssignment::find()->where(['user_id' => $this->id, 'item_name' => $role])->one();
+            if ($oldAssignment) {
+                $oldAssignment->delete();
+            }
+            $auth = Yii::$app->authManager;
+            $newRole = $auth->getRole($this->role); // Получаем роль
+            $auth->assign($newRole, $this->id); // Назначаем пользователю, которому принадлежит модель User
+        }
     }
 }

@@ -34,11 +34,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'username',
             'full_name',
             'email:email',
-            'phone',
+            [
+                'attribute' => 'phone',
+            ],
 //            'code_number',
             'role',
             [
-                'attribute' => 'company_id'
+                'attribute' => 'company_id',
+                'value' => function(User $model) {
+                    return $model->company->name;
+                }
             ],
             [
                 'attribute' => 'created_at',

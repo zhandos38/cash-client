@@ -19,6 +19,7 @@ class SignupForm extends Model
     public $role;
     public $status;
     public $phone;
+    public $company_id;
 
 
     /**
@@ -41,8 +42,8 @@ class SignupForm extends Model
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
 
-            [['full_name', 'address', 'role'], 'string'],
-            [['status'], 'integer']
+            [['full_name', 'address', 'role', 'phone'], 'string'],
+            [['status', 'company_id'], 'integer']
         ];
     }
 
@@ -77,6 +78,7 @@ class SignupForm extends Model
         $user->full_name = $this->full_name;
         $user->address = $this->address;
         $user->phone = $this->phone;
+        $user->company_id = $this->company_id;
         $user->status = $this->status;
         $user->role = $this->role;
         return $user->save();
