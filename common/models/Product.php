@@ -69,4 +69,9 @@ class Product extends \yii\db\ActiveRecord
     {
         return $this->hasMany(OrderItems::className(), ['product_id' => 'id']);
     }
+
+    public function getCompany()
+    {
+        return $this->hasOne(Company::className(), ['company_id' => 'id']);
+    }
 }
