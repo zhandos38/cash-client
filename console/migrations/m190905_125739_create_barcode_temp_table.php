@@ -15,7 +15,7 @@ class m190905_125739_create_barcode_temp_table extends Migration
     {
         $this->createTable($this->tableName, [
             'id' => $this->primaryKey(),
-            'number' => $this->integer(),
+            'number' => $this->string(22),
             'name' => $this->string(),
             'img' => $this->string(),
             'company_id' => $this->integer()

@@ -15,7 +15,7 @@ class m190905_125316_create_barcode_table extends Migration
     {
         $this->createTable($this->tableName, [
             'id' => $this->primaryKey(),
-            'number' => $this->integer(),
+            'number' => $this->string(22),
             'name' => $this->string(),
             'img' => $this->string()
         ]);
