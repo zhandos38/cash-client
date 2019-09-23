@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -19,6 +20,7 @@ use yii\helpers\ArrayHelper;
  * @property int $status
  * @property int $created_at
  * @property int $updated_at
+ * @property int $company_id
  *
  * @property OrderItems[] $orderItems
  */
@@ -33,6 +35,13 @@ class Product extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'product';
+    }
+
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
     }
 
     /**

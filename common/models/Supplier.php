@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "supplier".
@@ -24,6 +25,13 @@ class Supplier extends \yii\db\ActiveRecord
         return 'supplier';
     }
 
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -42,9 +50,9 @@ class Supplier extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'name' => 'Название',
+            'created_at' => 'Дата создание',
+            'updated_at' => 'Дата обновление',
         ];
     }
 

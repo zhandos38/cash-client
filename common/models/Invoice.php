@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "invoice".
@@ -17,12 +19,18 @@ use Yii;
  * @property int $company_id
  *
  * @property Company $company
- * @property Staff $createdBy
+ * @property User $createdBy
  * @property Supplier $supplier
  * @property InvoiceItems[] $invoiceItems
  */
 class Invoice extends \yii\db\ActiveRecord
 {
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
+
+    const STATUS_IS_DEBT_INACTIVE = 0;
+    const STATUS_IS_DEBT_ACTIVE = 1;
+
     /**
      * {@inheritdoc}
      */
@@ -37,9 +45,10 @@ class Invoice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number_in', 'is_debt', 'status', 'created_by', 'created_at', 'supplier_id', 'company_id'], 'integer'],
+            [['is_debt', 'status', 'created_by', 'created_at', 'supplier_id', 'company_id'], 'integer'],
+            ['number_in', 'string'],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Staff::className(), 'targetAttribute' => ['created_by' => 'id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Supplier::className(), 'targetAttribute' => ['supplier_id' => 'id']],
         ];
     }
@@ -51,13 +60,12 @@ class Invoice extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'number_in' => 'Number In',
-            'is_debt' => 'Is Debt',
-            'status' => 'Status',
-            'created_by' => 'Created By',
-            'created_at' => 'Created At',
-            'supplier_id' => 'Supplier ID',
-            'company_id' => 'Company ID',
+            'number_in' => 'Номер',
+            'is_debt' => 'В долг',
+            'status' => 'Статус',
+            'created_at' => 'Дата добавление',
+            'supplier_id' => 'Поставщик',
+            'company_id' => 'Компание',
         ];
     }
 
@@ -74,7 +82,7 @@ class Invoice extends \yii\db\ActiveRecord
      */
     public function getCreatedBy()
     {
-        return $this->hasOne(Staff::className(), ['id' => 'created_by']);
+        return $this->hasOne(User::className(), ['id' => 'created_by']);
     }
 
     /**
@@ -91,5 +99,18 @@ class Invoice extends \yii\db\ActiveRecord
     public function getInvoiceItems()
     {
         return $this->hasMany(InvoiceItems::className(), ['invoice_id' => 'id']);
+    }
+
+    public static function getIsDebtStatus()
+    {
+        return [
+            self::STATUS_IS_DEBT_INACTIVE => 'Нет',
+            self::STATUS_IS_DEBT_ACTIVE => 'Да'
+        ];
+    }
+
+    public function getIsDebtStatusLabel()
+    {
+        return ArrayHelper::getValue(static::getIsDebtStatus(), $this->is_debt);
     }
 }
