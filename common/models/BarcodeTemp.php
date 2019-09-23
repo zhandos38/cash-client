@@ -12,6 +12,7 @@ use Yii;
  * @property string $name
  * @property string $img
  * @property int $company_id
+ * @property int $is_partial
  *
  * @property Company $company
  */
@@ -32,6 +33,7 @@ class BarcodeTemp extends \yii\db\ActiveRecord
     {
         return [
             [['number', 'company_id'], 'integer'],
+            ['is_partial', 'boolean'],
             [['name', 'img'], 'string', 'max' => 255],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
         ];
@@ -43,11 +45,9 @@ class BarcodeTemp extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'number' => 'Number',
-            'name' => 'Name',
-            'img' => 'Img',
-            'company_id' => 'Company ID',
+            'number' => 'Номер',
+            'name' => 'Названия',
+            'company_id' => 'Компания'
         ];
     }
 

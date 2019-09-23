@@ -40,9 +40,9 @@ class Barcode extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'number' => 'Number',
-            'name' => 'Name',
-            'img' => 'Img',
+            'number' => 'Номер',
+            'name' => 'Названия',
+            'img' => 'Фотография',
         ];
     }
 }
