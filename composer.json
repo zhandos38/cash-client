@@ -25,7 +25,8 @@
         "dektrium/yii2-rbac": "1.0.0-alpha@dev",
         "wbraganca/yii2-dynamicform": "dev-master",
         "kartik-v/yii2-date-range": "dev-master",
-        "picqer/php-barcode-generator": "^0.3.0"
+        "picqer/php-barcode-generator": "^0.3.0",
+        "kl83/yii2-autocomplete-dropdown-widget": "~1.0.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

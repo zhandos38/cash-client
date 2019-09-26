@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Product;
+use kartik\daterange\DateRangePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -16,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Добавить товар', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить товар', ['invoice/create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -63,12 +64,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'updated_at',
                 'value' => function(Product $model) {
                     return date('d-m-Y H:i', $model->updated_at);
-                }
+                },
+                'filter' => DateRangePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'updateTimeRange',
+                    'convertFormat' => true,
+                    'pluginOptions' => [
+                        'locale' => [
+                            'format'=>'Y-m-d'
+                        ],
+                        'convertFormat'=>true,
+                    ]
+                ]),
             ],
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template'=>'{update}  {delete}',
+                'template'=>'{update}',
             ],
         ],
     ]); ?>

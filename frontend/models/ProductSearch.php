@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use kartik\daterange\DateRangeBehavior;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Product;
@@ -11,6 +12,21 @@ use common\models\Product;
  */
 class ProductSearch extends Product
 {
+    public $updateTimeRange;
+    public $updateTimeStart;
+    public $updateTimeEnd;
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => DateRangeBehavior::className(),
+                'attribute' => 'updateTimeRange',
+                'dateStartAttribute' => 'updateTimeStart',
+                'dateEndAttribute' => 'updateTimeEnd',
+            ]
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -19,6 +35,7 @@ class ProductSearch extends Product
         return [
             [['id', 'quantity', 'price_wholesale', 'price_retail', 'wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at'], 'integer'],
             [['barcode', 'name'], 'safe'],
+            [['updateTimeRange'], 'match', 'pattern' => '/^.+\s\-\s.+$/']
         ];
     }
 
@@ -40,7 +57,8 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find();
+        $query = Product::find()
+            ->andWhere(['company_id' => \Yii::$app->user->identity->company_id]);
 
         // add conditions that should always apply here
 
@@ -71,6 +89,11 @@ class ProductSearch extends Product
 
         $query->andFilterWhere(['like', 'barcode', $this->barcode])
             ->andFilterWhere(['like', 'name', $this->name]);
+
+        if ($this->updateTimeRange) {
+            $query->andFilterWhere(['>=', 'updated_at', $this->updateTimeStart+((60*60)*6)])
+                ->andFilterWhere(['<', 'updated_at', $this->updateTimeEnd+((60*60)*6)]);
+        }
 
         return $dataProvider;
     }
