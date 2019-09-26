@@ -39,6 +39,7 @@ AppAsset::register($this);
         ['label' => 'Home', 'url' => ['/site/index']],
         ['label' => 'Работники', 'url' => ['/staff']],
         ['label' => 'Склад', 'url' => ['/product']],
+        ['label' => 'Заказы', 'url' => ['/order']],
         ['label' => 'Накладные', 'url' => ['/invoice']],
         ['label' => 'Поставщики', 'url' => ['/supplier']],
     ];
