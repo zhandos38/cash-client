@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "order".
@@ -22,11 +23,15 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property DiscountHistory[] $discountHistories
  * @property Company $company
- * @property Staff $createdBy
+ * @property User $createdBy
  * @property OrderItems[] $orderItems
  */
 class Order extends \yii\db\ActiveRecord
 {
+    const STATUS_NOT_PAID = 0;
+    const STATUS_PAID = 1;
+    const STATUS_PARTIALLY_PAID = 2;
+    const STATUS_CANCELED = 3;
     /**
      * {@inheritdoc}
      */
@@ -50,7 +55,7 @@ class Order extends \yii\db\ActiveRecord
         return [
             [['created_by', 'customer_id', 'cost', 'service_cost', 'discount_cost', 'total_cost', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Staff::className(), 'targetAttribute' => ['created_by' => 'id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
         ];
     }
 
@@ -104,5 +109,20 @@ class Order extends \yii\db\ActiveRecord
     public function getOrderItems()
     {
         return $this->hasMany(OrderItems::className(), ['order_id' => 'id']);
+    }
+
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_NOT_PAID => 'Не оплачен',
+            self::STATUS_PAID => 'Оплачен',
+            self::STATUS_PARTIALLY_PAID => 'Частично оплачен',
+            self::STATUS_CANCELED => 'Отменен'
+        ];
+    }
+
+    public function getStatusLabel()
+    {
+        return ArrayHelper::getValue(static::getStatuses(), $this->status);
     }
 }

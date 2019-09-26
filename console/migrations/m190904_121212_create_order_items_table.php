@@ -17,7 +17,7 @@ class m190904_121212_create_order_items_table extends Migration
             'id' => $this->primaryKey(),
             'product_id' => $this->integer(),
             'order_id' => $this->integer(),
-            'product_name' => $this->string(),
+            'name' => $this->string(),
             'barcode' => $this->string(),
             'quantity' => $this->integer(),
             'real_price' => $this->integer(),
