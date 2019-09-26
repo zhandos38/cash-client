@@ -131,6 +131,7 @@ class InvoiceController extends Controller
                                 $product->is_partial = $modelInvoiceItem->is_partial;
                                 $product->price_wholesale = $modelInvoiceItem->wholesale_price;
                                 $product->wholesale_value = $modelInvoiceItem->wholesale_value;
+                                $product->status = Product::STATUS_ACTIVE;
                                 $product->company_id = $company_id;
                             }
 

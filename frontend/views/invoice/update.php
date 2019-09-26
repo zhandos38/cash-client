@@ -6,10 +6,10 @@ use yii\helpers\Html;
 /* @var $modelInvoice common\models\Invoice */
 /* @var $modelsInvoiceItem common\models\InvoiceItems */
 
-$this->title = 'Update Invoice: ' . $modelInvoice->id;
-$this->params['breadcrumbs'][] = ['label' => 'Invoices', 'url' => ['index']];
+$this->title = 'Обнвоить накладную: ' . $modelInvoice->id;
+$this->params['breadcrumbs'][] = ['label' => 'Накладная', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $modelInvoice->id, 'url' => ['view', 'id' => $modelInvoice->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Обновить';
 ?>
 <div class="invoice-update">
 

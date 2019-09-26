@@ -58,7 +58,8 @@ class InvoiceSearch extends Invoice
      */
     public function search($params)
     {
-        $query = Invoice::find();
+        $query = Invoice::find()
+            ->andWhere(['company_id' => \Yii::$app->user->identity->company_id]);
 
         // add conditions that should always apply here
 

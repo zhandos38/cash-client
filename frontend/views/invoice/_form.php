@@ -96,10 +96,10 @@ InvoiceAsset::register($this);
                                 <?= $form->field($modelInvoice, "[{$i}]is_exist")->hiddenInput(['class' => 'form-control input_is_exist'])->label(false) ?>
                                 <div class="external-form">
                                     <div class="col-sm-6">
-                                        <?= $form->field($modelInvoice, "[{$i}]wholesale_price") ?>
+                                        <?= $form->field($modelInvoice, "[{$i}]wholesale_value") ?>
                                     </div>
                                     <div class="col-sm-6">
-                                        <?= $form->field($modelInvoice, "[{$i}]wholesale_value") ?>
+                                        <?= $form->field($modelInvoice, "[{$i}]wholesale_price") ?>
                                     </div>
                                     <div class="col-sm-12">
                                         <?= $form->field($modelInvoice, "[{$i}]is_partial")->checkbox(['value' => 1]) ?>
@@ -186,9 +186,9 @@ $(document).on('focusout', '.input_barcode', function() {
     barcode = input_barcode.val();
     if (barcode) {
         checkProduct(barcode, parent_row);
+        input_name = parent_row.find('.input_name');
+        input_name.data("from-barcode", 1);
     }
-    input_name = parent_row.find('.input_name');
-    input_name.data("from-barcode", 1);
 });
 
 $(document).on('focusout', '.input_name', function() {
