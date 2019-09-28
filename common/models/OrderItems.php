@@ -38,7 +38,8 @@ class OrderItems extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'order_id', 'quantity', 'real_price', 'created_at', 'updated_at', 'took_at', 'finished_at'], 'integer'],
+            [['product_id', 'order_id', 'real_price', 'created_at', 'updated_at', 'took_at', 'finished_at'], 'integer'],
+            ['quantity', 'number'],
             [['product_name', 'barcode'], 'string', 'max' => 255],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],

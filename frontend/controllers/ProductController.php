@@ -41,59 +41,6 @@ class ProductController extends Controller
         ];
     }
 
-    public $sampleData = [
-        'Alabama',
-        'Alaska',
-        'Arizona',
-        'Arkansas',
-        'California',
-        'Colorado',
-        'Connecticut',
-        'Delaware',
-        'Florida',
-        'Georgia',
-        'Hawaii',
-        'Idaho',
-        'Illinois',
-        'Indiana',
-        'Iowa',
-        'Kansas',
-        'Kentucky',
-        'Louisiana',
-        'Maine',
-        'Maryland',
-        'Massachusetts',
-        'Michigan',
-        'Minnesota',
-        'Mississippi',
-        'Missouri',
-        'Montana',
-        'Nebraska',
-        'Nevada',
-        'New Hampshire',
-        'New Jersey',
-        'New Mexico',
-        'New York',
-        'North Carolina',
-        'North Dakota',
-        'Ohio',
-        'Oklahoma',
-        'Oregon',
-        'Pennsylvania',
-        'Rhode Island',
-        'South Carolina',
-        'South Dakota',
-        'Tennessee',
-        'Texas',
-        'Utah',
-        'Vermont',
-        'Virginia',
-        'Washington',
-        'West Virginia',
-        'Wisconsin',
-        'Wyoming',
-    ];
-
     /**
      * Lists all Product models.
      * @return mixed
@@ -174,17 +121,26 @@ class ProductController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionSource($term)
+    public function actionSearch($term)
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $searchResult = array_filter($this->sampleData, function ( $state ) use ( $term ) {
-            return strpos($state, $term) !== false;
-        });
         $data = [];
-        foreach ( $searchResult as $value => $label ) {
+        $searchResult = \common\models\es\Product::find()
+            ->query([
+                "multi_match" => [
+                    'query' => $term,
+                    'fields' => [
+                        'name',
+                        'barcode'
+                    ]
+                ]
+            ])
+            ->asArray()
+            ->all();
+        foreach ( $searchResult as $value => $item ) {
             $data[] = [
-                'id' => $value,
-                'label' => $label,
+                'id' => $item['_source']['id'],
+                'label' => $item['_source']['name'],
             ];
         }
         return $data;

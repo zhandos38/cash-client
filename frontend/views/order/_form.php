@@ -1,34 +1,37 @@
 <?php
 
+use kartik\touchspin\TouchSpin;
 use kl83\widgets\AutocompleteDropdown;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use frontend\assets\OrderAsset;
+
+OrderAsset::register($this);
 
 /* @var $this yii\web\View */
 /* @var $modelOrder common\models\Order */
 /* @var $modelsOrderItem common\models\OrderItems */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
 <div class="order-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
 
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <?= AutocompleteDropdown::widget([
                 'name' => 'product_name',
-                'source' => Url::to(['product/source']),
+                'source' => Url::to(['product/search']),
             ]) ?>
         </div>
-        <div class="col-sm-6">
-            <?= AutocompleteDropdown::widget([
-                'name' => 'product_barcode',
-                'source' => Url::to(['product/source']),
-            ]) ?>
-        </div>
+    </div>
+
+    <div class="row">
+        <?= $form->field($modelOrder, 'customer_id')->hiddenInput()->label(false) ?>
     </div>
 
     <?php DynamicFormWidget::begin([
@@ -45,7 +48,7 @@ use yii\widgets\ActiveForm;
             'name',
             'barcode',
             'quantity',
-            'price_in'
+            'real_price'
         ],
     ]); ?>
 
@@ -74,21 +77,24 @@ use yii\widgets\ActiveForm;
                                 echo Html::activeHiddenInput($modelOrderItem, "[{$i}]id");
                             }
                             ?>
-                            <div class="message-not-found alert alert-danger" role="alert" style="display: none">
-                                Товар в базе не найден, пожалуйста введите название или штрихкод товара вручную
-                            </div>
                             <div class="row">
-                                <div class="col-sm-6">
-                                    <?= $form->field($modelOrderItem, "[{$i}]barcode")->textInput(['maxlength' => true, 'class' => 'form-control input_barcode']) ?>
+                                <div class="col-sm-3">
+                                    <?= $form->field($modelOrderItem, "[{$i}]barcode")->textInput(['maxlength' => true, 'class' => 'form-control input_barcode', 'readonly' => true]) ?>
                                 </div>
-                                <div class="col-sm-6">
-                                    <?= $form->field($modelOrderItem, "[{$i}]name")->textInput(['maxlength' => true, 'class' => 'form-control input_name', 'data-from-barcode' => 0]) ?>
+                                <div class="col-sm-3">
+                                    <?= $form->field($modelOrderItem, "[{$i}]name")->textInput(['maxlength' => true, 'class' => 'form-control input_name', 'data-from-barcode' => 0, 'readonly' => true]) ?>
                                 </div>
-                                <div class="col-sm-6">
-                                    <?= $form->field($modelOrderItem, "[{$i}]quantity")->textInput(['maxlength' => true, 'class' => 'form-control input_quantity', 'type' => 'number']) ?>
+                                <div class="col-sm-3">
+                                    <?= $form->field($modelOrderItem, "[{$i}]quantity")->textInput(['maxlength' => true, 'class' => 'input_quantity']) ?>
                                 </div>
-                                <div class="col-sm-6">
-                                    <?= $form->field($modelOrderItem, "[{$i}]real_price")->textInput(['maxlength' => true, 'type' => 'number']) ?>
+                                <div class="col-sm-3">
+                                    <?= $form->field($modelOrderItem, "[{$i}]real_price")->widget(\yii\widgets\MaskedInput::className(), [
+                                        'clientOptions' => [
+                                            'alias' =>  'decimal',
+                                            'groupSeparator' => ',',
+                                            'autoGroup' => true,
+                                        ],
+                                    ]) ?>
                                 </div>
                             </div><!-- .row -->
                         </div>
@@ -99,21 +105,84 @@ use yii\widgets\ActiveForm;
     </div><!-- .panel -->
     <?php DynamicFormWidget::end(); ?>
 
-    <div class="row">
-        <div class="col-sm-12">
-            <?= $form->field($modelOrder, 'cost')->textInput(['readonly' => true]) ?>
-        </div>
-        <div class="col-sm-12">
-            <?= $form->field($modelOrder, 'total_cost')->textInput(['readonly' => true]) ?>
-        </div>
-        <?= $form->field($modelOrder, 'discount_cost')->hiddenInput()->label(false) ?>
-        <?= $form->field($modelOrder, 'customer_id')->hiddenInput()->label(false) ?>
-    </div>
-
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
 </div>
+<?php
+$js =<<<JS
+$(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
+    console.log("beforeInsert");
+});
+
+$(".dynamicform_wrapper").on("afterInsert", function(e, item) {
+    console.log("afterInsert");
+});
+
+$(".dynamicform_wrapper").on("beforeDelete", function(e, item) {
+    if (! confirm("Вы уверены что хотите удалить товар?")) {
+        return false;
+    }
+    return true;
+});
+
+$(".dynamicform_wrapper").on("afterDelete", function(e) {
+    console.log("Товар удален!");
+});
+
+$(".dynamicform_wrapper").on("limitReached", function(e, item) {
+    alert("Лимит достигнут");
+});
+
+$(document).on('click', '.ui-menu-item-wrapper', function() {
+    let product_id = $('input[name=product_name]').val();
+    
+    $.post({
+        url: 'get-product',
+        data: {
+            id: product_id
+        },
+        success: function(result) {
+            $('.add-item').trigger('click');
+            result = $.parseJSON(result);
+            let last_row = $('body').find('.row:last');
+            let last_input_barcode = last_row.find('.input_barcode:last');
+            let last_input_name = last_row.find('.input_name:last');
+            last_input_barcode.val(result['barcode']);
+            last_input_name.val(result['name']);
+            
+            console.log(result['is_partial']);
+            let input_quantity_settings;
+            
+            if (result['is_partial'] == true) {
+                input_quantity_settings = {
+                    min: 0,
+                    max: 100,
+                    step: 0.1,
+                    decimals: 2,
+                    boostat: 5,
+                    maxboostedstep: 10,
+                    postfix: 'кг'
+                }
+            } else {
+                input_quantity_settings = {
+                    min: -1000000000,
+                    max: 1000000000,
+                    stepinterval: 50,
+                    maxboostedstep: 10000000,
+                }
+            }
+            $(document).find('.input_quantity:last').TouchSpin(input_quantity_settings);
+        },
+        error: function() {
+            console.log('Ошибка пойска!');
+        }
+    });
+});
+JS;
+
+$this->registerJs($js)
+?>

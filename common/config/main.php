@@ -12,5 +12,11 @@ return [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
+        'elasticsearch' => [
+            'class' => 'yii\elasticsearch\Connection',
+            'nodes' => [
+                ['http_address' => '127.0.0.1:9200'],
+            ],
+        ]
     ],
 ];

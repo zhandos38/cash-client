@@ -14,6 +14,8 @@ use Yii;
 use common\models\Order;
 use frontend\models\OrderSearch;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -159,6 +161,16 @@ class OrderController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionGetProduct()
+    {
+        if (Yii::$app->request->isAjax) {
+            $id = Yii::$app->request->post('id');
+            $product = Product::find()->select(['name', 'barcode', 'price_retail', 'is_partial'])->where(['id' => $id])->asArray()->one();
+            return Json::encode($product);
+        }
+        return false;
     }
 
     /**

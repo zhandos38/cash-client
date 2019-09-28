@@ -26,7 +26,10 @@
         "wbraganca/yii2-dynamicform": "dev-master",
         "kartik-v/yii2-date-range": "dev-master",
         "picqer/php-barcode-generator": "^0.3.0",
-        "kl83/yii2-autocomplete-dropdown-widget": "~1.0.0"
+        "kl83/yii2-autocomplete-dropdown-widget": "~1.0.0",
+        "yiisoft/yii2-elasticsearch": "~2.1.0@dev",
+        "kartik-v/yii2-widget-touchspin": "*",
+        "kartik-v/yii2-number": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
