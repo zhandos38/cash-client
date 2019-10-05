@@ -19,7 +19,8 @@ class OrderAsset extends AssetBundle
     public $js = [
         'js/jquery.scannerdetection.js',
         'js/jquery-barcode.min.js',
-        'js/jquery.bootstrap-touchspin.js'
+        'js/jquery.bootstrap-touchspin.js',
+        'js/order.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

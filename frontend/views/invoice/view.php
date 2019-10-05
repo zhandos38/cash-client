@@ -1,43 +1,23 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Invoice */
+/* @var $modelInvoice common\models\Invoice */
+/* @var $modelsInvoiceItem common\models\InvoiceItems */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Invoices', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
+$this->title = 'Накладная #' . $modelInvoice->number_in;
+$this->params['breadcrumbs'][] = ['label' => 'Накладные', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $modelInvoice->number_in, 'url' => ['view', 'id' => $modelInvoice->id]];
+$this->params['breadcrumbs'][] = 'Обзор';
 ?>
-<div class="invoice-view">
+<div class="invoice-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'number_in',
-            'is_debt',
-            'status',
-            'created_by',
-            'created_at',
-            'supplier_id',
-            'company_id',
-        ],
+    <?= $this->render('_view_form', [
+        'modelInvoice' => $modelInvoice,
+        'modelsInvoiceItem' => $modelsInvoiceItem
     ]) ?>
 
 </div>

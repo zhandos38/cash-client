@@ -130,6 +130,16 @@ InvoiceAsset::register($this);
 
 <?php
 $js =<<<JS
+$( document ).ready(function() {
+    let button = $('button');
+    $('input').prop('disabled', true);
+    $('select').prop('disabled', true);
+    button.prop('disabled', true);
+    button.css('display', 'none');
+    
+    renderAllBarcode();
+});
+
 $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
     console.log("beforeInsert");
 });
@@ -153,18 +163,6 @@ $(".dynamicform_wrapper").on("limitReached", function(e, item) {
     alert("Лимит достигнут");
 });
 
-$(document).scannerDetection({
-    timeBeforeScanTest: 200, // wait for the next character for upto 200ms
-	startChar: [120], // Prefix character for the cabled scanner (OPL6845R)
-	// endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
-	avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
-	ignoreIfFocusOn: 'input',
-	onComplete: function(barcode, qty){
-        $('.add-item').trigger('click');
-        checkProduct(barcode);
-    }
-});
-
 $(document).on('click', '.barcode-download', function() {
     let img = $(this).find('.barcode-img');
     // var url = img.attr('src');
@@ -180,127 +178,44 @@ $(document).on('click', '.barcode-download', function() {
     return true;
 });
 
-$(document).on('focusout', '.input_barcode', function() {
-    let input_barcode = $(this);
-    let parent_row = input_barcode.parents('.row');
-    let barcode = input_barcode.val();
-    if (barcode) {
-        checkProduct(barcode, parent_row);
-    }
-});
-
-$(document).on('focusout', '.input_name', function() {
-    let input_name = $(this);
-    if (input_name.data("from-barcode") === 0) {
-        let product_name = input_name.val();
-        let parent_row = input_name.parents('.row');
-        let input_barcode = parent_row.find('.input_barcode');
-        let input_is_new = parent_row.find('.input_is_new');
-        let input_quantity = parent_row.find('.input_quantity');
-        let external_form = parent_row.find('.external-form');
-        
-        if (product_name) {
-            $.post({
-            url: 'get-checked-random-barcode',
-            success: function(result) {
-                renderBarcode(result, parent_row);
-                input_barcode.val(result);
-                input_barcode.attr("readonly", true);
-                input_name.attr("readonly", true);
-                input_is_new.val(1);
-                external_form.show();
-                input_quantity.focus();
-            }
-            });
-        }
-    }
-});
-
-function checkProduct(barcode, focused_row = null) {
-    let body = $('body');
-    $.post({
-           url: 'check-product',
-           data: {barcode: barcode},
-           success: function(result) {
-               result = $.parseJSON(result);
-               console.log(result);
-               
-               if (focused_row == null) {
-                   focused_row = body.find('.row:last');
-               }
-               
-               let input_barcode = focused_row.find('.input_barcode');
-               let input_name = focused_row.find('.input_name');
-               let input_is_new = focused_row.find('.input_is_new');
-               let input_quantity = focused_row.find('.input_quantity');
-               let input_is_exist = focused_row.find('.is_exist');
-               let external_form = focused_row.find('.external-form');
-               
-               input_barcode.val(result['barcode']);
-               input_barcode.attr('readonly', true);
-                   
-               if (result['name'] != null) {
-                   input_name.attr('readonly', true);
-                   input_name.val(result['name']);
-                   input_is_new.val(0);
-                   input_quantity.focus();
-                   console.log(result);
-                   if (result['is_exist']) {
-                       input_is_exist.val(1);
-                       external_form.show();
-                   }
-               } else {
-                   focused_row.parent().find('.message-not-found:last').css('display', 'block');
-                   input_name.focus();
-                   input_name.data("from-barcode", 1);
-                   input_is_new.val(1);
-                   external_form.show();
-                   input_is_exist.val(0);
-               }
-               
-               renderBarcode(result['barcode'], focused_row);
-           },
-           error: function() {
-               alert('Ошибка');
-           }
-    });
-}
-
-function renderBarcode(barcode, focused_row) {
-    let body = $('body');
-    barcode_img = focused_row.find('.barcode-img');
-    barcode_type = null;
+function renderAllBarcode() {
+    let items = $('.container-items').find('.row');
+    items.each(function() {
+        let barcode = $( this ).find('.input_barcode').val();
+        let barcode_img = $( this ).find('.barcode-img');
+        let barcode_type = null;
    
-    switch (barcode.length) {
-        case 8:
-            barcode_type = "ean8";
-            break;
-        case 12:
-            barcode_type = "code128";
-            break;
-        case 13:
-            barcode_type = "ean13";
-            break;
-        case 14:
-            barcode_type = "code128";
-            break;
-    }
+        switch (barcode.length) {
+            case 8:
+                barcode_type = "ean8";
+                break;
+            case 12:
+                barcode_type = "code128";
+                break;
+            case 13:
+                barcode_type = "ean13";
+                break;
+            case 14:
+                barcode_type = "code128";
+                break;
+        }
   
-   barcode_img.barcode(
-       barcode,
-       barcode_type,
-       {
-           barHeight:"65",
-           barWidth:"2",
-           bgColor:"#FFFFFF",
-           color:"#000000",
-           fontSize:18,
-           marginHRI:5,
-           moduleSize:"10",
-           output:"svg",
-           posX:"0",
-           posY:"0"
-       });
+        barcode_img.barcode(
+            barcode,
+            barcode_type,
+            {
+                barHeight:"65",
+                barWidth:"2",
+                bgColor:"#FFFFFF",
+                color:"#000000",
+                fontSize:18,
+                marginHRI:5,
+                moduleSize:"10",
+                output:"svg",
+                posX:"0",
+                posY:"0"
+            });
+        });
 }
 JS;
 

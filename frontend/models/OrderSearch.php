@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use kartik\daterange\DateRangeBehavior;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Order;
@@ -11,6 +12,22 @@ use common\models\Order;
  */
 class OrderSearch extends Order
 {
+    public $createTimeRange;
+    public $createTimeStart;
+    public $createTimeEnd;
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => DateRangeBehavior::className(),
+                'attribute' => 'createTimeRange',
+                'dateStartAttribute' => 'createTimeStart',
+                'dateEndAttribute' => 'createTimeEnd',
+            ]
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -18,6 +35,7 @@ class OrderSearch extends Order
     {
         return [
             [['id', 'created_by', 'customer_id', 'cost', 'service_cost', 'discount_cost', 'total_cost', 'status', 'is_debt', 'created_at', 'updated_at', 'company_id'], 'integer'],
+            [['createTimeRange'], 'match', 'pattern' => '/^.+\s\-\s.+$/']
         ];
     }
 
@@ -57,7 +75,6 @@ class OrderSearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
             'created_by' => $this->created_by,
             'customer_id' => $this->customer_id,
             'cost' => $this->cost,
@@ -70,6 +87,11 @@ class OrderSearch extends Order
             'updated_at' => $this->updated_at,
             'company_id' => $this->company_id,
         ]);
+
+        if ($this->createTimeRange) {
+            $query->andFilterWhere(['>=', 'created_at', $this->createTimeStart+((60*60)*6)])
+                ->andFilterWhere(['<', 'created_at', $this->createTimeEnd+((60*60)*6)]);
+        }
 
         return $dataProvider;
     }

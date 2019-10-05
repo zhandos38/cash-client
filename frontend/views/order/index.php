@@ -1,5 +1,7 @@
 <?php
 
+use common\models\Order;
+use kartik\daterange\DateRangePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -7,7 +9,7 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Orders';
+$this->title = 'Заказы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="order-index">
@@ -15,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Order', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать заказ', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -26,18 +28,46 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'created_by',
-            'customer_id',
+            [
+                'attribute' => 'created_by',
+                'value' => 'createdBy.full_name'
+            ],
+            [
+                'attribute' => 'customer_id',
+                'value' => 'customer.full_name'
+            ],
             'cost',
-            'service_cost',
-            //'discount_cost',
-            //'total_cost',
-            //'status',
-            //'is_debt',
-            //'created_at',
-            //'updated_at',
-            //'company_id',
+            [
+                'attribute' => 'status',
+                'value' => function(Order $model) {
+                    return $model->getStatusLabel();
+                },
+                'filter' => Order::getStatuses()
+            ],
+            [
+                'attribute' => 'is_debt',
+                'value' => function(Order $model) {
+                    return $model->getIsDebtStatusLabel();
+                },
+                'filter' => Order::getIsDebtStatuses()
+            ],
+            [
+                'attribute' => 'created_at',
+                'value' => function(Order $model) {
+                    return date('d-m-Y H:i', $model->created_at);
+                },
+                'filter' => DateRangePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'createTimeRange',
+                    'convertFormat' => true,
+                    'pluginOptions' => [
+                        'locale' => [
+                            'format'=>'Y-m-d'
+                        ],
+                        'convertFormat'=>true,
+                    ]
+                ]),
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

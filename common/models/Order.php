@@ -12,11 +12,13 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property int $created_by
  * @property int $customer_id
- * @property int $cost
- * @property int $service_cost
- * @property int $discount_cost
- * @property int $total_cost
+ * @property double $cost
+ * @property double $service_cost
+ * @property double $discount_cost
+ * @property double $total_cost
+ * @property double $paid_amount
  * @property int $status
+ * @property boolean $is_debt
  * @property int $created_at
  * @property int $updated_at
  * @property int $company_id
@@ -32,6 +34,10 @@ class Order extends \yii\db\ActiveRecord
     const STATUS_PAID = 1;
     const STATUS_PARTIALLY_PAID = 2;
     const STATUS_CANCELED = 3;
+
+    const IS_DEBT_STATUS_NO = 0;
+    const IS_DEBT_STATUS_YES = 1;
+
     /**
      * {@inheritdoc}
      */
@@ -43,7 +49,7 @@ class Order extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            'class' => TimestampBehavior::className()
         ];
     }
 
@@ -53,7 +59,9 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_by', 'customer_id', 'cost', 'service_cost', 'discount_cost', 'total_cost', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
+            [['created_by', 'customer_id', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
+            [['cost', 'service_cost', 'discount_cost', 'total_cost', 'paid_amount'], 'number'],
+            ['is_debt', 'boolean'],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
         ];
@@ -66,16 +74,17 @@ class Order extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'created_by' => 'Created By',
-            'customer_id' => 'Customer ID',
-            'cost' => 'Cost',
-            'service_cost' => 'Service Cost',
-            'discount_cost' => 'Discount Cost',
-            'total_cost' => 'Total Cost',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'company_id' => 'Company ID',
+            'created_by' => 'Создал',
+            'customer_id' => 'Клиент',
+            'cost' => 'Цена',
+            'service_cost' => 'Стоимость услуги',
+            'discount_cost' => 'Размер скидки',
+            'total_cost' => 'Полная стоимость',
+            'status' => 'Статус',
+            'created_at' => 'Создано в',
+            'updated_at' => 'Обновлено в',
+            'paid_amount' => 'Итого оплачено',
+            'is_debt' => 'В долг'
         ];
     }
 
@@ -106,6 +115,14 @@ class Order extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getOrderItems()
     {
         return $this->hasMany(OrderItems::className(), ['order_id' => 'id']);
@@ -124,5 +141,32 @@ class Order extends \yii\db\ActiveRecord
     public function getStatusLabel()
     {
         return ArrayHelper::getValue(static::getStatuses(), $this->status);
+    }
+
+    public static function getIsDebtStatuses() {
+        return [
+            self::IS_DEBT_STATUS_NO => 'Не в долг',
+            self::IS_DEBT_STATUS_YES => 'В долг'
+        ];
+    }
+
+    public function getIsDebtStatusLabel() {
+        return ArrayHelper::getValue(static::getIsDebtStatuses(), $this->is_debt);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if (!$this->is_debt) {
+                $this->status = Order::STATUS_PAID;
+            } elseif($this->is_debt && $this->cost > $this->paid_amount) {
+                $this->status = Order::STATUS_PARTIALLY_PAID;
+            } elseif ($this->cost == $this->paid_amount) {
+                $this->status = Order::STATUS_PAID;
+            } else {
+                $this->status = Order::STATUS_NOT_PAID;
+            }
+        }
+        return true;
     }
 }

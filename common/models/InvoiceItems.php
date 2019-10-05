@@ -37,8 +37,8 @@ class InvoiceItems extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['invoice_id', 'price_in', 'is_new', 'is_exist','wholesale_value', 'wholesale_price'], 'integer'],
-            ['quantity', 'number'],
+            [['invoice_id', 'is_new', 'is_exist', 'wholesale_value'], 'integer'],
+            [['quantity', 'price_in', 'wholesale_price'], 'number'],
             [['barcode', 'name'], 'string', 'max' => 255],
             [['barcode', 'quantity', 'price_in'], 'required'],
             ['is_partial', 'boolean'],

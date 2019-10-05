@@ -1,16 +1,15 @@
 <?php
 
-namespace frontend\models;
+namespace frontend\models\search;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\User;
+use common\models\Customer;
 
 /**
- * StaffSearch represents the model behind the search form of `common\models\User`.
+ * CustomerSearch represents the model behind the search form of `common\models\Customer`.
  */
-class StaffSearch extends User
+class CustomerSearch extends Customer
 {
     /**
      * {@inheritdoc}
@@ -18,8 +17,8 @@ class StaffSearch extends User
     public function rules()
     {
         return [
-            [['id', 'code_number', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
-            [['username', 'full_name', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'phone', 'address', 'role', 'verification_token'], 'safe'],
+            [['id', 'birthday_date', 'card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
+            [['full_name', 'phone', 'address'], 'safe'],
         ];
     }
 
@@ -41,10 +40,7 @@ class StaffSearch extends User
      */
     public function search($params)
     {
-        $user = Yii::$app->user->identity;
-        $query = User::find()
-            ->andWhere(['company_id' => $user->company_id])
-            ->andWhere(['!=', 'id', $user->getId()]);
+        $query = Customer::find();
 
         // add conditions that should always apply here
 
@@ -63,23 +59,21 @@ class StaffSearch extends User
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'code_number' => $this->code_number,
+            'birthday_date' => $this->birthday_date,
+            'card_number' => $this->card_number,
+            'discount_id' => $this->discount_id,
+            'is_discount_limited' => $this->is_discount_limited,
+            'discount_value' => $this->discount_value,
+            'discount_quantity' => $this->discount_quantity,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'company_id' => $this->company_id,
         ]);
 
-        $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'full_name', $this->full_name])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'email', $this->email])
+        $query->andFilterWhere(['like', 'full_name', $this->full_name])
             ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'role', $this->role])
-            ->andFilterWhere(['like', 'verification_token', $this->verification_token]);
+            ->andFilterWhere(['like', 'address', $this->address]);
 
         return $dataProvider;
     }

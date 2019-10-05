@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\Barcode;
 use common\models\BarcodeTemp;
+use common\models\Company;
 use common\models\InvoiceItems;
 use common\models\Product;
 use Exception;
@@ -43,6 +44,15 @@ class InvoiceController extends Controller
         ];
     }
 
+    public function actions(){
+        return [
+            'toggle-update'=>[
+                'class'=>'\dixonstarter\togglecolumn\actions\ToggleAction',
+                'modelClass'=>Invoice::className()
+            ]
+        ];
+    }
+
     /**
      * Lists all Invoice models.
      * @return mixed
@@ -66,8 +76,12 @@ class InvoiceController extends Controller
      */
     public function actionView($id)
     {
+        $modelInvoice = $this->findModel($id);
+        $modelsInvoiceItems = $modelInvoice->invoiceItems;
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'modelInvoice' => $modelInvoice,
+            'modelsInvoiceItem' => (empty($modelsInvoiceItems)) ? [new InvoiceItems()] : $modelsInvoiceItems
         ]);
     }
 
@@ -102,6 +116,7 @@ class InvoiceController extends Controller
                 try {
                     if ($flag = $modelInvoice->save()) {
                         $modelInvoice->id = $flag;
+                        $totalCost = 0;
                         /** @var InvoiceItems $modelInvoiceItem */
                         foreach ($modelsInvoiceItem as $k => $modelInvoiceItem) {
                             $modelInvoiceItem->invoice_id = $modelInvoice->id;
@@ -142,6 +157,15 @@ class InvoiceController extends Controller
                                 $transaction->rollBack();
                                 break;
                             }
+
+                            $totalCost += $modelInvoiceItem->price_in * $modelInvoiceItem->quantity;
+                        }
+
+                        if (!$modelInvoice->is_debt) {
+                            $balance = Company::findOne(['id' => $company_id]);
+                            $balance->balance -= $totalCost;
+                            if (!$balance->save())
+                                throw new Exception("Balance is not saved");
                         }
                     }
 

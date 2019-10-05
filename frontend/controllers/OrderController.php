@@ -3,11 +3,13 @@
 namespace frontend\controllers;
 
 use common\models\BarcodeTemp;
+use common\models\Customer;
 use common\models\InvoiceItems;
 use common\models\OrderItems;
 use common\models\Product;
 use Exception;
 use frontend\models\AddInvoiceForm;
+use frontend\models\forms\CustomerForm;
 use frontend\models\MultipleModel as Model;
 use frontend\models\OrderForm;
 use Yii;
@@ -58,6 +60,52 @@ class OrderController extends Controller
     }
 
     /**
+     * Lists all Customer models.
+     * @return mixed
+     */
+    public function actionCustomerList()
+    {
+        $data = [];
+        if (Yii::$app->request->isAjax) {
+            $model = new Customer();
+
+            if (Yii::$app->request->post()) {
+                $request = Yii::$app->request->post('Customer');
+                if ($request['full_name'] || $request['phone']) {
+                    $data = Customer::find()
+                        ->select(['id', 'full_name', 'phone', 'address'])
+                        ->andFilterWhere(['like', 'full_name', $request['full_name']])
+                        ->andFilterWhere(['like', 'phone', $request['phone']])
+                        ->asArray()
+                        ->all();
+                }
+                return Json::encode($data);
+            }
+
+            return $this->renderAjax('customer-list', [
+                'model' => $model,
+            ]);
+        }
+
+        return false;
+    }
+
+    public function actionAddCustomer() {
+        if (Yii::$app->request->isAjax){
+            $model = new CustomerForm();
+
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return true;
+            }
+
+            return $this->renderAjax('customer-form', [
+                'model' => $model
+            ]);
+        }
+        return false;
+    }
+
+    /**
      * Displays a single Order model.
      * @param integer $id
      * @return mixed
@@ -77,7 +125,6 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
-        $company_id = Yii::$app->user->identity->company_id;
         $modelOrder = new OrderForm();
         $modelsOrderItem = [new OrderItems()];
         if ($modelOrder->load(Yii::$app->request->post())) {
@@ -163,11 +210,21 @@ class OrderController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionGetProduct()
+    public function actionGetProductById()
     {
         if (Yii::$app->request->isAjax) {
             $id = Yii::$app->request->post('id');
-            $product = Product::find()->select(['name', 'barcode', 'price_retail', 'is_partial'])->where(['id' => $id])->asArray()->one();
+            $product = Product::find()->select(['id', 'name', 'barcode', 'price_retail', 'is_partial'])->where(['id' => $id])->asArray()->one();
+            return Json::encode($product);
+        }
+        return false;
+    }
+
+    public function actionGetProductByBarcode()
+    {
+        if (Yii::$app->request->isAjax) {
+            $barcode = Yii::$app->request->post('barcode');
+            $product = Product::find()->select(['id', 'name', 'barcode', 'price_retail', 'is_partial'])->where(['barcode' => $barcode])->asArray()->one();
             return Json::encode($product);
         }
         return false;

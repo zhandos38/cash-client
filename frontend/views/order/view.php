@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Order;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -7,40 +8,59 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Order */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'Заказы', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Заказ #' . $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="order-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1>Заказ #<?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'created_by',
-            'customer_id',
+            [
+                'attribute' => 'created_by',
+                'value' => function(Order $model) {
+                    return $model->createdBy->full_name;
+                }
+            ],
+            [
+                'attribute' => 'customer_id',
+                'value' => function(Order $model) {
+                    return $model->customer->full_name;
+                }
+            ],
             'cost',
-            'service_cost',
-            'discount_cost',
-            'total_cost',
-            'status',
-            'is_debt',
-            'created_at',
-            'updated_at',
-            'company_id',
+            'paid_amount',
+            [
+                'attribute' => 'status',
+                'value' => function(Order $model) {
+                    return $model->getStatusLabel();
+                }
+            ],
+            [
+                'attribute' => 'is_debt',
+                'value' => function(Order $model) {
+                    return $model->getIsDebtStatusLabel();
+                }
+            ],
+            [
+                'attribute' => 'created_at',
+                'value' => function(Order $model) {
+                    return date('d/m/Y H:i', $model->created_at);
+                }
+            ],
+            [
+                'attribute' => 'updated_at',
+                'value' => function(Order $model) {
+                    return date('d/m/Y H:i', $model->updated_at);
+                }
+            ],
         ],
     ]) ?>
 

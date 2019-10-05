@@ -4,6 +4,7 @@ use common\models\Invoice;
 use kartik\daterange\DateRangePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\InvoiceSearch */
@@ -19,10 +20,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
+    <?php Pjax::begin();?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'tableOptions'=>['class'=>'table table-hover'],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -31,7 +33,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'is_debt',
                 'value' => function(Invoice $model) {
                     return $model->getIsDebtStatusLabel();
-                }
+                },
+                'filter' => Invoice::getIsDebtStatus()
+            ],
+            [
+                'attribute'=>'status',
+                'class'=>'\dixonstarter\togglecolumn\ToggleColumn',
+                'options'=>['style'=>'width:50px;'],
+                'linkTemplateOn'=>'<i  class="glyphicon glyphicon-ok"></i> {label}',
+                'linkTemplateOff'=>'<a class="toggle-column btn btn-default btn-xs btn-block" data-pjax="0" href="{url}"><i  class="glyphicon glyphicon-remove"></i> {label}</a>'
             ],
             [
                 'attribute' => 'created_at',
@@ -53,10 +63,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template'=>'{update}',
+                'template'=>'{update} {view} {delete}',
             ],
         ],
     ]); ?>
-
+    <?php Pjax::end();?>
 
 </div>

@@ -50,7 +50,8 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['quantity', 'price_wholesale', 'price_retail', 'wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['quantity', 'price_wholesale', 'price_retail'], 'number'],
             [['barcode', 'name'], 'string', 'max' => 255],
         ];
     }

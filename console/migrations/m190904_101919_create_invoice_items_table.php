@@ -18,8 +18,8 @@ class m190904_101919_create_invoice_items_table extends Migration
             'invoice_id' => $this->integer(),
             'barcode' => $this->string(),
             'name' => $this->string(),
-            'quantity' => $this->integer(),
-            'price_in' => $this->integer()
+            'quantity' => $this->double(),
+            'price_in' => $this->double()
         ]);
 
         $this->addForeignKey(

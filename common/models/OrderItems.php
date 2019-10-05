@@ -10,7 +10,7 @@ use Yii;
  * @property int $id
  * @property int $product_id
  * @property int $order_id
- * @property string $product_name
+ * @property string $name
  * @property string $barcode
  * @property int $quantity
  * @property int $real_price
@@ -38,9 +38,9 @@ class OrderItems extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'order_id', 'real_price', 'created_at', 'updated_at', 'took_at', 'finished_at'], 'integer'],
-            ['quantity', 'number'],
-            [['product_name', 'barcode'], 'string', 'max' => 255],
+            [['product_id', 'order_id', 'created_at', 'updated_at', 'took_at', 'finished_at'], 'integer'],
+            [['quantity', 'real_price'], 'number'],
+            [['name', 'barcode'], 'string', 'max' => 255],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
         ];
@@ -52,17 +52,15 @@ class OrderItems extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'product_id' => 'Product ID',
             'order_id' => 'Order ID',
-            'product_name' => 'Product Name',
-            'barcode' => 'Barcode',
-            'quantity' => 'Quantity',
-            'real_price' => 'Real Price',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'took_at' => 'Took At',
-            'finished_at' => 'Finished At',
+            'name' => 'Название',
+            'barcode' => 'Штрих код',
+            'quantity' => 'Количество',
+            'real_price' => 'Цена',
+            'created_at' => 'Дата добавления',
+            'updated_at' => 'Дата обновление',
+            'took_at' => 'Было в',
+            'finished_at' => 'Закончена в',
         ];
     }
 

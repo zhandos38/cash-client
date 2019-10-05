@@ -4,6 +4,8 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "customer".
@@ -29,6 +31,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class Customer extends \yii\db\ActiveRecord
 {
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
     /**
      * {@inheritdoc}
      */
@@ -50,8 +54,8 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['full_name', 'phone', 'card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
-            [['address', 'birthday_date'], 'string', 'max' => 255],
+            [['card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
+            [['address', 'full_name', 'phone', 'birthday_date'], 'string', 'max' => 255],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
             [['discount_id'], 'exist', 'skipOnError' => true, 'targetClass' => Discount::className(), 'targetAttribute' => ['discount_id' => 'id']],
         ];
@@ -63,20 +67,13 @@ class Customer extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'full_name' => 'Full Name',
-            'phone' => 'Phone',
-            'address' => 'Address',
-            'birthday_date' => 'Birthday Date',
-            'card_number' => 'Card Number',
-            'discount_id' => 'Discount ID',
-            'is_discount_limited' => 'Is Discount Limited',
-            'discount_value' => 'Discount Value',
-            'discount_quantity' => 'Discount Quantity',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'company_id' => 'Company ID',
+            'full_name' => 'Ф.И.О',
+            'phone' => 'Телефон',
+            'address' => 'Адрес',
+            'birthday_date' => 'Дата рождения',
+            'card_number' => 'Номер карты',
+            'status' => 'Статус',
+            'created_at' => 'Дата добавления',
         ];
     }
 
@@ -102,5 +99,18 @@ class Customer extends \yii\db\ActiveRecord
     public function getDiscountHistories()
     {
         return $this->hasMany(DiscountHistory::className(), ['customer_id' => 'id']);
+    }
+
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_INACTIVE => 'Отключен',
+            self::STATUS_ACTIVE => 'Включен'
+        ];
+    }
+
+    public function getStatusLabel()
+    {
+        return ArrayHelper::getValue(static::getStatuses(), $this->status);
     }
 }

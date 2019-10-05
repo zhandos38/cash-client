@@ -16,9 +16,9 @@ class m190904_115230_create_customer_table extends Migration
         $this->createTable($this->tableName, [
             'id' => $this->primaryKey(),
             'full_name' => $this->integer(),
-            'phone' => $this->integer(),
+            'phone' => $this->string(11),
             'address' => $this->string(),
-            'birthday_date' => $this->string(),
+            'birthday_date' => $this->integer(),
             'card_number' => $this->integer(),
             'discount_id' => $this->integer(),
             'is_discount_limited' => $this->boolean(),

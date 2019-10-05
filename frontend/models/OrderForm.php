@@ -4,7 +4,6 @@
 namespace frontend\models;
 
 
-use common\models\Company;
 use common\models\Order;
 use Yii;
 use yii\base\ErrorException;
@@ -12,12 +11,12 @@ use yii\base\Model;
 
 class OrderForm extends Model
 {
+    public $id;
     public $cost;
-    public $total_cost;
     public $is_debt;
     public $status;
-    public $discount_cost;
     public $customer_id;
+    public $paid_amount;
 
     /**
      * {@inheritdoc}
@@ -25,10 +24,10 @@ class OrderForm extends Model
     public function rules()
     {
         return [
-            [['cost', 'total_cost', 'discount_cost', 'customer_id'], 'integer'],
-            ['is_debt', 'boolean'],
-            [['cost', 'total_cost'], 'required'],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
+            [['customer_id'], 'integer'],
+            [['cost', 'paid_amount'], 'number'],
+            ['cost', 'required'],
+            ['is_debt', 'boolean']
         ];
     }
 
@@ -38,9 +37,9 @@ class OrderForm extends Model
     public function attributeLabels()
     {
         return [
-            'cost' => 'Сумма',
-            'total_cost' => 'Итого',
-            'is_debt' => 'В долг'
+            'cost' => 'Итого',
+            'is_debt' => 'В долг',
+            'paid_amount' => 'Итого оплачено'
         ];
     }
 
@@ -60,13 +59,12 @@ class OrderForm extends Model
         try {
             $model = new Order();
             $model->cost = $this->cost;
-            $model->total_cost = $this->total_cost;
-            $model->is_debt = $this->is_debt;
-//            $model->status = Order::STAT
-            $model->supplier_id = $this->supplier_id;
+            $model->customer_id = $this->customer_id;
             $model->created_by = Yii::$app->user->identity->getId();
             $model->company_id = Yii::$app->user->identity->company_id;
             $model->created_at = time();
+            $model->is_debt = $this->is_debt;
+            $model->paid_amount = $this->paid_amount;
             if (!$model->save(false)) {
                 throw new ErrorException( 'Invoice not save!' );
             }

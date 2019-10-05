@@ -1,8 +1,8 @@
 <?php
 
-use kartik\touchspin\TouchSpin;
 use kl83\widgets\AutocompleteDropdown;
 use wbraganca\dynamicform\DynamicFormWidget;
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -19,8 +19,6 @@ OrderAsset::register($this);
 
 <div class="order-form">
 
-    <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
-
     <div class="row">
         <div class="col-sm-12">
             <?= AutocompleteDropdown::widget([
@@ -29,10 +27,9 @@ OrderAsset::register($this);
             ]) ?>
         </div>
     </div>
+    <br>
 
-    <div class="row">
-        <?= $form->field($modelOrder, 'customer_id')->hiddenInput()->label(false) ?>
-    </div>
+    <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
 
     <?php DynamicFormWidget::begin([
         'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
@@ -77,24 +74,44 @@ OrderAsset::register($this);
                                 echo Html::activeHiddenInput($modelOrderItem, "[{$i}]id");
                             }
                             ?>
-                            <div class="row">
+                            <div class="row order-item">
                                 <div class="col-sm-3">
-                                    <?= $form->field($modelOrderItem, "[{$i}]barcode")->textInput(['maxlength' => true, 'class' => 'form-control input_barcode', 'readonly' => true]) ?>
+                                    <?= $form->field($modelOrderItem, "[{$i}]barcode")->textInput([
+                                        'maxlength' => true,
+                                        'class' => 'form-control order-item__barcode',
+                                        'readonly' => true
+                                    ]) ?>
                                 </div>
                                 <div class="col-sm-3">
-                                    <?= $form->field($modelOrderItem, "[{$i}]name")->textInput(['maxlength' => true, 'class' => 'form-control input_name', 'data-from-barcode' => 0, 'readonly' => true]) ?>
+                                    <?= $form->field($modelOrderItem, "[{$i}]name")->textInput([
+                                        'maxlength' => true,
+                                        'class' => 'form-control order-item__name',
+                                        'data-from-barcode' => 0,
+                                        'readonly' => true])
+                                    ?>
                                 </div>
                                 <div class="col-sm-3">
-                                    <?= $form->field($modelOrderItem, "[{$i}]quantity")->textInput(['maxlength' => true, 'class' => 'input_quantity']) ?>
+                                    <?= $form->field($modelOrderItem, "[{$i}]quantity")->textInput([
+                                        'maxlength' => true,
+                                        'class' => 'order-item__quantity',
+                                        'placeholder' => 0
+                                    ]) ?>
                                 </div>
                                 <div class="col-sm-3">
                                     <?= $form->field($modelOrderItem, "[{$i}]real_price")->widget(\yii\widgets\MaskedInput::className(), [
+                                        'options' => [
+                                            'class' => 'form-control order-item__price',
+                                            'readOnly' => true
+                                        ],
                                         'clientOptions' => [
                                             'alias' =>  'decimal',
                                             'groupSeparator' => ',',
                                             'autoGroup' => true,
+                                            'removeMaskOnSubmit' => true
                                         ],
                                     ]) ?>
+                                    <?= $form->field($modelOrderItem, "[{$i}]product_id")->hiddenInput(['class' => 'order-item__product-id'])->label(false) ?>
+                                    <div class="order-item__sum"></div>
                                 </div>
                             </div><!-- .row -->
                         </div>
@@ -105,6 +122,35 @@ OrderAsset::register($this);
     </div><!-- .panel -->
     <?php DynamicFormWidget::end(); ?>
 
+    <div class="row">
+       <div class="col-md-6">
+           <?= $form->field($modelOrder, 'is_debt')->checkbox(['value' => 1, 'class' => 'order__is-debt']) ?>
+           <?= $form->field($modelOrder, 'cost')->textInput(['readOnly' => true, 'class' => 'form-control order-item__total-cost']) ?>
+       </div>
+        <div class="col-md-6">
+            <div id="customer" class="panel panel-info" style="display: none">
+                <div class="panel-heading">
+                    Клиент
+                </div>
+                <div class="panel-body">
+                    <div>
+                        Ф.И.О: <span id="customer__name"></span>
+                    </div>
+                    <div>
+                        Телефон: <span id="customer__phone"></span>
+                    </div>
+                    <div>
+                        Адрес: <span id="customer__address"></span>
+                    </div>
+                    <div>
+                        <?= $form->field($modelOrder, 'paid_amount')->textInput(['class' => 'form-control order__paid-amount', 'placeholder' => 'Сумма тг.']) ?>
+                        <?= $form->field($modelOrder, 'customer_id')->hiddenInput(['class' => 'order__customer'])->label(false) ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
@@ -113,7 +159,62 @@ OrderAsset::register($this);
 
 </div>
 <?php
+Modal::begin([
+    'header' => '<h4>Клиенты</h4>',
+    'id' => 'modal',
+    'size' => 'modal-lg'
+]);
+
+echo '<div id="modal_content"></div>';
+
+Modal::end();
+ ?>
+<?php
+Modal::begin([
+    'header' => '<h4>Добавить клиента</h4>',
+    'id' => 'customer-form',
+    'size' => 'modal-lg'
+]);
+
+echo '<div id="customer-form__content"></div>';
+
+Modal::end();
+?>
+<?php
 $js =<<<JS
+$('#dynamic-form').find(".order__is-debt").on("click", function() {
+    if ( $( this ).is(":checked") ) {
+        $('#modal').modal('show')
+        .find('#modal_content')
+        .load('customer-list');
+        $( this ).prop("checked", false);
+    } else  {
+        let customer_panel = $('#customer');
+        let customer_id = $('.order__customer');
+        if (customer_panel.css('display') === 'block') {
+            customer_panel.css('display', 'none');
+            customer_id.val(null);
+        }
+    }
+});
+
+$('#modal_content').on("click", '#customer__add-btn', function() {
+    $('#customer-form').modal('show')
+    .find('#customer-form__content')
+    .load('add-customer');
+});
+
+$('#modal_content').on('click', '.customer-list__item', function() {
+    $('.order__customer').val($(this).data('id'));
+    let customer_panel = $('#customer');
+    let is_debt = $('.order__is-debt');
+    $('#customer__name').html($(this).data('name'));
+    $('#customer__phone').html($(this).data('phone'));
+    $('#customer__address').html($(this).data('address'));
+    is_debt.prop('checked', true);
+    customer_panel.css('display', 'block');
+});
+
 $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
     console.log("beforeInsert");
 });
@@ -131,6 +232,7 @@ $(".dynamicform_wrapper").on("beforeDelete", function(e, item) {
 
 $(".dynamicform_wrapper").on("afterDelete", function(e) {
     console.log("Товар удален!");
+    calculateTotalSum();
 });
 
 $(".dynamicform_wrapper").on("limitReached", function(e, item) {
@@ -141,47 +243,127 @@ $(document).on('click', '.ui-menu-item-wrapper', function() {
     let product_id = $('input[name=product_name]').val();
     
     $.post({
-        url: 'get-product',
+        url: 'get-product-by-id',
         data: {
             id: product_id
         },
         success: function(result) {
-            $('.add-item').trigger('click');
-            result = $.parseJSON(result);
-            let last_row = $('body').find('.row:last');
-            let last_input_barcode = last_row.find('.input_barcode:last');
-            let last_input_name = last_row.find('.input_name:last');
-            last_input_barcode.val(result['barcode']);
-            last_input_name.val(result['name']);
-            
-            console.log(result['is_partial']);
-            let input_quantity_settings;
-            
-            if (result['is_partial'] == true) {
-                input_quantity_settings = {
-                    min: 0,
-                    max: 100,
-                    step: 0.1,
-                    decimals: 2,
-                    boostat: 5,
-                    maxboostedstep: 10,
-                    postfix: 'кг'
-                }
-            } else {
-                input_quantity_settings = {
-                    min: -1000000000,
-                    max: 1000000000,
-                    stepinterval: 50,
-                    maxboostedstep: 10000000,
-                }
-            }
-            $(document).find('.input_quantity:last').TouchSpin(input_quantity_settings);
+            setProduct(result);
         },
         error: function() {
             console.log('Ошибка пойска!');
         }
     });
 });
+
+$(document).scannerDetection({
+    timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+	startChar: [120], // Prefix character for the cabled scanner (OPL6845R)
+	// endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+	avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+	ignoreIfFocusOn: 'input',
+	onComplete: function(barcode, qty){
+        $.post({
+            url: 'get-product-by-barcode',
+            data: {
+                barcode: barcode
+            },
+            success: function(result) {
+                setProduct(result);
+            },
+            error: function() {
+                console.log('Ошибка пойска!');
+            }
+        });
+    }
+});
+
+function setProduct(product) {
+    product = $.parseJSON(product);
+    
+    let products = $('.order-item__barcode');
+    let flag_is_exist = false;
+    
+    if (products.length > 0) {
+        products.each(function(index) {
+            if ($(this).val() === product['barcode']) {
+                let item = $(this).closest('.order-item');
+                let input_quantity = item.find('.order-item__quantity');
+                let quantity_count = input_quantity.val() ? parseInt(input_quantity.val()) + 1 : 1;
+                input_quantity.val(quantity_count.toString());
+                calculateSum(item);
+                flag_is_exist = true;
+                return false;
+            }
+        });
+    }
+    
+    if (!flag_is_exist) {
+        $('.add-item').trigger('click');
+        let last_item = $('body').find('.order-item:last');
+        let last_input_barcode = last_item.find('.order-item__barcode:last');
+        let last_input_name = last_item.find('.order-item__name:last');
+        let last_input_price = last_item.find('.order-item__price:last');
+        let last_input_quantity = last_item.find('.order-item__quantity:last');
+        let last_input_sum = last_item.find('.order-item__sum:last');
+        let last_input_product_id = last_item.find('.order-item__product-id:last');
+        last_input_barcode.val(product['barcode']);
+        last_input_name.val(product['name']);
+        last_input_price.val(product['price_retail']);
+        last_input_quantity.val(1);
+        last_input_product_id.val(product['id']);
+        last_input_sum.html(product['price_retail']);
+        calculateTotalSum();
+        
+        let input_quantity_settings;
+        
+        if (product['is_partial'] === '1') {
+            input_quantity_settings = {
+                min: 0,
+                max: 100,
+                step: 0.1,
+                decimals: 2,
+                boostat: 5,
+                maxboostedstep: 10,
+                postfix: 'кг'
+            }
+        } else {
+            input_quantity_settings = {
+                min: 0,
+                max: 1000000000,
+                stepinterval: 50,
+                maxboostedstep: 10000000,
+            }
+        }
+        $(document).find('.order-item__quantity:last').TouchSpin(input_quantity_settings);   
+    }
+}
+
+$('#dynamic-form').on('change', '.order-item__quantity', function() {
+    let item = $( this ).parents('.order-item');
+    calculateSum(item);
+});
+
+function calculateSum(item) {
+    let item_quantity_val = item.find('.order-item__quantity').val();
+    let item_price_val = item.find('.order-item__price').val();
+    
+    let sum = parseFloat(item_quantity_val) * parseFloat(item_price_val);
+    sum = sum.toFixed(2);
+    item.find('.order-item__sum').html(sum.toString());
+    
+    calculateTotalSum();
+}
+
+function calculateTotalSum() {
+    let total_sum = 0;
+    
+    $('#dynamic-form').find('.order-item__sum').each(function() {
+        total_sum += parseFloat($( this ).html());
+    });
+    
+    $('.order-item__total-cost').val(total_sum);
+}
 JS;
 
 $this->registerJs($js)

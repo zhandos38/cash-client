@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use dixonstarter\togglecolumn\ToggleActionInterface;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
@@ -23,7 +24,7 @@ use yii\helpers\ArrayHelper;
  * @property Supplier $supplier
  * @property InvoiceItems[] $invoiceItems
  */
-class Invoice extends \yii\db\ActiveRecord
+class Invoice extends \yii\db\ActiveRecord implements ToggleActionInterface
 {
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 1;
@@ -112,5 +113,14 @@ class Invoice extends \yii\db\ActiveRecord
     public function getIsDebtStatusLabel()
     {
         return ArrayHelper::getValue(static::getIsDebtStatus(), $this->is_debt);
+    }
+
+    use \dixonstarter\togglecolumn\ToggleActionTrait;
+    public function getToggleItems()
+    {
+        return  [
+            'on' => ['value' => 1, 'label'=>'Оплачен'],
+            'off' => ['value' => 0, 'label'=>'Оплатить'],
+        ];
     }
 }

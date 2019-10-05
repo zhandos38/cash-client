@@ -9,15 +9,15 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\StaffSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Список работников';
+$this->title = 'Список сотрудников';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
 
-    <h1>Список работников</h1>
+    <h1>Список сотрудников</h1>
 
     <p>
-        <?= Html::a('Добавить работника', ['/add-staff'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить сотрудника', ['/add-staff'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([

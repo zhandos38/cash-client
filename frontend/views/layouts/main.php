@@ -36,8 +36,10 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'Работники', 'url' => ['/staff']],
+        ['label' => 'Главная', 'url' => ['/site/index']],
+        ['label' => 'Баланс '. Yii::$app->user->identity->company->balance, 'url' => ['#']],
+        ['label' => 'Сотрудники', 'url' => ['/staff']],
+        ['label' => 'Клиенты', 'url' => ['/customer']],
         ['label' => 'Склад', 'url' => ['/product']],
         ['label' => 'Заказы', 'url' => ['/order']],
         ['label' => 'Накладные', 'url' => ['/invoice']],
