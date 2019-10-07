@@ -37,7 +37,6 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Главная', 'url' => ['/site/index']],
-        ['label' => 'Баланс '. Yii::$app->user->identity->company->balance, 'url' => ['#']],
         ['label' => 'Сотрудники', 'url' => ['/staff']],
         ['label' => 'Клиенты', 'url' => ['/customer']],
         ['label' => 'Склад', 'url' => ['/product']],
@@ -49,6 +48,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
+        $menuItems[] = ['label' => 'Баланс '. Yii::$app->user->identity->company->balance, 'url' => ['#']];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
