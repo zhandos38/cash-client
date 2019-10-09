@@ -15,6 +15,8 @@ class OrderSearch extends Order
     public $createTimeRange;
     public $createTimeStart;
     public $createTimeEnd;
+    public $phone;
+    public $customer_name;
 
     public function behaviors()
     {
@@ -35,6 +37,7 @@ class OrderSearch extends Order
     {
         return [
             [['id', 'created_by', 'customer_id', 'cost', 'service_cost', 'discount_cost', 'total_cost', 'status', 'is_debt', 'created_at', 'updated_at', 'company_id'], 'integer'],
+            [['phone', 'customer_name'], 'string'],
             [['createTimeRange'], 'match', 'pattern' => '/^.+\s\-\s.+$/']
         ];
     }
@@ -57,7 +60,8 @@ class OrderSearch extends Order
      */
     public function search($params)
     {
-        $query = Order::find();
+        $query = Order::find()
+                ->joinWith('customer t2');
 
         // add conditions that should always apply here
 
@@ -85,8 +89,11 @@ class OrderSearch extends Order
             'is_debt' => $this->is_debt,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'company_id' => $this->company_id,
+            'company_id' => $this->company_id
         ]);
+
+        $query->andFilterWhere(['like', 't2.phone', $this->phone]);
+        $query->andFilterWhere(['like', 't2.full_name', $this->customer_name]);
 
         if ($this->createTimeRange) {
             $query->andFilterWhere(['>=', 'created_at', $this->createTimeStart+((60*60)*6)])

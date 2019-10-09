@@ -161,11 +161,11 @@ OrderAsset::register($this);
 <?php
 Modal::begin([
     'header' => '<h4>Клиенты</h4>',
-    'id' => 'modal',
+    'id' => 'customer-list',
     'size' => 'modal-lg'
 ]);
 
-echo '<div id="modal_content"></div>';
+echo '<div id="customer-list_content"></div>';
 
 Modal::end();
  ?>
@@ -182,10 +182,12 @@ Modal::end();
 ?>
 <?php
 $js =<<<JS
+let customer_list_content = $('#customer-list_content'); 
+
 $('#dynamic-form').find(".order__is-debt").on("click", function() {
     if ( $( this ).is(":checked") ) {
-        $('#modal').modal('show')
-        .find('#modal_content')
+        $('#customer-list').modal('show')
+        .find('#customer-list_content')
         .load('customer-list');
         $( this ).prop("checked", false);
     } else  {
@@ -198,13 +200,13 @@ $('#dynamic-form').find(".order__is-debt").on("click", function() {
     }
 });
 
-$('#modal_content').on("click", '#customer__add-btn', function() {
+customer_list_content.on('click', '#customer__add-btn', function() {
     $('#customer-form').modal('show')
     .find('#customer-form__content')
     .load('add-customer');
 });
 
-$('#modal_content').on('click', '.customer-list__item', function() {
+customer_list_content.on('click', '.customer-list__item', function() {
     $('.order__customer').val($(this).data('id'));
     let customer_panel = $('#customer');
     let is_debt = $('.order__is-debt');

@@ -30,8 +30,7 @@
         "yiisoft/yii2-elasticsearch": "~2.1.0@dev",
         "kartik-v/yii2-widget-touchspin": "*",
         "kartik-v/yii2-number": "dev-master",
-        "kartik-v/yii2-widget-datepicker": "@dev",
-        "dixonstarter/yii2-toggle-column": "*"
+        "kartik-v/yii2-widget-datepicker": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

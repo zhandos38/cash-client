@@ -2,6 +2,7 @@
 
 use common\models\Invoice;
 use kartik\daterange\DateRangePicker;
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -20,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-    <?php Pjax::begin();?>
+    <?php Pjax::begin(['id' => 'invoice-list']);?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -38,10 +39,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute'=>'status',
-                'class'=>'\dixonstarter\togglecolumn\ToggleColumn',
                 'options'=>['style'=>'width:50px;'],
-                'linkTemplateOn'=>'<i  class="glyphicon glyphicon-ok"></i> {label}',
-                'linkTemplateOff'=>'<a class="toggle-column btn btn-default btn-xs btn-block" data-pjax="0" href="{url}"><i  class="glyphicon glyphicon-remove"></i> {label}</a>'
+                'value' => function(Invoice $model) {
+                    if ($model->is_debt && $model->status == Invoice::STATUS_NOT_PAID) {
+                        return '<div class="invoice__debt-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-remove"></i> Не оплачен</div>';
+                    } elseif ($model->is_debt && $model->status == Invoice::STATUS_PARTIALLY_PAID) {
+                        return '<div class="invoice__debt-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-remove"></i> Частично оплачен</div>';
+                    } else {
+                        return '<i class="glyphicon glyphicon-ok"></i> Оплачен';
+                    }
+                },
+                'format' => 'raw',
+                'filter' => Invoice::getStatuses()
             ],
             [
                 'attribute' => 'created_at',
@@ -70,3 +79,25 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::end();?>
 
 </div>
+<?php
+Modal::begin([
+    'header' => '<h4>Долги</h4>',
+    'id' => 'invoice-debt-modal',
+    'size' => 'modal-lg'
+]);
+
+echo '<div id="invoice-debt-modal__content"></div>';
+
+Modal::end();
+?>
+<?php
+$js =<<<JS
+$(document).on("click", '.invoice__debt-btn', function() {
+    $('#invoice-debt-modal').modal('show')
+    .find('#invoice-debt-modal__content')
+    .load('/invoice/add-debt', {'id': $( this ).data('id')});
+});
+JS;
+
+$this->registerJs($js);
+ ?>

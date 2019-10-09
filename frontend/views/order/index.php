@@ -1,7 +1,9 @@
 <?php
 
+use common\models\Invoice;
 use common\models\Order;
 use kartik\daterange\DateRangePicker;
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -33,16 +35,29 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'createdBy.full_name'
             ],
             [
-                'attribute' => 'customer_id',
-                'value' => 'customer.full_name'
+                'attribute' => 'customer_name',
+                'value' => 'customer.full_name',
+                'label' => 'Ф.И.О'
+            ],
+            [
+                'attribute' => 'phone',
+                'value' => 'customer.phone',
+                'label' => 'Телефон'
             ],
             'cost',
             [
                 'attribute' => 'status',
                 'value' => function(Order $model) {
-                    return $model->getStatusLabel();
+                    if ($model->is_debt && $model->status == Invoice::STATUS_NOT_PAID) {
+                        return '<div class="order__debt-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-remove"></i> Не оплачен</div>';
+                    } elseif ($model->is_debt && $model->status == Invoice::STATUS_PARTIALLY_PAID) {
+                        return '<div class="order__debt-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-remove"></i> Частично оплачен</div>';
+                    } else {
+                        return '<i class="glyphicon glyphicon-ok"></i> Оплачен';
+                    }
                 },
-                'filter' => Order::getStatuses()
+                'filter' => Order::getStatuses(),
+                'format' => 'raw'
             ],
             [
                 'attribute' => 'is_debt',
@@ -72,6 +87,26 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-
-
 </div>
+<?php
+Modal::begin([
+    'header' => '<h4>Долги</h4>',
+    'id' => 'order-debt-modal',
+    'size' => 'modal-lg'
+]);
+
+echo '<div id="order-debt-modal__content"></div>';
+
+Modal::end();
+?>
+<?php
+$js =<<<JS
+$(document).on("click", '.order__debt-btn', function() {
+    $('#order-debt-modal').modal('show')
+    .find('#order-debt-modal__content')
+    .load('/order/add-debt', {'id': $( this ).data('id')});
+});
+JS;
+
+$this->registerJs($js);
+?>

@@ -76,7 +76,7 @@ class Order extends \yii\db\ActiveRecord
             'id' => 'ID',
             'created_by' => 'Создал',
             'customer_id' => 'Клиент',
-            'cost' => 'Цена',
+            'cost' => 'Стоимост',
             'service_cost' => 'Стоимость услуги',
             'discount_cost' => 'Размер скидки',
             'total_cost' => 'Полная стоимость',

@@ -39,7 +39,9 @@ class OrderForm extends Model
         return [
             'cost' => 'Итого',
             'is_debt' => 'В долг',
-            'paid_amount' => 'Итого оплачено'
+            'paid_amount' => 'Итого оплачено',
+            'customer_name' => 'Клиент',
+            'phone' => 'Телефон'
         ];
     }
 

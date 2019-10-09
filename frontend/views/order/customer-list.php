@@ -45,7 +45,7 @@ use yii\widgets\MaskedInput;
 
     </div>
 
-    <div id="customer-list" class="list-group" style="display: none">
+    <div id="customer-list__list" class="list-group" style="display: none">
         <div class="alert alert-danger">
             <strong>Danger!</strong> Indicates a dangerous or potentially negative action.
         </div>
@@ -59,10 +59,10 @@ $('#customer-search-form').on('beforeSubmit', function() {
     $.post({
         url: 'customer-list',
         data: data,
-        success: function(result){
+        success: function(result) {
             result = $.parseJSON(result);
             console.log(result);
-            let list = $('#customer-list');
+            let list = $('#customer-list__list');
             let items = '';
             if (!$.isEmptyObject(result)) {
                 $.each(result, function(index, item) {

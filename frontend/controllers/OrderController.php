@@ -4,12 +4,14 @@ namespace frontend\controllers;
 
 use common\models\BarcodeTemp;
 use common\models\Customer;
+use common\models\Invoice;
 use common\models\InvoiceItems;
 use common\models\OrderItems;
 use common\models\Product;
 use Exception;
 use frontend\models\AddInvoiceForm;
 use frontend\models\forms\CustomerForm;
+use frontend\models\forms\InvoiceDebtHistoryForm;
 use frontend\models\MultipleModel as Model;
 use frontend\models\OrderForm;
 use Yii;
@@ -244,5 +246,23 @@ class OrderController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionAddDebt()
+    {
+        $order_id = Yii::$app->request->post('id');
+
+        $model = new InvoiceDebtHistoryForm();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return true;
+        }
+
+        /** @var Invoice $invoice */
+        $invoice = Invoice::findOne(['id' => $order_id, 'is_debt' => Invoice::STATUS_IS_DEBT_ACTIVE]);
+
+        return $this->renderAjax('_add-debt', [
+            'model' => $model,
+            'invoice' => $invoice
+        ]);
     }
 }

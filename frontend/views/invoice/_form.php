@@ -28,9 +28,6 @@ InvoiceAsset::register($this);
         <div class="col-sm-6">
             <?= $form->field($modelInvoice, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::find()->all(), 'id', 'name'), ['prompt' => 'Выбрать поставщика']) ?>
         </div>
-        <div class="col-sm-12">
-            <?= $form->field($modelInvoice, 'is_debt')->checkbox(['value' => 1]) ?>
-        </div>
     </div>
 
     <?php DynamicFormWidget::begin([
@@ -60,7 +57,7 @@ InvoiceAsset::register($this);
         </div>
         <div class="panel-body">
             <div class="container-items"><!-- widgetBody -->
-                <?php foreach ($modelsInvoiceItem as $i => $modelInvoice): ?>
+                <?php foreach ($modelsInvoiceItem as $i => $item): ?>
                     <div class="item panel panel-default"><!-- widgetItem -->
                         <div class="panel-heading">
                             <h3 class="panel-title pull-left">Товар</h3>
@@ -72,8 +69,8 @@ InvoiceAsset::register($this);
                         <div class="panel-body">
                             <?php
                             // necessary for update action.
-                            if (! $modelInvoice->isNewRecord) {
-                                echo Html::activeHiddenInput($modelInvoice, "[{$i}]id");
+                            if (! $item->isNewRecord) {
+                                echo Html::activeHiddenInput($item, "[{$i}]id");
                             }
                             ?>
                             <div class="message-not-found alert alert-danger" role="alert" style="display: none">
@@ -81,28 +78,28 @@ InvoiceAsset::register($this);
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <?= $form->field($modelInvoice, "[{$i}]barcode")->textInput(['maxlength' => true, 'class' => 'form-control input_barcode']) ?>
+                                    <?= $form->field($item, "[{$i}]barcode")->textInput(['maxlength' => true, 'class' => 'form-control input_barcode']) ?>
                                 </div>
                                 <div class="col-sm-6">
-                                    <?= $form->field($modelInvoice, "[{$i}]name")->textInput(['maxlength' => true, 'class' => 'form-control input_name', 'data-from-barcode' => 0]) ?>
+                                    <?= $form->field($item, "[{$i}]name")->textInput(['maxlength' => true, 'class' => 'form-control input_name', 'data-from-barcode' => 0]) ?>
                                 </div>
                                 <div class="col-sm-6">
-                                    <?= $form->field($modelInvoice, "[{$i}]quantity")->textInput(['maxlength' => true, 'class' => 'form-control input_quantity', 'type' => 'number']) ?>
+                                    <?= $form->field($item, "[{$i}]quantity")->textInput(['maxlength' => true, 'class' => 'form-control input_quantity', 'type' => 'number']) ?>
                                 </div>
                                 <div class="col-sm-6">
-                                    <?= $form->field($modelInvoice, "[{$i}]price_in")->textInput(['maxlength' => true, 'type' => 'number']) ?>
+                                    <?= $form->field($item, "[{$i}]price_in")->textInput(['maxlength' => true, 'class' => 'form-control input_price', 'type' => 'number']) ?>
                                 </div>
-                                <?= $form->field($modelInvoice, "[{$i}]is_new")->hiddenInput(['class' => 'form-control input_is_new'])->label(false) ?>
-                                <?= $form->field($modelInvoice, "[{$i}]is_exist")->hiddenInput(['class' => 'form-control input_is_exist'])->label(false) ?>
+                                <?= $form->field($item, "[{$i}]is_new")->hiddenInput(['class' => 'form-control input_is_new'])->label(false) ?>
+                                <?= $form->field($item, "[{$i}]is_exist")->hiddenInput(['class' => 'form-control input_is_exist'])->label(false) ?>
                                 <div class="external-form">
                                     <div class="col-sm-6">
-                                        <?= $form->field($modelInvoice, "[{$i}]wholesale_value") ?>
+                                        <?= $form->field($item, "[{$i}]wholesale_value") ?>
                                     </div>
                                     <div class="col-sm-6">
-                                        <?= $form->field($modelInvoice, "[{$i}]wholesale_price") ?>
+                                        <?= $form->field($item, "[{$i}]wholesale_price") ?>
                                     </div>
                                     <div class="col-sm-12">
-                                        <?= $form->field($modelInvoice, "[{$i}]is_partial")->checkbox(['value' => 1]) ?>
+                                        <?= $form->field($item, "[{$i}]is_partial")->checkbox(['value' => 1]) ?>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -120,8 +117,19 @@ InvoiceAsset::register($this);
     </div><!-- .panel -->
     <?php DynamicFormWidget::end(); ?>
 
+    <div class="row">
+        <div class="col-md-6">
+            <?= $form->field($modelInvoice, 'is_debt')->checkbox(['class' => 'invoice-form__is-debt', 'value' => 1]) ?>
+        </div>
+    </div>
+    <div class="row">
+        <div id="invoice-form__paid-amount-wrapper" class="col-md-6" style="display: none">
+            <?= $form->field($modelInvoice, 'paid_amount')->textInput(['class' => 'form-control invoice-form__paid-amount', 'type' => 'number', 'maxlength' => true]) ?>
+        </div>
+    </div>
+
     <div class="form-group">
-        <?= Html::submitButton($modelInvoice->isNewRecord ? 'Сохранить' : 'Обновить', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton($item->isNewRecord ? 'Сохранить' : 'Обновить', ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -151,6 +159,16 @@ $(".dynamicform_wrapper").on("afterDelete", function(e) {
 
 $(".dynamicform_wrapper").on("limitReached", function(e, item) {
     alert("Лимит достигнут");
+});
+
+$('form').on('beforeSubmit', function() {
+    let items = $( this ).find('.item');
+    if (items.length > 0) {
+        return true;
+    } else {
+        noProductsAlert();
+        return false;
+    }
 });
 
 $(document).scannerDetection({
@@ -213,6 +231,34 @@ $(document).on('focusout', '.input_name', function() {
             }
             });
         }
+    }
+});
+
+$('.invoice-form__is-debt').click(function() {
+    
+    let items = $('#dynamic-form').find('.item');
+    
+    if (items.length > 0) {
+        let total_sum = 0;
+        let total_quantity = 0;
+        
+        items.each(function() {
+            total_sum += parseFloat($( this ).find('.input_price').val());
+            total_quantity += parseFloat($( this ).find('.input_quantity').val());
+        });
+        
+        $('#invoice-form__paid-amount-wrapper').toggle('ease');
+        console.log((total_sum*total_quantity));
+        $('.invoice-form__paid-amount').attr('max', ((total_sum*total_quantity).toFixed(2) - 1);
+        
+        if ( $( this ).is(":checked") ) {
+            $('button[type="button"]').prop('disabled', true);   
+        } else {
+            $('button[type="button"]').prop('disabled', false);
+        }
+    } else {
+        noProductsAlert();
+        $( this ).prop("checked", false);
     }
 });
 
@@ -301,6 +347,10 @@ function renderBarcode(barcode, focused_row) {
            posX:"0",
            posY:"0"
        });
+}
+
+function noProductsAlert() {
+    alert('Товар отсутвует, пожалуйста добавьте товар или обратитесь к администратору');
 }
 JS;
 

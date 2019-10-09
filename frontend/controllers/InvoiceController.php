@@ -5,10 +5,12 @@ namespace frontend\controllers;
 use common\models\Barcode;
 use common\models\BarcodeTemp;
 use common\models\Company;
+use common\models\InvoiceDebtHistory;
 use common\models\InvoiceItems;
 use common\models\Product;
 use Exception;
-use frontend\models\AddInvoiceForm;
+use frontend\models\forms\InvoiceDebtHistoryForm;
+use frontend\models\InvoiceForm;
 use phpDocumentor\Reflection\Types\String_;
 use Picqer\Barcode\BarcodeGeneratorJPG;
 use Yii;
@@ -41,15 +43,6 @@ class InvoiceController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
-        ];
-    }
-
-    public function actions(){
-        return [
-            'toggle-update'=>[
-                'class'=>'\dixonstarter\togglecolumn\actions\ToggleAction',
-                'modelClass'=>Invoice::className()
-            ]
         ];
     }
 
@@ -93,7 +86,7 @@ class InvoiceController extends Controller
     public function actionCreate()
     {
         $company_id = Yii::$app->user->identity->company_id;
-        $modelInvoice = new AddInvoiceForm();
+        $modelInvoice = new InvoiceForm();
         $modelsInvoiceItem = [new InvoiceItems()];
         if ($modelInvoice->load(Yii::$app->request->post())) {
             $modelsInvoiceItem = Model::createMultiple(InvoiceItems::classname());
@@ -309,6 +302,25 @@ class InvoiceController extends Controller
         }
         return false;
     }
+
+    public function actionAddDebt()
+    {
+        $invoice_id = Yii::$app->request->post('id');
+
+        $model = new InvoiceDebtHistoryForm();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return true;
+        }
+
+        /** @var Invoice $invoice */
+        $invoice = Invoice::findOne(['id' => $invoice_id, 'is_debt' => Invoice::STATUS_IS_DEBT_ACTIVE]);
+
+        return $this->renderAjax('_add-debt', [
+            'model' => $model,
+            'invoice' => $invoice
+        ]);
+    }
+
 
     /**
      * Finds the Invoice model based on its primary key value.

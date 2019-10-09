@@ -2,9 +2,6 @@
 
 namespace common\models;
 
-use dixonstarter\togglecolumn\ToggleActionInterface;
-use Yii;
-use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -23,11 +20,13 @@ use yii\helpers\ArrayHelper;
  * @property User $createdBy
  * @property Supplier $supplier
  * @property InvoiceItems[] $invoiceItems
+ * @property InvoiceDebtHistory[] $debtHistory
  */
-class Invoice extends \yii\db\ActiveRecord implements ToggleActionInterface
+class Invoice extends \yii\db\ActiveRecord
 {
-    const STATUS_INACTIVE = 0;
-    const STATUS_ACTIVE = 1;
+    const STATUS_NOT_PAID = 0;
+    const STATUS_PAID = 1;
+    const STATUS_PARTIALLY_PAID = 2;
 
     const STATUS_IS_DEBT_INACTIVE = 0;
     const STATUS_IS_DEBT_ACTIVE = 1;
@@ -102,6 +101,50 @@ class Invoice extends \yii\db\ActiveRecord implements ToggleActionInterface
         return $this->hasMany(InvoiceItems::className(), ['invoice_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDebtHistory()
+    {
+        return $this->hasMany(InvoiceDebtHistory::className(), ['invoice_id' => 'id']);
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getItemsCost()
+    {
+        $cost = 0;
+
+        if (!$this->invoiceItems) {
+            return $cost;
+        }
+
+        foreach ($this->invoiceItems as $item) {
+            $cost += ($item->price_in * $item->quantity);
+        }
+
+        return $cost;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getDebtHistorySum()
+    {
+        $sum = 0;
+
+        if (!$this->debtHistory) {
+            return $sum;
+        }
+
+        foreach ($this->debtHistory as $item) {
+            $sum += $item->paid_amount;
+        }
+
+        return $sum;
+    }
+
     public static function getIsDebtStatus()
     {
         return [
@@ -115,12 +158,17 @@ class Invoice extends \yii\db\ActiveRecord implements ToggleActionInterface
         return ArrayHelper::getValue(static::getIsDebtStatus(), $this->is_debt);
     }
 
-    use \dixonstarter\togglecolumn\ToggleActionTrait;
-    public function getToggleItems()
+    public static function getStatuses()
     {
-        return  [
-            'on' => ['value' => 1, 'label'=>'Оплачен'],
-            'off' => ['value' => 0, 'label'=>'Оплатить'],
+        return [
+            self::STATUS_NOT_PAID => 'Нет оплочен',
+            self::STATUS_PAID => 'Оплочен',
+            self::STATUS_PARTIALLY_PAID => 'Оплочен частично'
         ];
+    }
+
+    public function getStatusLabel()
+    {
+        return ArrayHelper::getValue(static::getStatuses(), $this->status);
     }
 }

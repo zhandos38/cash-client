@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6d7bdb05952e666801004f3aa4c2d552",
+    "content-hash": "340c95671bca60a1fa6dfb341bba229e",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -339,48 +339,6 @@
                 "yii2-rbac"
             ],
             "time": "2016-08-15T15:49:54+00:00"
-        },
-        {
-            "name": "dixonstarter/yii2-toggle-column",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dixonsatit/yii2-toggle-column.git",
-                "reference": "b0a288f42838b835a621aa5c16a8af1aa6f9c6ae"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dixonsatit/yii2-toggle-column/zipball/b0a288f42838b835a621aa5c16a8af1aa6f9c6ae",
-                "reference": "b0a288f42838b835a621aa5c16a8af1aa6f9c6ae",
-                "shasum": ""
-            },
-            "require": {
-                "yiisoft/yii2": "*"
-            },
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "dixonstarter\\togglecolumn\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Sathit Seethaphon",
-                    "email": "dixonsatit@gmail.com"
-                }
-            ],
-            "description": "yii2 toggle column for update in gridview",
-            "keywords": [
-                "extension",
-                "gridview",
-                "toggle column",
-                "yii2"
-            ],
-            "time": "2016-04-09T15:05:33+00:00"
         },
         {
             "name": "dmstr/yii2-adminlte-asset",
