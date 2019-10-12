@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Customer;
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -49,8 +50,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     return date('d/m/Y', $model->created_at);
                 }
             ],
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn'
+            ],
         ],
     ]); ?>
 

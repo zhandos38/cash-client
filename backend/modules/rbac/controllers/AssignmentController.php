@@ -3,6 +3,7 @@
 namespace backend\modules\rbac\controllers;
 
 use Yii;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Html;

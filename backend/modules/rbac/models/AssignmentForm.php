@@ -57,7 +57,7 @@ class AssignmentForm extends Model {
         $this->authManager->revokeAll(intval($this->userId));
         if ($this->roles != null) {
             foreach ($this->roles as $role) {
-                $this->authManager->assign($this->authManager->getRole($role), $this->userId);
+                $this->authManager->assign($this->authManager->getPermission($role), $this->userId);
             }
         }
         return true;

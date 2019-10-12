@@ -2,6 +2,7 @@
 
 use common\models\User;
 use marekpetras\yii2ajaxboxwidget\Box;
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -51,10 +52,37 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => 'yii\grid\ActionColumn',
-                'template'=>'{update}  {delete}',
+                'class' => \yii\grid\ActionColumn::className(),
+                'buttons' => [
+                    'permissions' => function ($url, $model) {
+                        return '<span data-id="' . $model['id'] . '" class="glyphicon glyphicon-book staff__permissions-btn"></span>';
+                    }
+                ],
+                'template'=>'{permissions} {update} {delete}',
             ],
         ],
     ]); ?>
 
 </div>
+<?php
+Modal::begin([
+    'header' => '<h4>Разрешения</h4>',
+    'id' => 'staff-permissions-modal',
+    'size' => 'modal-lg'
+]);
+
+echo '<div id="staff-permissions-modal__content"></div>';
+
+Modal::end();
+?>
+<?php
+$js =<<<JS
+$(document).on("click", '.staff__permissions-btn', function() {
+    $('#staff-permissions-modal').modal('show')
+    .find('#staff-permissions-modal__content')
+    .load('/staff/permissions', {'id': $( this ).data('id')});
+});
+JS;
+
+$this->registerJs($js);
+?>

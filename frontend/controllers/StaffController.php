@@ -2,14 +2,21 @@
 
 namespace frontend\controllers;
 
+use backend\modules\rbac\Module;
+use backend\modules\rbac\models\AssignmentSearch;
+use backend\modules\rbac\models\AssignmentForm;
 use frontend\models\AddStaffForm;
 use Yii;
 use common\models\User;
 use frontend\models\StaffSearch;
+use yii\base\UserException;
 use yii\filters\AccessControl;
+use yii\helpers\Html;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * StaffController implements the CRUD actions for User model.
@@ -135,5 +142,40 @@ class StaffController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * Assignment roles to user
+     * @param mixed $id The user id
+     * @return mixed
+     */
+    public function actionPermissions() {
+        $id = Yii::$app->request->post('id');
+        if (!$id) {
+            throw new UserException('Customer id not found!');
+        }
+
+        $model = call_user_func( User::className() . '::findOne', $id);
+        $formModel = new AssignmentForm($id);
+        $request = Yii::$app->request;
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'title' => $model->username,
+                'forceReload' => "true",
+                'content' => $this->renderPartial('_permissions', [
+                    'model' => $model,
+                    'formModel' => $formModel,
+                ]),
+                'footer' => Html::button(Yii::t('rbac', 'Close'), ['class' => 'btn btn-default pull-left', 'data-dismiss' => "modal"]) .
+                    Html::button(Yii::t('rbac', 'Save'), ['class' => 'btn btn-primary', 'type' => "submit"])
+            ];
+        } else {
+            return $this->renderAjax('_permissions', [
+                'model' => $model,
+                'formModel' => $formModel,
+            ]);
+        }
     }
 }

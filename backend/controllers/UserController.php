@@ -29,7 +29,7 @@ class UserController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['viewAdminIndex']
+                        'roles' => ['admin']
                     ]
                 ],
             ],

@@ -18,7 +18,7 @@ $authManager = Yii::$app->authManager;
                 <th>Description</th>
             </tr>
         <tbody>            
-            <?php foreach ($authManager->getRoles() as $role): ?>
+            <?php foreach ($authManager->getPermissions() as $role): ?>
                 <tr>
                     <?php
                         $checked = true;
