@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "340c95671bca60a1fa6dfb341bba229e",
+    "content-hash": "b7693dba72729c76c95221dd51acfd3a",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -564,6 +564,56 @@
                 "html"
             ],
             "time": "2019-07-14T18:58:38+00:00"
+        },
+        {
+            "name": "faryshta/yii2-disable-submit-buttons",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Faryshta/yii2-disable-submit-buttons.git",
+                "reference": "53c6d64167ea16765f155c983d78956d34a3e1a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Faryshta/yii2-disable-submit-buttons/zipball/53c6d64167ea16765f155c983d78956d34a3e1a8",
+                "reference": "53c6d64167ea16765f155c983d78956d34a3e1a8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6",
+                "yiisoft/yii2": "~2.0.0"
+            },
+            "require-dev": {
+                "yiisoft/yii2-debug": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "faryshta\\disableSubmitButtons\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Angel (Faryshta) Guevara",
+                    "email": "angeldelcaos@gmail.com",
+                    "homepage": "https://github.com/Faryshta",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Yii2 asset to automatically disable submit buttons on Yii2 ActiveForm.",
+            "homepage": "https://github.com/Faryshta/yii2-jquery-tagsinput",
+            "keywords": [
+                "activeform",
+                "disable",
+                "jquery",
+                "yii",
+                "yii2"
+            ],
+            "time": "2018-08-25T13:27:31+00:00"
         },
         {
             "name": "fortawesome/font-awesome",

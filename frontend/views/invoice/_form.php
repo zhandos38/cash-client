@@ -248,8 +248,8 @@ $('.invoice-form__is-debt').click(function() {
         });
         
         $('#invoice-form__paid-amount-wrapper').toggle('ease');
-        console.log((total_sum*total_quantity));
-        $('.invoice-form__paid-amount').attr('max', ((total_sum*total_quantity).toFixed(2) - 1);
+        
+        $('.invoice-form__paid-amount').attr('max', ((total_sum*total_quantity).toFixed(2) - 1));
         
         if ( $( this ).is(":checked") ) {
             $('button[type="button"]').prop('disabled', true);   
@@ -269,7 +269,6 @@ function checkProduct(barcode, focused_row = null) {
            data: {barcode: barcode},
            success: function(result) {
                result = $.parseJSON(result);
-               console.log(result);
                
                if (focused_row == null) {
                    focused_row = body.find('.row:last');

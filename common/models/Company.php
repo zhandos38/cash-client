@@ -19,6 +19,7 @@ use yii\helpers\ArrayHelper;
  * @property string $phone
  * @property double $balance
  * @property int $manager_id
+ * @property int $status
  * @property int $expired_at
  * @property int $created_at
  * @property int $updated_at
@@ -29,7 +30,6 @@ use yii\helpers\ArrayHelper;
  * @property Discount[] $discounts
  * @property Invoice[] $invoices
  * @property Order[] $orders
- * @property User[] $staff
  */
 class Company extends \yii\db\ActiveRecord
 {
@@ -156,5 +156,16 @@ class Company extends \yii\db\ActiveRecord
     public function getStatusLabel()
     {
         return ArrayHelper::getValue(static::getStatuses(), $this->status);
+    }
+
+    public function updateBalance($sum, $isAddition = true)
+    {
+        if ($isAddition) {
+            $this->balance += $sum;
+        } else {
+            $this->balance -= $sum;
+        }
+
+        return $this->save(false);
     }
 }

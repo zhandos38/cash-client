@@ -1,7 +1,9 @@
 <?php
 namespace common\models\es;
 
+use common\models\es\Product as ElasticProduct;
 use Yii;
+use yii\console\Exception;
 use yii\elasticsearch\ActiveRecord;
 
 /**
@@ -9,6 +11,7 @@ use yii\elasticsearch\ActiveRecord;
  *
  * @property integer $id
  * @property string $name
+ * @property string $barcode
  *
  * @package common\models\es
  * @property Product $product
@@ -17,7 +20,7 @@ class Product extends ActiveRecord
 {
     public static function index()
     {
-        return 'my_first_second';
+        return 'products';
     }
 
     public static function type()
@@ -193,5 +196,27 @@ class Product extends ActiveRecord
     public function getProduct()
     {
         return $this->hasOne(\common\models\Product::class, ['id' => 'id']);
+    }
+
+    public static function addProductById($product_id)
+    {
+        if (!$product = \common\models\Product::findOne(['id' => $product_id])) {
+            throw new Exception('Product not found');
+        }
+
+        $esProduct = new ElasticProduct();
+        $esProduct->primaryKey = $product->id;
+        $esProduct->id = $product->id;
+        $esProduct->name = $product->name;
+        $esProduct->save();
+    }
+
+    public static function deleteProductById($product_id)
+    {
+        if ($esProduct = ElasticProduct::find()->andWhere(['id' => $product_id])->one()) {
+            $esProduct->delete();
+        } else {
+            throw new Exception('Product not found');
+        }
     }
 }

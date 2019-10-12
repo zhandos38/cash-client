@@ -24,6 +24,7 @@ class InvoiceForm extends Model
     public $supplier_id;
     public $company_id;
     public $paid_amount;
+    public $cost;
 
     /**
      * {@inheritdoc}
@@ -33,7 +34,8 @@ class InvoiceForm extends Model
         return [
             [['is_debt', 'supplier_id', 'company_id'], 'integer'],
             ['number_in', 'string'],
-            ['paid_amount', 'double'],
+            [['paid_amount', 'cost'], 'number'],
+            ['paid_amount', 'default', 'value' => 0],
             [['supplier_id', 'number_in'], 'required'],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Supplier::className(), 'targetAttribute' => ['supplier_id' => 'id']],
@@ -76,6 +78,7 @@ class InvoiceForm extends Model
             $model->supplier_id = $this->supplier_id;
             $model->created_by = Yii::$app->user->identity->getId();
             $model->company_id = Yii::$app->user->identity->company_id;
+            $model->cost = $this->cost;
             $model->created_at = time();
 
             $model->is_debt = $this->is_debt;

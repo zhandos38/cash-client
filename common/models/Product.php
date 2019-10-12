@@ -3,8 +3,11 @@
 namespace common\models;
 
 use Yii;
+use yii\base\UserException;
 use yii\behaviors\TimestampBehavior;
+use yii\console\Exception;
 use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "product".
@@ -118,5 +121,21 @@ class Product extends \yii\db\ActiveRecord
     public function getBooleanStatus()
     {
         return ArrayHelper::getValue(static::getBooleanStatuses(), $this->is_partial);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        if (!$insert) {
+            if ($changedAttributes['status'] == self::STATUS_INACTIVE) {
+                \common\models\es\Product::addProductById($this->id);
+            } elseif ($changedAttributes['status'] == self::STATUS_ACTIVE) {
+                \common\models\es\Product::deleteProductById($this->id);
+            }
+
+        } else {
+            $product = \common\models\es\Product::addProductById($this->id);
+
+        }
+        parent::afterSave($insert, $changedAttributes);
     }
 }

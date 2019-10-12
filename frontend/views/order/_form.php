@@ -143,7 +143,7 @@ OrderAsset::register($this);
                         Адрес: <span id="customer__address"></span>
                     </div>
                     <div>
-                        <?= $form->field($modelOrder, 'paid_amount')->textInput(['class' => 'form-control order__paid-amount', 'placeholder' => 'Сумма тг.']) ?>
+                        <?= $form->field($modelOrder, 'paid_amount')->textInput(['class' => 'form-control order__paid-amount', 'placeholder' => 'Сумма тг.', 'type' => 'number']) ?>
                         <?= $form->field($modelOrder, 'customer_id')->hiddenInput(['class' => 'order__customer'])->label(false) ?>
                     </div>
                 </div>
@@ -184,19 +184,30 @@ Modal::end();
 $js =<<<JS
 let customer_list_content = $('#customer-list_content'); 
 
-$('#dynamic-form').find(".order__is-debt").on("click", function() {
-    if ( $( this ).is(":checked") ) {
-        $('#customer-list').modal('show')
-        .find('#customer-list_content')
-        .load('customer-list');
-        $( this ).prop("checked", false);
-    } else  {
-        let customer_panel = $('#customer');
-        let customer_id = $('.order__customer');
-        if (customer_panel.css('display') === 'block') {
-            customer_panel.css('display', 'none');
-            customer_id.val(null);
+$(".order__is-debt").on("click", function() {
+    let items = $('#dynamic-form').find('.item');
+    let total_sum = parseFloat($('.order-item__total-cost').val());
+    
+    if (items.length > 0) {
+        $('.order__paid-amount').attr('max', (total_sum.toFixed(2) - 1));
+        
+        if ( $( this ).is(":checked") ) {
+            $('#customer-list').modal('show')
+            .find('#customer-list_content')
+            .load('customer-list');
+            $( this ).prop("checked", false);
+        } else  {
+            let customer_panel = $('#customer');
+            let customer_id = $('.order__customer');
+            if (customer_panel.css('display') === 'block') {
+                customer_panel.css('display', 'none');
+                customer_id.val(null);
+            }
+            $('button[type="button"]').prop('disabled', false);
         }
+    } else {
+        noProductsAlert();
+        $( this ).prop("checked", false);
     }
 });
 
@@ -215,6 +226,7 @@ customer_list_content.on('click', '.customer-list__item', function() {
     $('#customer__address').html($(this).data('address'));
     is_debt.prop('checked', true);
     customer_panel.css('display', 'block');
+    $('button[type="button"]').prop('disabled', true);  
 });
 
 $(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
@@ -346,6 +358,16 @@ $('#dynamic-form').on('change', '.order-item__quantity', function() {
     calculateSum(item);
 });
 
+$('#dynamic-form').on('beforeSubmit', function() {
+    let items = $( this ).find('.item');
+    if (items.length > 0) {
+        return true;
+    } else {
+        noProductsAlert();
+        return false;
+    }
+});
+
 function calculateSum(item) {
     let item_quantity_val = item.find('.order-item__quantity').val();
     let item_price_val = item.find('.order-item__price').val();
@@ -365,6 +387,10 @@ function calculateTotalSum() {
     });
     
     $('.order-item__total-cost').val(total_sum);
+}
+
+function noProductsAlert() {
+    alert('Товар отсутвует, пожалуйста добавьте товар или обратитесь к администратору');
 }
 JS;
 

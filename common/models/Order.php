@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "order".
@@ -16,7 +17,6 @@ use yii\helpers\ArrayHelper;
  * @property double $service_cost
  * @property double $discount_cost
  * @property double $total_cost
- * @property double $paid_amount
  * @property int $status
  * @property boolean $is_debt
  * @property int $created_at
@@ -60,7 +60,7 @@ class Order extends \yii\db\ActiveRecord
     {
         return [
             [['created_by', 'customer_id', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
-            [['cost', 'service_cost', 'discount_cost', 'total_cost', 'paid_amount'], 'number'],
+            [['cost', 'service_cost', 'discount_cost', 'total_cost'], 'number'],
             ['is_debt', 'boolean'],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
@@ -83,7 +83,6 @@ class Order extends \yii\db\ActiveRecord
             'status' => 'Статус',
             'created_at' => 'Создано в',
             'updated_at' => 'Обновлено в',
-            'paid_amount' => 'Итого оплачено',
             'is_debt' => 'В долг'
         ];
     }
@@ -128,6 +127,50 @@ class Order extends \yii\db\ActiveRecord
         return $this->hasMany(OrderItems::className(), ['order_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDebtHistory()
+    {
+        return $this->hasMany(OrderDebtHistory::className(), ['order_id' => 'id']);
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getItemsCost()
+    {
+        $cost = 0;
+
+        if (!$this->orderItems) {
+            return $cost;
+        }
+
+        foreach ($this->orderItems as $item) {
+            $cost += ($item->real_price * $item->quantity);
+        }
+
+        return $cost;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getDebtHistorySum()
+    {
+        $sum = 0;
+
+        if (!$this->debtHistory) {
+            return $sum;
+        }
+
+        foreach ($this->debtHistory as $item) {
+            $sum += $item->paid_amount;
+        }
+
+        return $sum;
+    }
+
     public static function getStatuses()
     {
         return [
@@ -152,21 +195,5 @@ class Order extends \yii\db\ActiveRecord
 
     public function getIsDebtStatusLabel() {
         return ArrayHelper::getValue(static::getIsDebtStatuses(), $this->is_debt);
-    }
-
-    public function beforeSave($insert)
-    {
-        if (parent::beforeSave($insert)) {
-            if (!$this->is_debt) {
-                $this->status = Order::STATUS_PAID;
-            } elseif($this->is_debt && $this->cost > $this->paid_amount) {
-                $this->status = Order::STATUS_PARTIALLY_PAID;
-            } elseif ($this->cost == $this->paid_amount) {
-                $this->status = Order::STATUS_PAID;
-            } else {
-                $this->status = Order::STATUS_NOT_PAID;
-            }
-        }
-        return true;
     }
 }

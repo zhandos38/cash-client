@@ -25,7 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'tableOptions'=>['class'=>'table table-hover'],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -51,6 +50,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'format' => 'raw',
                 'filter' => Invoice::getStatuses()
+            ],
+            [
+                'attribute' => 'cost'
             ],
             [
                 'attribute' => 'created_at',

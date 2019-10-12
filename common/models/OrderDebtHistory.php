@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "order_debt_history".
@@ -33,6 +35,19 @@ class OrderDebtHistory extends \yii\db\ActiveRecord
             [['order_id', 'created_at'], 'integer'],
             [['paid_amount'], 'number'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', false],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => false,
+                ],
+            ]
         ];
     }
 

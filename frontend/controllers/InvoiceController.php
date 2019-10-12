@@ -107,9 +107,15 @@ class InvoiceController extends Controller
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
+                    $itemsCost = 0;
+                    foreach ($modelsInvoiceItem as $item) {
+                        /** @var InvoiceItems $item */
+                        $itemsCost += $item->price_in * $item->quantity;
+                    }
+                    $modelInvoice->cost = $itemsCost;
+
                     if ($flag = $modelInvoice->save()) {
                         $modelInvoice->id = $flag;
-                        $totalCost = 0;
                         /** @var InvoiceItems $modelInvoiceItem */
                         foreach ($modelsInvoiceItem as $k => $modelInvoiceItem) {
                             $modelInvoiceItem->invoice_id = $modelInvoice->id;
@@ -126,7 +132,7 @@ class InvoiceController extends Controller
                             }
 
                             // Добавляем товары инвоиса на склад
-                            $product = Product::findOne(['barcode' => $modelInvoiceItem->barcode]);
+                            $product = Product::findOne(['barcode' => $modelInvoiceItem->barcode, 'company_id' => $company_id]);
 
                             if ($product) {
                                 $product->quantity += $modelInvoiceItem->quantity;
@@ -150,16 +156,9 @@ class InvoiceController extends Controller
                                 $transaction->rollBack();
                                 break;
                             }
-
-                            $totalCost += $modelInvoiceItem->price_in * $modelInvoiceItem->quantity;
                         }
 
-                        if (!$modelInvoice->is_debt) {
-                            $balance = Company::findOne(['id' => $company_id]);
-                            $balance->balance -= $totalCost;
-                            if (!$balance->save())
-                                throw new Exception("Balance is not saved");
-                        }
+                        Yii::$app->user->identity->company->updateBalance($itemsCost - $modelInvoice->paid_amount, false);
                     }
 
                     if ($flag) {
@@ -309,6 +308,7 @@ class InvoiceController extends Controller
 
         $model = new InvoiceDebtHistoryForm();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->user->identity->company->updateBalance($model->paid_amount, false);
             return true;
         }
 

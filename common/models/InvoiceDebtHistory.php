@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "invoice_debt_history".
@@ -70,17 +71,5 @@ class InvoiceDebtHistory extends \yii\db\ActiveRecord
     public function getInvoice()
     {
         return $this->hasOne(Invoice::className(), ['id' => 'invoice_id']);
-    }
-
-    public function beforeSave($insert)
-    {
-        if (parent::beforeSave($insert)) {
-            if ($this->paid_amount) {
-                $company = Company::findOne(['id' => Yii::$app->user->identity->company_id]);
-                $company->balance -= $this->paid_amount;
-                $company->save();
-            }
-        }
-        return true;
     }
 }

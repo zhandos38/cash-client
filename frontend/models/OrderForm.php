@@ -4,10 +4,16 @@
 namespace frontend\models;
 
 
+use common\models\InvoiceDebtHistory;
 use common\models\Order;
+use common\models\OrderDebtHistory;
+use common\models\User;
+use frontend\models\forms\OrderDebtHistoryForm;
 use Yii;
 use yii\base\ErrorException;
 use yii\base\Model;
+use yii\base\UserException;
+use yii\helpers\VarDumper;
 
 class OrderForm extends Model
 {
@@ -25,7 +31,9 @@ class OrderForm extends Model
     {
         return [
             [['customer_id'], 'integer'],
-            [['cost', 'paid_amount'], 'number'],
+            [['cost'], 'number'],
+            ['paid_amount', 'default', 'value' => 0],
+            ['paid_amount', 'double'],
             ['cost', 'required'],
             ['is_debt', 'boolean']
         ];
@@ -65,14 +73,33 @@ class OrderForm extends Model
             $model->created_by = Yii::$app->user->identity->getId();
             $model->company_id = Yii::$app->user->identity->company_id;
             $model->created_at = time();
+
             $model->is_debt = $this->is_debt;
-            $model->paid_amount = $this->paid_amount;
+            if ($model->is_debt && !$this->paid_amount) {
+                $model->status = Order::STATUS_NOT_PAID;
+            } elseif ($model->is_debt && $this->paid_amount > 0) {
+                $model->status = Order::STATUS_PARTIALLY_PAID;
+            } else {
+                $model->status = Order::STATUS_PAID;
+            }
+
             if (!$model->save(false)) {
                 throw new ErrorException( 'Invoice not save!' );
             }
+
+            if ($this->paid_amount) {
+                $order_debt = new OrderDebtHistory();
+                $order_debt->order_id = $model->id;
+                $order_debt->paid_amount = $this->paid_amount;
+                if (!$order_debt->save()) {
+                    throw new ErrorException( 'Invoice History not save!' );
+                }
+            }
+
             $transaction->commit();
         } catch (ErrorException $e) {
             $transaction->rollBack();
+            throw new UserException($e->getMessage());
         }
 
         return $model->id;

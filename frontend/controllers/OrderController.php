@@ -12,6 +12,7 @@ use Exception;
 use frontend\models\AddInvoiceForm;
 use frontend\models\forms\CustomerForm;
 use frontend\models\forms\InvoiceDebtHistoryForm;
+use frontend\models\forms\OrderDebtHistoryForm;
 use frontend\models\MultipleModel as Model;
 use frontend\models\OrderForm;
 use Yii;
@@ -127,6 +128,7 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
+        $company_id = Yii::$app->user->identity->company_id;
         $modelOrder = new OrderForm();
         $modelsOrderItem = [new OrderItems()];
         if ($modelOrder->load(Yii::$app->request->post())) {
@@ -148,17 +150,33 @@ class OrderController extends Controller
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
+                    $itemsCost = 0;
+                    foreach ($modelsOrderItem as $item) {
+                        /** @var OrderItems $item */
+                        $itemsCost += $item->real_price * $item->quantity;
+                    }
+                    $modelOrder->cost = $itemsCost;
+
                     if ($flag = $modelOrder->save()) {
                         $modelOrder->id = $flag;
-                        /** @var InvoiceItems $modelOrderItem */
+                        /** @var OrderItems $modelOrderItem */
                         foreach ($modelsOrderItem as $k => $modelOrderItem) {
                             $modelOrderItem->order_id = $modelOrder->id;
+
+                            // Добавляем товары инвоиса на склад
+                            $product = Product::findOne(['barcode' => $modelOrderItem->barcode, 'company_id' => $company_id]);
+                            $product->quantity -= $modelOrderItem->quantity;
+
+                            if (!$product->save())
+                                throw new Exception("Order product is not updated");
 
                             if (! ($flag = $modelOrderItem->save(false))) {
                                 $transaction->rollBack();
                                 break;
                             }
                         }
+
+                        Yii::$app->user->identity->company->updateBalance($itemsCost - $modelOrder->paid_amount);
                     }
 
                     if ($flag) {
@@ -252,17 +270,18 @@ class OrderController extends Controller
     {
         $order_id = Yii::$app->request->post('id');
 
-        $model = new InvoiceDebtHistoryForm();
+        $model = new OrderDebtHistoryForm();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->user->identity->company->updateBalance($model->paid_amount);
             return true;
         }
 
         /** @var Invoice $invoice */
-        $invoice = Invoice::findOne(['id' => $order_id, 'is_debt' => Invoice::STATUS_IS_DEBT_ACTIVE]);
+        $order = Order::findOne(['id' => $order_id, 'is_debt' => Order::IS_DEBT_STATUS_YES]);
 
         return $this->renderAjax('_add-debt', [
             'model' => $model,
-            'invoice' => $invoice
+            'order' => $order
         ]);
     }
 }

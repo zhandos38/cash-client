@@ -36,13 +36,18 @@ class InvoiceDebtHistoryForm extends Model
         try {
             /** @var Invoice $invoice */
             $invoice = Invoice::findOne(['id' => $this->invoice_id]);
-            if ($invoice->itemsCost != $invoice->debtHistorySum) {
+            $itemsCost = $invoice->itemsCost;
+            $debtHistorySum = $invoice->debtHistorySum;
+            if ($itemsCost != $debtHistorySum) {
                 $invoice_debt_history = new InvoiceDebtHistory;
                 $invoice_debt_history->paid_amount = $this->paid_amount;
                 $invoice_debt_history->invoice_id = $this->invoice_id;
                 $invoice_debt_history->created_at = time();
                 $invoice_debt_history->save();
-            } elseif ($invoice->itemsCost == $invoice->debtHistorySum) {
+
+            }
+
+            if ($invoice->itemsCost == ($invoice->debtHistorySum + $this->paid_amount)) {
                 $invoice->status = Invoice::STATUS_PAID;
                 $invoice->save();
             }

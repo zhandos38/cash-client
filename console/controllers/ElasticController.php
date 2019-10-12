@@ -27,7 +27,7 @@ class ElasticController extends Controller
         $this->log(true);
     }
 
-    public function actionIndexAddProducts()
+    public function actionAddProducts()
     {
         $products = Product::find()->all();
 
@@ -46,7 +46,7 @@ class ElasticController extends Controller
         }
     }
 
-    public function actionIndexAddProductById()
+    public function actionAddProductById()
     {
         $id = $this->prompt('Id:', ['required' => true]);
         $product = $this->findProductById($id);
@@ -55,7 +55,21 @@ class ElasticController extends Controller
         $esProduct->primaryKey = $product->id;
         $esProduct->id = $product->id;
         $esProduct->name = $product->name;
+        $esProduct->barcode = $product->barcode;
         $this->log($esProduct->save());
+    }
+
+    public function actionDeleteProductById()
+    {
+        $id = $this->prompt('Id:', ['required' => true]);
+
+        if ($esProduct = ElasticProduct::find()->andWhere(['id' => $id])->one()) {
+            $this->log($esProduct->delete());
+        } else {
+            throw new Exception('Product not found');
+        }
+
+
     }
 
     /**

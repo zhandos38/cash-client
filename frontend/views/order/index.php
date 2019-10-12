@@ -6,6 +6,7 @@ use kartik\daterange\DateRangePicker;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\OrderSearch */
@@ -24,6 +25,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+    <?php Pjax::begin([
+        'id' => 'order-list'
+    ]);?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -48,9 +52,9 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'value' => function(Order $model) {
-                    if ($model->is_debt && $model->status == Invoice::STATUS_NOT_PAID) {
+                    if ($model->is_debt && $model->status == Order::STATUS_NOT_PAID) {
                         return '<div class="order__debt-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-remove"></i> Не оплачен</div>';
-                    } elseif ($model->is_debt && $model->status == Invoice::STATUS_PARTIALLY_PAID) {
+                    } elseif ($model->is_debt && $model->status == Order::STATUS_PARTIALLY_PAID) {
                         return '<div class="order__debt-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-remove"></i> Частично оплачен</div>';
                     } else {
                         return '<i class="glyphicon glyphicon-ok"></i> Оплачен';
@@ -87,6 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
+    <?php Pjax::end();?>
 </div>
 <?php
 Modal::begin([
