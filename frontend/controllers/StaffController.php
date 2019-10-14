@@ -4,7 +4,7 @@ namespace frontend\controllers;
 
 use backend\modules\rbac\Module;
 use backend\modules\rbac\models\AssignmentSearch;
-use backend\modules\rbac\models\AssignmentForm;
+use frontend\models\forms\AssignmentForm;
 use frontend\models\AddStaffForm;
 use Yii;
 use common\models\User;
@@ -151,27 +151,16 @@ class StaffController extends Controller
      */
     public function actionPermissions() {
         $id = Yii::$app->request->post('id');
-        if (!$id) {
-            throw new UserException('Customer id not found!');
-        }
 
         $model = call_user_func( User::className() . '::findOne', $id);
         $formModel = new AssignmentForm($id);
-        $request = Yii::$app->request;
         if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-
-            return [
-                'title' => $model->username,
-                'forceReload' => "true",
-                'content' => $this->renderPartial('_permissions', [
-                    'model' => $model,
-                    'formModel' => $formModel,
-                ]),
-                'footer' => Html::button(Yii::t('rbac', 'Close'), ['class' => 'btn btn-default pull-left', 'data-dismiss' => "modal"]) .
-                    Html::button(Yii::t('rbac', 'Save'), ['class' => 'btn btn-primary', 'type' => "submit"])
-            ];
+            return true;
         } else {
+            if (!$id) {
+                throw new UserException('Staff id not found!');
+            }
+
             return $this->renderAjax('_permissions', [
                 'model' => $model,
                 'formModel' => $formModel,
