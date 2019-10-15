@@ -45,6 +45,11 @@ class ProductController extends Controller
                         'actions' => ['delete'],
                         'roles' => ['deleteWarehouse']
                     ],
+                    [
+                        'allow' => true,
+                        'actions' => ['search'],
+                        'roles' => ['createOrder']
+                    ],
                 ],
             ],
             'verbs' => [

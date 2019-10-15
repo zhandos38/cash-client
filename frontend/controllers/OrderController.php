@@ -49,7 +49,7 @@ class OrderController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create'],
+                        'actions' => ['create', 'customer-list', 'add-customer', 'get-product-by-id', 'add-debt'],
                         'roles' => ['createOrder']
                     ],
                     [

@@ -48,7 +48,7 @@ class InvoiceController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create'],
+                        'actions' => ['create', 'check-product', 'add-debt', 'get-checked-random-barcode'],
                         'roles' => ['createInvoice']
                     ],
                     [
