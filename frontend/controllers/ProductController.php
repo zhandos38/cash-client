@@ -24,12 +24,27 @@ class ProductController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'except' => ['login', 'error'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['viewAdminIndex']
-                    ]
+                        'actions' => ['index'],
+                        'roles' => ['manageWarehouse']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['createWarehouse']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['update'],
+                        'roles' => ['updateWarehouse']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['deleteWarehouse']
+                    ],
                 ],
             ],
             'verbs' => [

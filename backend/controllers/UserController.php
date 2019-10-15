@@ -4,8 +4,10 @@ namespace backend\controllers;
 
 use backend\models\UserSearch;
 use backend\forms\SignupForm;
+use frontend\models\forms\AssignmentForm;
 use Yii;
 use common\models\User;
+use yii\base\UserException;
 use yii\filters\AccessControl;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
@@ -30,7 +32,32 @@ class UserController extends Controller
                     [
                         'allow' => true,
                         'roles' => ['admin']
-                    ]
+                    ],
+//                    [
+//                        'allow' => true,
+//                        'actions' => ['index', 'permissions'],
+//                        'roles' => ['manageUser']
+//                    ],
+//                    [
+//                        'allow' => true,
+//                        'actions' => ['view'],
+//                        'roles' => ['viewUser']
+//                    ],
+//                    [
+//                        'allow' => true,
+//                        'actions' => ['update'],
+//                        'roles' => ['updateUser']
+//                    ],
+//                    [
+//                        'allow' => true,
+//                        'actions' => ['create'],
+//                        'roles' => ['createUser']
+//                    ],
+//                    [
+//                        'allow' => true,
+//                        'actions' => ['delete'],
+//                        'roles' => ['deleteUser']
+//                    ],
                 ],
             ],
             'verbs' => [
@@ -58,19 +85,6 @@ class UserController extends Controller
     }
 
     /**
-     * Displays a single User model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Signs user up.
      *
      * @return mixed
@@ -79,8 +93,8 @@ class UserController extends Controller
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+//            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            return $this->redirect(['permissions', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -100,7 +114,6 @@ class UserController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            VarDumper::dump(Yii::$app->request->post(),10,1); die;
             return $this->redirect(['user/index']);
         }
 
@@ -137,5 +150,27 @@ class UserController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    /**
+     * @return bool|string
+     * @throws UserException
+     */
+    public function actionPermissions($id) {
+        $model = call_user_func( User::className() . '::findOne', $id);
+        $formModel = new AssignmentForm($id);
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
+            return $this->redirect(['index']);
+        } else {
+            if (!$id) {
+                throw new UserException('Staff id not found!');
+            }
+
+            return $this->render('permission', [
+                'model' => $model,
+                'formModel' => $formModel,
+            ]);
+        }
     }
 }

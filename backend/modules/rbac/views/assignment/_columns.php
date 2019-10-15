@@ -7,29 +7,25 @@ $columns = [
         'class' => 'kartik\grid\SerialColumn',
         'width' => '30px',
     ],
-    [
-        'class' => '\kartik\grid\DataColumn',
-        'attribute' => Yii::$app->getModule('rbac')->userModelIdField,
-    ],
+
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => Yii::$app->getModule('rbac')->userModelLoginField,
     ],
     [
-        'label' => 'Roles',
+        'label' => 'Разрешение',
         'content' => function($model) {
             $authManager = Yii::$app->authManager;
             $idField = Yii::$app->getModule('rbac')->userModelIdField;
             $roles = [];
-            foreach ($authManager->getRolesByUser($model->{$idField}) as $role) {
+            foreach ($authManager->getPermissionsByUser($model->{$idField}) as $role) {
                $roles[] = $role->name; 
-            }   
-            if(count($roles)==0){
+            }
+            if (count($roles) == 0) {
                 return Yii::t("yii","(not set)");
-            }else{
+            } else {
                 return implode(",", $roles);
             }
-            
         }
     ],
 ];

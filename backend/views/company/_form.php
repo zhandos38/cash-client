@@ -1,7 +1,10 @@
 <?php
 
+use common\models\Company;
+use common\models\User;
 use insolita\wgadminlte\LteBox;
 use insolita\wgadminlte\LteConst;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
@@ -19,7 +22,7 @@ use yii\widgets\MaskedInput;
             'isSolid'=>true,
             'boxTools'=>Html::a('Назад <i class="fas fa-arrow-alt-circle-left"></i>', ['index'], ['class' => 'btn btn-danger btn-xs create_button']),
             'tooltip'=>'this tooltip description',
-            'title'=>'Добавить пользователя'
+            'title'=>'Компания'
         ])
     ?>
 
@@ -46,7 +49,13 @@ use yii\widgets\MaskedInput;
         ]
     ]) ?>
 
-    <?= $form->field($model, 'manager_id')->textInput() ?>
+    <?= $form->field($model, 'manager_id')->widget(\kartik\select2\Select2::className(), [
+        'data' => ArrayHelper::map(User::find()->andWhere(['role' => User::ROLE_MANAGER])->all(), 'id', 'full_name'),
+        'options' => ['placeholder' => 'Выберите менеджера ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

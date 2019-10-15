@@ -295,6 +295,8 @@ $(document).scannerDetection({
 function setProduct(product) {
     product = $.parseJSON(product);
     
+    console.log(product);
+    
     let products = $('.order-item__barcode');
     let flag_is_exist = false;
     

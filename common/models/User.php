@@ -92,6 +92,7 @@ class User extends ActiveRecord implements IdentityInterface
             'code_number' => 'Номер карты',
             'role' => 'Роль',
             'status' => 'Статус',
+            'address' => 'Адрес',
             'created_at' => 'Дата добавление',
             'company_id' => 'Компания'
         ];
@@ -266,10 +267,18 @@ class User extends ActiveRecord implements IdentityInterface
         return ArrayHelper::getValue(static::getStatuses(), $this->status);
     }
 
-    public static function getRoles() {
+    public static function getRolesForBackend() {
         return [
             self::ROLE_ADMIN => 'Админ',
+            self::ROLE_DIRECTOR => 'Директор',
             self::ROLE_MANAGER => 'Менеджер',
+            self::ROLE_ADMINISTRATOR => 'Администратор',
+            self::ROLE_CASHIER => 'Кассир'
+        ];
+    }
+
+    public static function getRoles() {
+        return [
             self::ROLE_ADMINISTRATOR => 'Администратор',
             self::ROLE_CASHIER => 'Кассир'
         ];

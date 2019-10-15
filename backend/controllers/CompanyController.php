@@ -24,11 +24,10 @@ class CompanyController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'except' => ['login', 'error'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['viewAdminIndex']
+                        'roles' => ['admin']
                     ]
                 ],
             ],
@@ -79,7 +78,7 @@ class CompanyController extends Controller
         $model = new Company();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [

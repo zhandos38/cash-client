@@ -14,22 +14,20 @@ $authManager = Yii::$app->authManager;
         <thead>
             <tr>
                 <th style="width:1px"></th>
-                <th style="width:150px">Name</th>
-                <th>Description</th>
+                <th>Описание</th>
             </tr>
         <tbody>            
             <?php foreach ($authManager->getPermissions() as $role): ?>
                 <tr>
                     <?php
                         $checked = true;
-                        if($formModel->roles==null||!is_array($formModel->roles)||count($formModel->roles)==0){
+                        if ($formModel->roles==null||!is_array($formModel->roles)||count($formModel->roles) == 0){
                             $checked = false;
-                        }else if(!in_array($role->name, $formModel->roles) ){
+                        } else if(!in_array($role->name, $formModel->roles) ){
                             $checked = false;
                         }                        
                     ?>
                     <td><input <?= $checked? "checked":"" ?>  type="checkbox" name="AssignmentForm[roles][]" value="<?= $role->name?>"></td>
-                    <td><?= $role->name ?></td>
                     <td><?= $role->description ?></td>
                 </tr>
             <?php endforeach; ?>
@@ -42,4 +40,3 @@ $authManager = Yii::$app->authManager;
     <?php } ?>
 <?php ActiveForm::end(); ?>
 </div>
-

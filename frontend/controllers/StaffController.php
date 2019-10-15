@@ -31,12 +31,32 @@ class StaffController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'except' => ['login', 'error'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['viewAdminIndex']
-                    ]
+                        'actions' => ['index'],
+                        'roles' => ['manageStaff']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['createStaff']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['update'],
+                        'roles' => ['updateStaff']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['deleteStaff']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['permissions'],
+                        'roles' => ['permissionStaff']
+                    ],
                 ],
             ],
             'verbs' => [
@@ -81,7 +101,7 @@ class StaffController extends Controller
      *
      * @return mixed
      */
-    public function actionAddStaff()
+    public function actionCreate()
     {
         $model = new AddStaffForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {

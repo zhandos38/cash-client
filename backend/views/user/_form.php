@@ -47,9 +47,15 @@ use yii\widgets\MaskedInput;
 
         <?= $form->field($model, 'address')->textInput() ?>
 
-        <?= $form->field($model, 'company_id')->dropDownList(ArrayHelper::map(Company::find()->all(), 'id', 'name'), ['prompt' => 'Указать компанию']) ?>
+        <?= $form->field($model, 'company_id')->widget(\kartik\select2\Select2::className(), [
+            'data' => ArrayHelper::map(Company::find()->all(), 'id', 'name'),
+            'options' => ['placeholder' => 'Выберите компанию ...'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
+        ]) ?>
 
-        <?= $form->field($model, 'role')->dropDownList(User::getRoles(), ['prompt' => 'Указать роль']) ?>
+        <?= $form->field($model, 'role')->dropDownList(User::getRolesForBackend(), ['prompt' => 'Указать роль']) ?>
 
         <?= $form->field($model, 'status')->dropDownList(User::getStatuses(), ['prompt' => 'Указать статус']) ?>
 

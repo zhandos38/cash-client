@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = 'Заказ #' . $this->title;
     <h1>Заказ #<?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Назад', ['index'], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= DetailView::widget([
@@ -35,8 +35,19 @@ $this->params['breadcrumbs'][] = 'Заказ #' . $this->title;
                     return $model->customer->full_name;
                 }
             ],
+            [
+                'attribute' => 'order_items',
+                'value' => function(Order $model) {
+                    $output = '';
+                    foreach ($model->orderItems as $item) {
+                        $output .= $item->name . ' - ' . $item->real_price . ' x ' . $item->quantity . '<br>';
+                    }
+                    return $output;
+                },
+                'format' => 'html',
+                'label' => 'Товары'
+            ],
             'cost',
-            'paid_amount',
             [
                 'attribute' => 'status',
                 'value' => function(Order $model) {

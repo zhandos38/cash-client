@@ -13,6 +13,7 @@ class AssignmentForm extends Model {
 
     public $userId;
     public $roles = [];
+    public $permissions = [];
     public $authManager;
 
     /**
@@ -35,7 +36,7 @@ class AssignmentForm extends Model {
     public function rules() {
         return [
             [['userId'], 'required'],
-            [['roles'], 'default'],
+            [['roles', 'permissions'], 'default'],
         ];
     }
 
@@ -45,7 +46,7 @@ class AssignmentForm extends Model {
     public function attributeLabels() {
         return [
             'userId' => Yii::t('rbac', 'User ID'),
-            'roles' => Yii::t('rbac', 'Roles'),
+            'permissions' => 'Разрешение',
         ];
     }
 

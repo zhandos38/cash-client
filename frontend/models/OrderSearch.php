@@ -61,7 +61,9 @@ class OrderSearch extends Order
     public function search($params)
     {
         $query = Order::find()
-                ->joinWith('customer t2');
+                ->alias('t1')
+                ->joinWith('customer t2')
+                ->andWhere(['t1.company_id' => \Yii::$app->user->identity->company_id]);
 
         // add conditions that should always apply here
 

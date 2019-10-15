@@ -40,7 +40,8 @@ class SupplierSearch extends Supplier
      */
     public function search($params)
     {
-        $query = Supplier::find();
+        $query = Supplier::find()
+            ->andWhere(['company_id' => \Yii::$app->user->identity->company_id]);
 
         // add conditions that should always apply here
 

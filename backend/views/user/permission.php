@@ -22,12 +22,12 @@ $authManager = Yii::$app->authManager;
         <?php foreach ($authManager->getPermissions() as $role): ?>
             <tr>
                 <?php
-                $checked = true;
-                if($formModel->roles==null||!is_array($formModel->roles)||count($formModel->roles)==0){
-                    $checked = false;
-                }else if(!in_array($role->name, $formModel->roles) ){
-                    $checked = false;
-                }
+                    $checked = true;
+                    if ($formModel->roles == null || !is_array($formModel->roles) || count($formModel->roles) == 0){
+                        $checked = false;
+                    } else if(!in_array($role->name, $formModel->roles) ){
+                        $checked = false;
+                    }
                 ?>
                 <td><input <?= $checked? "checked":"" ?>  type="checkbox" name="AssignmentForm[roles][]" value="<?= $role->name?>"></td>
                 <td><?= $role->description ?></td>
@@ -40,26 +40,3 @@ $authManager = Yii::$app->authManager;
     </div>
     <?php ActiveForm::end(); ?>
 </div>
-<?php
-$js =<<<JS
-$('form#user-assignment').on('beforeSubmit', function() {
-    let form = $(this);
-    let data = $( this ).serialize();
-    
-    $.post({
-        url: '/staff/permissions',
-        data: data,
-        success: function(result) {
-            form.parents('.modal').modal('hide');
-        },
-        error: function() {
-            alert('Что-то пошел не так, попробуйте заново или обратитесь к администратору');
-        }
-    });
-    
-    return false;
-});
-JS;
-
-$this->registerJs($js);
-?>

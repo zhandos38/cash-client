@@ -2,8 +2,10 @@
 namespace backend\forms;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\Model;
 use common\models\User;
+use yii\db\Exception;
 use yii\helpers\VarDumper;
 
 /**
@@ -11,6 +13,7 @@ use yii\helpers\VarDumper;
  */
 class SignupForm extends Model
 {
+    public $id;
     public $username;
     public $full_name;
     public $address;
@@ -54,7 +57,10 @@ class SignupForm extends Model
             'full_name' => 'Ф.И.О',
             'password' => 'Пароль',
             'phone' => 'Телефон',
-            'address' => 'Адрес'
+            'address' => 'Адрес',
+            'company_id' => 'Компания',
+            'role' => 'Роль',
+            'status' => 'Статус'
         ];
     }
 
@@ -81,8 +87,15 @@ class SignupForm extends Model
         $user->company_id = $this->company_id;
         $user->status = $this->status;
         $user->role = $this->role;
-        return $user->save();
-
+        try {
+            if (!$user->save()) {
+                throw new ErrorException('Error: User не создан!');
+            }
+        } catch (\ErrorException $exception) {
+            throw new ErrorException($exception->getMessage());
+        }
+        $this->id = $user->id;
+        return true;
     }
 
     /**

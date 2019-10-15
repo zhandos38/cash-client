@@ -40,7 +40,8 @@ class CustomerSearch extends Customer
      */
     public function search($params)
     {
-        $query = Customer::find();
+        $query = Customer::find()
+            ->andWhere(['company_id' => \Yii::$app->user->identity->company_id]);
 
         // add conditions that should always apply here
 

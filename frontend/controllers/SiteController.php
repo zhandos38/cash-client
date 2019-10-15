@@ -32,7 +32,13 @@ class SiteController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['viewAdminIndex']
+                        'actions' => ['index'],
+                        'roles' => ['viewIndex']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['logout'],
+                        'roles' => ['@']
                     ]
                 ],
             ],
