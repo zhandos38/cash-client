@@ -74,6 +74,7 @@ class Product extends \yii\db\ActiveRecord
             'wholesale_value' => 'Оптом',
             'is_partial' => 'Частичный',
             'status' => 'Статус',
+            'company_id' => 'Компания',
             'created_at' => 'Дата добавление',
             'updated_at' => 'Дата обновление',
         ];
@@ -89,7 +90,7 @@ class Product extends \yii\db\ActiveRecord
 
     public function getCompany()
     {
-        return $this->hasOne(Company::className(), ['company_id' => 'id']);
+        return $this->hasOne(Company::className(), ['id' => 'company_id']);
     }
 
     public static function getStatuses() {
@@ -111,7 +112,7 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             0 => 'Нет',
-            1 => 'ДА'
+            1 => 'Да'
         ];
     }
 

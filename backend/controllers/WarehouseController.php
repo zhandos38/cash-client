@@ -5,6 +5,7 @@ namespace backend\controllers;
 
 
 use backend\models\BarcodeSearch;
+use backend\models\WarehouseSearch;
 use Yii;
 use yii\web\Controller;
 
