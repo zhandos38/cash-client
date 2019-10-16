@@ -98,18 +98,11 @@ OrderAsset::register($this);
                                     ]) ?>
                                 </div>
                                 <div class="col-sm-3">
-                                    <?= $form->field($modelOrderItem, "[{$i}]real_price")->widget(\yii\widgets\MaskedInput::className(), [
-                                        'options' => [
+                                    <?= $form->field($modelOrderItem, "[{$i}]real_price")->textInput([
                                             'class' => 'form-control order-item__price',
                                             'readOnly' => true
-                                        ],
-                                        'clientOptions' => [
-                                            'alias' =>  'decimal',
-                                            'groupSeparator' => ',',
-                                            'autoGroup' => true,
-                                            'removeMaskOnSubmit' => true
-                                        ],
-                                    ]) ?>
+                                    ])
+                                         ?>
                                     <?= $form->field($modelOrderItem, "[{$i}]product_id")->hiddenInput(['class' => 'order-item__product-id'])->label(false) ?>
                                     <div class="order-item__sum"></div>
                                 </div>

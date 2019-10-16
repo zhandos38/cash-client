@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
-/* @var $searchModel frontend\models\search\CustomerSearch */
+/* @var $searchModel frontend\models\CustomerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 ?>
 <div class="customer-index">
@@ -45,9 +45,11 @@ use yii\widgets\MaskedInput;
 
     </div>
 
-    <div id="customer-list__list" class="list-group" style="display: none">
-        <div class="alert alert-danger">
-            <strong>Danger!</strong> Indicates a dangerous or potentially negative action.
+    <div id="customer-list">
+        <div id="customer-list__alert" class="alert alert-danger" style="display: none">
+            <strong>Не найдено</strong> никаких записей
+        </div>
+        <div id="customer-list__list" class="list-group" style="display: none">
         </div>
     </div>
 
@@ -63,6 +65,7 @@ $('#customer-search-form').on('beforeSubmit', function() {
             result = $.parseJSON(result);
             console.log(result);
             let list = $('#customer-list__list');
+            let alert = $('#customer-list__alert');
             let items = '';
             if (!$.isEmptyObject(result)) {
                 $.each(result, function(index, item) {
@@ -75,6 +78,9 @@ $('#customer-search-form').on('beforeSubmit', function() {
                 });
                 list.html(items);
                 list.css('display', 'block');
+                alert.css('display', 'none');
+            } else {
+                alert.css('display', 'block');
             }
         },
         error: function(){

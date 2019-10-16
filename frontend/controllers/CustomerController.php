@@ -5,7 +5,7 @@ namespace frontend\controllers;
 use frontend\models\forms\CustomerForm;
 use Yii;
 use common\models\Customer;
-use frontend\models\search\CustomerSearch;
+use frontend\models\CustomerSearch;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\helpers\VarDumper;
