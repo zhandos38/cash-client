@@ -11,7 +11,7 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel backend\models\CompanySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Warehouses';
+$this->title = 'Склады';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="warehouse-index">
