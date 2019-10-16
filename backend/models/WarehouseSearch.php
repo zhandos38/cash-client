@@ -57,10 +57,16 @@ class WarehouseSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find();
+        $query = Product::find()
+                ->with('company');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ]
+            ]
         ]);
 
         $this->load($params);
