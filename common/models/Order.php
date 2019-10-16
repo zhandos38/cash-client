@@ -83,7 +83,8 @@ class Order extends \yii\db\ActiveRecord
             'status' => 'Статус',
             'created_at' => 'Создано в',
             'updated_at' => 'Обновлено в',
-            'is_debt' => 'В долг'
+            'is_debt' => 'В долг',
+            'company_id' => 'Компания'
         ];
     }
 

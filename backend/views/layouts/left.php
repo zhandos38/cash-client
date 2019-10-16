@@ -21,6 +21,8 @@
                     ['label' => 'Пользователи', 'icon' => 'fas fa-user', 'url' => ['/user/index']],
                     ['label' => 'Компании', 'icon' => 'fas fa-cubes', 'url' => ['/company/index']],
                     ['label' => 'Склады', 'icon' => 'fas fa-home', 'url' => ['/warehouse/index']],
+                    ['label' => 'Заказы', 'icon' => 'fas fa-cubes', 'url' => ['/order/index']],
+                    ['label' => 'Накладные', 'icon' => 'fas fa-cubes', 'url' => ['/invoice/index']],
                     [
                         'label' => 'Штрихкоды',
                         'icon' => 'share',
