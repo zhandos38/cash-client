@@ -62,6 +62,7 @@ class OrderSearch extends Order
     {
         $query = Order::find()
                 ->alias('t1')
+                ->with('createdBy')
                 ->joinWith('customer t2')
                 ->andWhere(['t1.company_id' => \Yii::$app->user->identity->company_id]);
 
@@ -69,6 +70,9 @@ class OrderSearch extends Order
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => ['id' => SORT_DESC]
+            ]
         ]);
 
         $this->load($params);
