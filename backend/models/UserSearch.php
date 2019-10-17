@@ -48,6 +48,11 @@ class UserSearch extends UserModel
             'query' => $query,
             'pagination' => [
                 'pageSize' => 20
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ]
             ]
         ]);
 
