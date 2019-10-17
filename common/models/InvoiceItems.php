@@ -14,6 +14,10 @@ use Yii;
  * @property int $quantity
  * @property int $price_in
  * @property boolean $is_partial
+ * @property integer $percentage_rate
+ * @property integer $price_retail
+ * @property integer $wholesale_value
+ * @property integer $wholesale_price
  *
  * @property Invoice $invoice
  */
@@ -23,6 +27,8 @@ class InvoiceItems extends \yii\db\ActiveRecord
     public $is_exist;
     public $wholesale_value;
     public $wholesale_price;
+    public $percentage_rate;
+    public $price_retail;
     /**
      * {@inheritdoc}
      */
@@ -38,7 +44,7 @@ class InvoiceItems extends \yii\db\ActiveRecord
     {
         return [
             [['invoice_id', 'is_new', 'is_exist', 'wholesale_value'], 'integer'],
-            [['quantity', 'price_in', 'wholesale_price'], 'number'],
+            [['quantity', 'price_in', 'wholesale_price', 'percentage_rate', 'price_retail'], 'number'],
             [['barcode', 'name'], 'string', 'max' => 255],
             [['barcode', 'quantity', 'price_in'], 'required'],
             ['is_partial', 'boolean'],
@@ -60,7 +66,9 @@ class InvoiceItems extends \yii\db\ActiveRecord
             'price_in' => 'Входная цена',
             'wholesale_price' => 'Оптовая цена',
             'wholesale_value' => 'Оптовая кол-во',
-            'is_partial' => 'Частичный товар'
+            'is_partial' => 'Частичный товар',
+            'percentage_rate' => 'Процентная ставка',
+            'price_retail' => 'Розничная цена'
         ];
     }
 

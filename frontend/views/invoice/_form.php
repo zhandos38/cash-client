@@ -26,7 +26,13 @@ InvoiceAsset::register($this);
             <?= $form->field($modelInvoice, 'number_in')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($modelInvoice, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::find()->all(), 'id', 'name'), ['prompt' => 'Выбрать поставщика']) ?>
+            <?= $form->field($modelInvoice, 'supplier_id')->widget(\kartik\select2\Select2::className(), [
+                'data' => ArrayHelper::map(Supplier::find()->all(), 'id', 'name'),
+                'options' => ['placeholder' => 'Выберите поставщика ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]) ?>
         </div>
     </div>
 
@@ -77,29 +83,34 @@ InvoiceAsset::register($this);
                                 Товар в базе не найден, пожалуйста введите название или штрихкод товара вручную
                             </div>
                             <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-sm-3">
                                     <?= $form->field($item, "[{$i}]barcode")->textInput(['maxlength' => true, 'class' => 'form-control input_barcode']) ?>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <?= $form->field($item, "[{$i}]name")->textInput(['maxlength' => true, 'class' => 'form-control input_name', 'data-from-barcode' => 0]) ?>
                                 </div>
-                                <div class="col-sm-6">
-                                    <?= $form->field($item, "[{$i}]quantity")->textInput(['maxlength' => true, 'class' => 'form-control input_quantity', 'type' => 'number']) ?>
+                                <div class="col-sm-3">
+                                    <?= $form->field($item, "[{$i}]quantity")->textInput(['maxlength' => true, 'class' => 'form-control input_quantity', 'type' => 'number', 'value' => 0]) ?>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-2">
                                     <?= $form->field($item, "[{$i}]price_in")->textInput(['maxlength' => true, 'class' => 'form-control input_price', 'type' => 'number']) ?>
                                 </div>
                                 <?= $form->field($item, "[{$i}]is_new")->hiddenInput(['class' => 'form-control input_is_new'])->label(false) ?>
-                                <?= $form->field($item, "[{$i}]is_exist")->hiddenInput(['class' => 'form-control input_is_exist'])->label(false) ?>
                                 <div class="external-form">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-3">
+                                        <?= $form->field($item, "[{$i}]percentage_rate")->textInput(['maxlength' => true, 'class' => 'form-control input_percentage-rate', 'type' => 'number', 'step' => 0.5]) ?>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <?= $form->field($item, "[{$i}]price_retail")->textInput(['maxlength' => true, 'class' => 'form-control input_price-retail', 'type' => 'number', 'step' => 0.5]) ?>
+                                    </div>
+                                    <div class="col-sm-3">
                                         <?= $form->field($item, "[{$i}]wholesale_value") ?>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-3">
                                         <?= $form->field($item, "[{$i}]wholesale_price") ?>
                                     </div>
                                     <div class="col-sm-12">
-                                        <?= $form->field($item, "[{$i}]is_partial")->checkbox(['value' => 1]) ?>
+                                        <?= $form->field($item, "[{$i}]is_partial")->checkbox(['class' => 'input_is_partial', 'value' => 1]) ?>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -138,26 +149,58 @@ InvoiceAsset::register($this);
 
 <?php
 $js =<<<JS
-$(".dynamicform_wrapper").on("beforeInsert", function(e, item) {
+let dynamic_form = $(".dynamicform_wrapper");
+let input_quantity_settings = {
+                initval: 1,
+                min: 1,
+                max: 1000000000,
+                step: 1,
+                decimals: 0,
+                stepinterval: 50,
+                maxboostedstep: 10000000,
+                postfix: 'шт'
+            };
+let input_quantity_partial_settings = {
+                initval: 1,
+                min: 1,
+                max: 100,
+                step: 0.1,
+                decimals: 2,
+                boostat: 5,
+                maxboostedstep: 10,
+                postfix: 'кг'
+            };
+let input_quantity_percentage_settings = {
+                initval: 0,
+                min: 0,
+                max: 999,
+                step: 0.1,
+                decimals: 2,
+                boostat: 5,
+                maxboostedstep: 10,
+                postfix: '%'
+            };
+dynamic_form.on("beforeInsert", function(e, item) {
     console.log("beforeInsert");
 });
 
-$(".dynamicform_wrapper").on("afterInsert", function(e, item) {
+dynamic_form.on("afterInsert", function(e, item) {
     console.log("afterInsert");
+    dynamic_form.find('.input_quantity:last').TouchSpin(input_quantity_settings);
 });
 
-$(".dynamicform_wrapper").on("beforeDelete", function(e, item) {
+dynamic_form.on("beforeDelete", function(e, item) {
     if (! confirm("Вы уверены что хотите удалить товар?")) {
         return false;
     }
     return true;
 });
 
-$(".dynamicform_wrapper").on("afterDelete", function(e) {
+dynamic_form.on("afterDelete", function(e) {
     console.log("Товар удален!");
 });
 
-$(".dynamicform_wrapper").on("limitReached", function(e, item) {
+dynamic_form.on("limitReached", function(e, item) {
     alert("Лимит достигнут");
 });
 
@@ -171,7 +214,7 @@ $('form').on('beforeSubmit', function() {
     }
 });
 
-$(document).scannerDetection({
+dynamic_form.scannerDetection({
     timeBeforeScanTest: 200, // wait for the next character for upto 200ms
 	startChar: [120], // Prefix character for the cabled scanner (OPL6845R)
 	// endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
@@ -183,7 +226,7 @@ $(document).scannerDetection({
     }
 });
 
-$(document).on('click', '.barcode-download', function() {
+dynamic_form.on('click', '.barcode-download', function() {
     let img = $(this).find('.barcode-img');
     // var url = img.attr('src');
     // var id = img.data('id');
@@ -198,7 +241,7 @@ $(document).on('click', '.barcode-download', function() {
     return true;
 });
 
-$(document).on('focusout', '.input_barcode', function() {
+dynamic_form.on('focusout', '.input_barcode', function() {
     let input_barcode = $(this);
     let parent_row = input_barcode.parents('.row');
     let barcode = input_barcode.val();
@@ -207,26 +250,25 @@ $(document).on('focusout', '.input_barcode', function() {
     }
 });
 
-$(document).on('focusout', '.input_name', function() {
+dynamic_form.on('focusout', '.input_name', function() {
     let input_name = $(this);
     if (input_name.data("from-barcode") === 0) {
         let product_name = input_name.val();
-        let parent_row = input_name.parents('.row');
-        let input_barcode = parent_row.find('.input_barcode');
-        let input_is_new = parent_row.find('.input_is_new');
-        let input_quantity = parent_row.find('.input_quantity');
-        let external_form = parent_row.find('.external-form');
+        let focused_item = input_name.parents('.row');
+        let input_barcode = focused_item.find('.input_barcode');
+        let input_is_new = focused_item.find('.input_is_new');
+        let input_quantity = focused_item.find('.input_quantity');
         
         if (product_name) {
             $.post({
             url: 'get-checked-random-barcode',
             success: function(result) {
-                renderBarcode(result, parent_row);
+                renderBarcode(result, focused_item);
                 input_barcode.val(result);
                 input_barcode.attr("readonly", true);
                 input_name.attr("readonly", true);
                 input_is_new.val(1);
-                external_form.show();
+                showExternalForm(focused_item);
                 input_quantity.focus();
             }
             });
@@ -252,7 +294,7 @@ $('.invoice-form__is-debt').click(function() {
         $('.invoice-form__paid-amount').attr('max', ((total_sum*total_quantity).toFixed(2) - 1));
         
         if ( $( this ).is(":checked") ) {
-            $('button[type="button"]').prop('disabled', true);   
+            $('button[type="button"]').prop('disabled', true);
         } else {
             $('button[type="button"]').prop('disabled', false);
         }
@@ -261,6 +303,45 @@ $('.invoice-form__is-debt').click(function() {
         $( this ).prop("checked", false);
     }
 });
+
+dynamic_form.on('click', '.input_is_partial', function() {
+    let focused_item = $( this ).parents('.item');
+    
+    if ( $( this ).is(":checked") ) {
+        focused_item.find('.input_quantity').trigger("touchspin.updatesettings", input_quantity_partial_settings);
+    } else {
+        focused_item.find('.input_quantity').trigger("touchspin.updatesettings", input_quantity_settings);
+    }
+});
+
+dynamic_form.on('change', '.input_percentage-rate', function() {
+    calcRetailPrice($( this ));
+});
+
+dynamic_form.on('change', '.input_price', function() {
+    calcRetailPrice($( this ));
+});
+
+dynamic_form.on('focusout', '.input_price-retail', function() {
+    let input_price_retail_val = parseFloat($( this ).val());
+    let focused_item = $( this ).parents('.item');
+    let input_percentage_rate = focused_item.find('.input_percentage-rate');
+    let input_price = focused_item.find('.input_price');
+    let input_price_val = parseFloat(input_price.val());
+        
+    let sum = Math.abs(((input_price_val - input_price_retail_val) / input_price_val) * 100);
+    input_percentage_rate.val(sum);
+});
+
+function calcRetailPrice(changed_input) {
+    let focused_item = changed_input.parents('.item');
+    let input_percentage_val = parseFloat(focused_item.find('.input_percentage-rate').val()).toFixed(2);
+    let input_price_val = parseFloat(focused_item.find('.input_price').val());
+    
+    let sum = input_price_val + (( input_price_val / 100) * input_percentage_val );
+    sum = sum.toFixed(2);
+    focused_item.find('.input_price-retail').val(sum);
+}
 
 function checkProduct(barcode, focused_row = null) {
     let body = $('body');
@@ -271,15 +352,13 @@ function checkProduct(barcode, focused_row = null) {
                result = $.parseJSON(result);
                
                if (focused_row == null) {
-                   focused_row = body.find('.row:last');
+                   focused_row = body.find('.item:last');
                }
                
                let input_barcode = focused_row.find('.input_barcode');
                let input_name = focused_row.find('.input_name');
                let input_is_new = focused_row.find('.input_is_new');
                let input_quantity = focused_row.find('.input_quantity');
-               let input_is_exist = focused_row.find('.is_exist');
-               let external_form = focused_row.find('.external-form');
                
                input_barcode.val(result['barcode']);
                input_barcode.attr('readonly', true);
@@ -289,18 +368,15 @@ function checkProduct(barcode, focused_row = null) {
                    input_name.val(result['name']);
                    input_is_new.val(0);
                    input_quantity.focus();
-                   console.log(result);
                    if (result['is_exist']) {
-                       input_is_exist.val(1);
-                       external_form.show();
+                       showExternalForm(focused_row);
                    }
                } else {
                    focused_row.parent().find('.message-not-found:last').css('display', 'block');
                    input_name.focus();
                    input_name.data("from-barcode", 1);
                    input_is_new.val(1);
-                   external_form.show();
-                   input_is_exist.val(0);
+                   showExternalForm(focused_row);
                }
                
                renderBarcode(result['barcode'], focused_row);
@@ -311,8 +387,12 @@ function checkProduct(barcode, focused_row = null) {
     });
 }
 
+function showExternalForm(focused_item) {
+    focused_item.find('.external-form').show();
+    focused_item.find('.input_percentage-rate').TouchSpin(input_quantity_percentage_settings);
+}
+
 function renderBarcode(barcode, focused_row) {
-    let body = $('body');
     barcode_img = focused_row.find('.barcode-img');
     barcode_type = null;
    

@@ -8,6 +8,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\console\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
+use common\models\es\Product as ElasticProduct;
 
 /**
  * This is the model class for table "product".
@@ -24,6 +25,7 @@ use yii\helpers\VarDumper;
  * @property int $created_at
  * @property int $updated_at
  * @property int $company_id
+ * @property int $percentage_rate
  *
  * @property OrderItems[] $orderItems
  */
@@ -53,7 +55,7 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at', 'percentage_rate'], 'integer'],
             [['quantity', 'price_wholesale', 'price_retail'], 'number'],
             [['barcode', 'name'], 'string', 'max' => 255],
         ];
@@ -127,15 +129,19 @@ class Product extends \yii\db\ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         if (!$insert) {
-            if ($changedAttributes['status'] == self::STATUS_INACTIVE) {
-                \common\models\es\Product::addProductById($this->id);
-            } elseif ($changedAttributes['status'] == self::STATUS_ACTIVE) {
-                \common\models\es\Product::deleteProductById($this->id);
+            if (!$changedAttributes['quantity']) {
+                if ($changedAttributes['status'] == self::STATUS_INACTIVE) {
+                    ElasticProduct::addProductById($this->id);
+                } elseif ($changedAttributes['status'] == self::STATUS_ACTIVE) {
+                    ElasticProduct::deleteProductById($this->id);
+                }
             }
 
         } else {
-            $product = \common\models\es\Product::addProductById($this->id);
-
+            $elasticProduct = ElasticProduct::find()->where(['id' => $this->id])->one();
+            if (!$elasticProduct) {
+                ElasticProduct::addProductById($this->id);
+            }
         }
         parent::afterSave($insert, $changedAttributes);
     }

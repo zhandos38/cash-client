@@ -13,11 +13,13 @@ class InvoiceAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        'css/jquery.bootstrap-touchspin.css'
     ];
     public $js = [
         'js/jquery.scannerdetection.js',
         'js/invoice.js',
-        'js/jquery-barcode.min.js'
+        'js/jquery-barcode.min.js',
+        'js/jquery.bootstrap-touchspin.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

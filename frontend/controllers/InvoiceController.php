@@ -172,7 +172,8 @@ class InvoiceController extends Controller
                                 $product->barcode = $modelInvoiceItem->barcode;
                                 $product->name = $modelInvoiceItem->name;
                                 $product->quantity = $modelInvoiceItem->quantity;
-                                $product->price_retail = $modelInvoiceItem->price_in;
+                                $product->percentage_rate = $modelInvoiceItem->percentage_rate;
+                                $product->price_retail = $modelInvoiceItem->price_retail;
                                 $product->is_partial = $modelInvoiceItem->is_partial;
                                 $product->price_wholesale = $modelInvoiceItem->wholesale_price;
                                 $product->wholesale_value = $modelInvoiceItem->wholesale_value;
