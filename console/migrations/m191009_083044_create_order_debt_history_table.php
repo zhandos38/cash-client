@@ -35,6 +35,7 @@ class m191009_083044_create_order_debt_history_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey('fk-order-debt-history-order_id-order-id', $this->tableName);
         $this->dropTable($this->tableName);
     }
 }

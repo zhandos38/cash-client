@@ -18,14 +18,14 @@ class m190905_125739_create_barcode_temp_table extends Migration
             'number' => $this->string(22),
             'name' => $this->string(),
             'img' => $this->string(),
-            'company_id' => $this->integer()
+            'object_id' => $this->integer()
         ]);
 
         $this->addForeignKey(
-            'fk-barcode-temp-company_id-company-id',
+            'fk-barcode-temp-object_id-company_objects-id',
             $this->tableName,
-            'company_id',
-            '{{%company}}',
+            'object_id',
+            '{{%company_objects}}',
             'id',
             'SET NULL'
         );
@@ -36,6 +36,7 @@ class m190905_125739_create_barcode_temp_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey('fk-barcode-temp-object_id-company_objects-id', $this->tableName);
         $this->dropTable($this->tableName);
     }
 }

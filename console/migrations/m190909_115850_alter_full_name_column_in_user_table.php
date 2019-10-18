@@ -21,9 +21,7 @@ class m190909_115850_alter_full_name_column_in_user_table extends Migration
      */
     public function safeDown()
     {
-        echo "m190909_115850_change_full_name_type_in_user_table cannot be reverted.\n";
-
-        return false;
+        $this->alterColumn($this->tableName, 'full_name', $this->string());
     }
 
     /*

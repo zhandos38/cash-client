@@ -13,7 +13,7 @@ class m191017_040957_add_percentage_rate_column_to_product_table extends Migrati
      */
     public function safeUp()
     {
-        $this->addColumn($this->tableName, 'percentage_rate', $this->tinyInteger()->after('price_retail'));
+        $this->addColumn($this->tableName, 'percentage_rate', $this->integer(4)->after('price_retail'));
     }
 
     /**

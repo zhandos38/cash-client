@@ -35,6 +35,7 @@ class m191007_074304_create_invoice_debt_history_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey('fk-invoice-invoice_id-invoice-id', $this->tableName);
         $this->dropTable($this->tableName);
     }
 }

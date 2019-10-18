@@ -15,15 +15,15 @@ class m190905_123401_add_company_id_column_to_invoice_table extends Migration
     {
         $this->addColumn(
             $this->tableName,
-            'company_id',
+            'object_id',
             $this->integer()
         );
 
         $this->addForeignKey(
-            'fk-invoice-company_id-company-id',
+            'fk-invoice-object_id-company_objects-id',
             $this->tableName,
-            'company_id',
-            '{{%company}}',
+            'object_id',
+            '{{%company_objects}}',
             'id',
             'SET NULL'
         );
@@ -34,6 +34,7 @@ class m190905_123401_add_company_id_column_to_invoice_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropColumn($this->tableName, 'company_id');
+        $this->dropForeignKey('fk-invoice-object_id-company_objects-id', $this->tableName);
+        $this->dropColumn($this->tableName, 'object_id');
     }
 }

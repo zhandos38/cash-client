@@ -15,14 +15,14 @@ class m190912_091142_add_company_id_column_to_product_table extends Migration
     {
         $this->addColumn(
             $this->tableName,
-            'company_id',
+            'object_id',
             $this->integer()->after('status')
         );
 
         $this->addForeignKey(
-            'fk-product-company_id-company-id',
+            'fk-product-object_id-company_objects-id',
             $this->tableName,
-            'company_id',
+            'object_id',
             '{{%company}}',
             'id',
             'SET NULL'
@@ -34,7 +34,7 @@ class m190912_091142_add_company_id_column_to_product_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-product-company_id-company-id', $this->tableName);
-        $this->dropColumn($this->tableName, 'company_id');
+        $this->dropForeignKey('fk-product-object_id-company_objects-id', $this->tableName);
+        $this->dropColumn($this->tableName, 'object_id');
     }
 }

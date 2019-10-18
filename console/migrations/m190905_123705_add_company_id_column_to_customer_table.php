@@ -15,15 +15,15 @@ class m190905_123705_add_company_id_column_to_customer_table extends Migration
     {
         $this->addColumn(
             $this->tableName,
-            'company_id',
+            'object_id',
             $this->integer()
         );
 
         $this->addForeignKey(
-            'fk-customer-company_id-company-id',
+            'fk-customer-object_id-company_objects-id',
             $this->tableName,
-            'company_id',
-            '{{%company}}',
+            'object_id',
+            '{{%company_objects}}',
             'id',
             'SET NULL'
         );
@@ -34,6 +34,7 @@ class m190905_123705_add_company_id_column_to_customer_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropColumn($this->tableName, 'company_id');
+        $this->dropForeignKey('fk-customer-object_id-object-id', $this->tableName);
+        $this->dropColumn($this->tableName, 'object_id');
     }
 }
