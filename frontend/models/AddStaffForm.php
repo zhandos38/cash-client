@@ -19,7 +19,6 @@ class AddStaffForm extends Model
     public $role;
     public $status;
     public $phone;
-    public $company_id;
 
 
     /**
@@ -43,7 +42,7 @@ class AddStaffForm extends Model
             ['password', 'string', 'min' => 6],
 
             [['full_name', 'address', 'role', 'phone'], 'string'],
-            [['status', 'company_id'], 'integer']
+            [['status'], 'integer']
         ];
     }
 
@@ -81,7 +80,6 @@ class AddStaffForm extends Model
         $user->phone = $this->phone;
         $user->role = $this->role;
         $user->status = User::STATUS_ACTIVE;
-        $user->company_id = Yii::$app->user->identity->company_id;
         return $user->save();
 
     }

@@ -11,7 +11,6 @@ use Yii;
  * @property int $number
  * @property string $name
  * @property string $img
- * @property int $company_id
  * @property int $is_partial
  *
  * @property Company $company
@@ -32,10 +31,9 @@ class BarcodeTemp extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'company_id'], 'integer'],
+            [['number'], 'integer'],
             ['is_partial', 'boolean'],
-            [['name', 'img'], 'string', 'max' => 255],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
+            [['name', 'img'], 'string', 'max' => 255]
         ];
     }
 
@@ -46,16 +44,7 @@ class BarcodeTemp extends \yii\db\ActiveRecord
     {
         return [
             'number' => 'Номер',
-            'name' => 'Названия',
-            'company_id' => 'Компания'
+            'name' => 'Названия'
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompany()
-    {
-        return $this->hasOne(Company::className(), ['id' => 'company_id']);
     }
 }

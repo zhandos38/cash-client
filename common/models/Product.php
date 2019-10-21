@@ -24,7 +24,6 @@ use common\models\es\Product as ElasticProduct;
  * @property int $status
  * @property int $created_at
  * @property int $updated_at
- * @property int $company_id
  * @property int $percentage_rate
  *
  * @property OrderItems[] $orderItems
@@ -76,7 +75,6 @@ class Product extends \yii\db\ActiveRecord
             'wholesale_value' => 'Оптом',
             'is_partial' => 'Частичный',
             'status' => 'Статус',
-            'company_id' => 'Компания',
             'created_at' => 'Дата добавление',
             'updated_at' => 'Дата обновление',
         ];

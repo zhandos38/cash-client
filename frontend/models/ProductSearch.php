@@ -57,8 +57,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find()
-            ->andWhere(['company_id' => \Yii::$app->user->identity->company_id]);
+        $query = Product::find();
 
         // add conditions that should always apply here
 

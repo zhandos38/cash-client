@@ -9,6 +9,7 @@ use common\models\InvoiceDebtHistory;
 use common\models\InvoiceItems;
 use common\models\Product;
 use Exception;
+use frontend\components\Settings;
 use frontend\models\forms\InvoiceDebtHistoryForm;
 use frontend\models\InvoiceForm;
 use phpDocumentor\Reflection\Types\String_;
@@ -16,6 +17,7 @@ use Picqer\Barcode\BarcodeGeneratorJPG;
 use Yii;
 use common\models\Invoice;
 use frontend\models\InvoiceSearch;
+use yii\base\ErrorException;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -116,7 +118,6 @@ class InvoiceController extends Controller
      */
     public function actionCreate()
     {
-        $company_id = Yii::$app->user->identity->company_id;
         $modelInvoice = new InvoiceForm();
         $modelsInvoiceItem = [new InvoiceItems()];
         if ($modelInvoice->load(Yii::$app->request->post())) {
@@ -156,14 +157,13 @@ class InvoiceController extends Controller
                                 $barcodeTemp = new BarcodeTemp();
                                 $barcodeTemp->number = $modelInvoiceItem->barcode;
                                 $barcodeTemp->name = $modelInvoiceItem->name;
-                                $barcodeTemp->company_id = $company_id;
                                 $barcodeTemp->is_partial = $modelInvoiceItem->is_partial;
                                 if (!$barcodeTemp->save())
                                     throw new Exception("Local barcode is not saved");
                             }
 
                             // Добавляем товары инвоиса на склад
-                            $product = Product::findOne(['barcode' => $modelInvoiceItem->barcode, 'company_id' => $company_id]);
+                            $product = Product::findOne(['barcode' => $modelInvoiceItem->barcode]);
 
                             if ($product) {
                                 $product->quantity += $modelInvoiceItem->quantity;
@@ -178,7 +178,6 @@ class InvoiceController extends Controller
                                 $product->price_wholesale = $modelInvoiceItem->wholesale_price;
                                 $product->wholesale_value = $modelInvoiceItem->wholesale_value;
                                 $product->status = Product::STATUS_ACTIVE;
-                                $product->company_id = $company_id;
                             }
 
                             if (!$product->save())
@@ -190,7 +189,8 @@ class InvoiceController extends Controller
                             }
                         }
 
-                        Yii::$app->user->identity->company->updateBalance($itemsCost - $modelInvoice->paid_amount, false);
+                        $sum = $itemsCost - $modelInvoice->paid_amount;
+                        Yii::$app->settings->setBalance($sum, true);
                     }
 
                     if ($flag) {
@@ -340,7 +340,7 @@ class InvoiceController extends Controller
 
         $model = new InvoiceDebtHistoryForm();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->user->identity->company->updateBalance($model->paid_amount, false);
+            Yii::$app->settings->setBalance($model->paid_amount, true);
             return true;
         }
 

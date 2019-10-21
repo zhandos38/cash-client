@@ -3,11 +3,11 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%barcode_temp}}`.
+ * Handles the creation of table `{{%parameter}}`.
  */
-class m190905_125739_create_barcode_temp_table extends Migration
+class m191018_113030_create_parameter_table extends Migration
 {
-    public $tableName = '{{%barcode_temp}}';
+    public $tableName = '{{%parameter}}';
     /**
      * {@inheritdoc}
      */
@@ -15,9 +15,9 @@ class m190905_125739_create_barcode_temp_table extends Migration
     {
         $this->createTable($this->tableName, [
             'id' => $this->primaryKey(),
-            'number' => $this->string(22),
             'name' => $this->string(),
-            'img' => $this->string()
+            'value_int' => $this->integer(),
+            'value_str' => $this->string()
         ]);
     }
 

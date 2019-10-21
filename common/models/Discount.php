@@ -15,10 +15,7 @@ use Yii;
  * @property int $status
  * @property int $created_at
  * @property int $updated_at
- * @property int $company_id
- *
  * @property Customer[] $customers
- * @property Company $company
  */
 class Discount extends \yii\db\ActiveRecord
 {
@@ -66,13 +63,5 @@ class Discount extends \yii\db\ActiveRecord
     public function getCustomers()
     {
         return $this->hasMany(Customer::className(), ['discount_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompany()
-    {
-        return $this->hasOne(Company::className(), ['id' => 'company_id']);
     }
 }

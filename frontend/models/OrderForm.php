@@ -71,7 +71,6 @@ class OrderForm extends Model
             $model->cost = $this->cost;
             $model->customer_id = $this->customer_id;
             $model->created_by = Yii::$app->user->identity->getId();
-            $model->company_id = Yii::$app->user->identity->company_id;
             $model->created_at = time();
 
             $model->is_debt = $this->is_debt;

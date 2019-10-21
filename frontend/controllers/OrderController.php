@@ -49,7 +49,7 @@ class OrderController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create', 'customer-list', 'add-customer', 'get-product-by-id', 'add-debt'],
+                        'actions' => ['create', 'customer-list', 'add-customer', 'add-debt', 'get-product-by-id', 'get-product-by-barcode'],
                         'roles' => ['createOrder']
                     ],
                     [
@@ -156,10 +156,10 @@ class OrderController extends Controller
      * Creates a new Order model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
+     * @throws Exception
      */
     public function actionCreate()
     {
-        $company_id = Yii::$app->user->identity->company_id;
         $modelOrder = new OrderForm();
         $modelsOrderItem = [new OrderItems()];
         if ($modelOrder->load(Yii::$app->request->post())) {
@@ -195,7 +195,7 @@ class OrderController extends Controller
                             $modelOrderItem->order_id = $modelOrder->id;
 
                             // Добавляем товары инвоиса на склад
-                            $product = Product::findOne(['barcode' => $modelOrderItem->barcode, 'company_id' => $company_id]);
+                            $product = Product::findOne(['barcode' => $modelOrderItem->barcode]);
                             $product->quantity -= $modelOrderItem->quantity;
 
                             if (!$product->save())
@@ -207,12 +207,13 @@ class OrderController extends Controller
                             }
                         }
 
-                        Yii::$app->user->identity->company->updateBalance($itemsCost - $modelOrder->paid_amount);
-                    }
+                        $sum = $itemsCost - $modelOrder->paid_amount;
+                        Yii::$app->settings->setBalance($sum);
 
-                    if ($flag) {
-                        $transaction->commit();
-                        return $this->redirect(['index', 'id' => $modelOrder->id]);
+                        if ($flag) {
+                            $transaction->commit();
+                            return $this->redirect(['index', 'id' => $modelOrder->id]);
+                        }
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();
@@ -303,7 +304,7 @@ class OrderController extends Controller
 
         $model = new OrderDebtHistoryForm();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->user->identity->company->updateBalance($model->paid_amount);
+            Yii::$app->settings->setBalance($model->paid_amount);
             return true;
         }
 

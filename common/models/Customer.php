@@ -23,9 +23,6 @@ use yii\helpers\VarDumper;
  * @property int $status
  * @property int $created_at
  * @property int $updated_at
- * @property int $company_id
- *
- * @property Company $company
  * @property Discount $discount
  * @property DiscountHistory[] $discountHistories
  */
@@ -54,9 +51,8 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
+            [['card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at'], 'integer'],
             [['address', 'full_name', 'phone', 'birthday_date'], 'string', 'max' => 255],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
             [['discount_id'], 'exist', 'skipOnError' => true, 'targetClass' => Discount::className(), 'targetAttribute' => ['discount_id' => 'id']],
         ];
     }
@@ -77,13 +73,6 @@ class Customer extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompany()
-    {
-        return $this->hasOne(Company::className(), ['id' => 'company_id']);
-    }
 
     /**
      * @return \yii\db\ActiveQuery

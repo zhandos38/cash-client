@@ -14,10 +14,8 @@ use yii\helpers\ArrayHelper;
  * @property int $created_by
  * @property int $created_at
  * @property int $supplier_id
- * @property int $company_id
  * @property double $cost
  *
- * @property Company $company
  * @property User $createdBy
  * @property Supplier $supplier
  * @property InvoiceItems[] $invoiceItems
@@ -46,10 +44,9 @@ class Invoice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['is_debt', 'status', 'created_by', 'created_at', 'supplier_id', 'company_id'], 'integer'],
+            [['is_debt', 'status', 'created_by', 'created_at', 'supplier_id'], 'integer'],
             ['number_in', 'string'],
             ['cost', 'number'],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Supplier::className(), 'targetAttribute' => ['supplier_id' => 'id']],
         ];
@@ -67,17 +64,8 @@ class Invoice extends \yii\db\ActiveRecord
             'status' => 'Статус',
             'created_at' => 'Дата добавление',
             'supplier_id' => 'Поставщик',
-            'company_id' => 'Компания',
             'cost' => 'Сумма'
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompany()
-    {
-        return $this->hasOne(Company::className(), ['id' => 'company_id']);
     }
 
     /**

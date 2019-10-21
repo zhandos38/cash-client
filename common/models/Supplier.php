@@ -38,7 +38,7 @@ class Supplier extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['company_id', 'created_at', 'updated_at'], 'integer'],
+            [['created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -51,7 +51,6 @@ class Supplier extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Название',
-            'company_id' => 'Комания',
             'created_at' => 'Дата создание',
             'updated_at' => 'Дата обновление',
         ];
@@ -63,13 +62,5 @@ class Supplier extends \yii\db\ActiveRecord
     public function getInvoices()
     {
         return $this->hasMany(Invoice::className(), ['supplier_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompany()
-    {
-        return $this->hasOne(Company::className(), ['id' => 'company_id']);
     }
 }

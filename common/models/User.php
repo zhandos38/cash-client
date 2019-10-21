@@ -7,7 +7,6 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
-use yii\helpers\VarDumper;
 use yii\rbac\Assignment;
 use yii\web\IdentityInterface;
 
@@ -26,7 +25,7 @@ use yii\web\IdentityInterface;
  * @property string $phone
  * @property integer $status
  * @property integer $role
- * @property integer $company_id
+ * @property integer $code_number
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
@@ -76,7 +75,6 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
 
-            [['company_id'], 'integer'],
             [['full_name', 'address', 'role', 'code_number', 'phone'], 'string'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
@@ -237,10 +235,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function generateEmailVerificationToken()
     {
         $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
-    }
-
-    public function getCompany() {
-        return $this->hasOne(Company::className(), ['id' => 'company_id']);
     }
 
     /**

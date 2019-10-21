@@ -22,7 +22,6 @@ class InvoiceForm extends Model
     public $number_in;
     public $is_debt;
     public $supplier_id;
-    public $company_id;
     public $paid_amount;
     public $cost;
 
@@ -32,12 +31,11 @@ class InvoiceForm extends Model
     public function rules()
     {
         return [
-            [['is_debt', 'supplier_id', 'company_id'], 'integer'],
+            [['is_debt', 'supplier_id'], 'integer'],
             ['number_in', 'string'],
             [['paid_amount', 'cost'], 'number'],
             ['paid_amount', 'default', 'value' => 0],
             [['supplier_id', 'number_in'], 'required'],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Supplier::className(), 'targetAttribute' => ['supplier_id' => 'id']],
         ];
     }
@@ -53,7 +51,6 @@ class InvoiceForm extends Model
             'status' => 'Статус',
             'created_at' => 'Дата добавления',
             'supplier_id' => 'Поставщик',
-            'company_id' => 'Компания',
             'paid_amount' => 'Итого оплачено'
         ];
     }
@@ -77,7 +74,6 @@ class InvoiceForm extends Model
             $model->number_in = $this->number_in;
             $model->supplier_id = $this->supplier_id;
             $model->created_by = Yii::$app->user->identity->getId();
-            $model->company_id = Yii::$app->user->identity->company_id;
             $model->cost = $this->cost;
             $model->created_at = time();
 

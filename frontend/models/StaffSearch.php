@@ -18,7 +18,7 @@ class StaffSearch extends User
     public function rules()
     {
         return [
-            [['id', 'code_number', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
+            [['id', 'code_number', 'status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'full_name', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'phone', 'address', 'role', 'verification_token'], 'safe'],
         ];
     }
@@ -43,7 +43,6 @@ class StaffSearch extends User
     {
         $user = Yii::$app->user->identity;
         $query = User::find()
-            ->andWhere(['company_id' => $user->company_id])
             ->andWhere(['!=', 'id', $user->getId()]);
 
         // add conditions that should always apply here
@@ -66,8 +65,7 @@ class StaffSearch extends User
             'code_number' => $this->code_number,
             'status' => $this->status,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'company_id' => $this->company_id,
+            'updated_at' => $this->updated_at
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])

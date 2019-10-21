@@ -35,7 +35,7 @@ class InvoiceSearch extends Invoice
     public function rules()
     {
         return [
-            [['id', 'number_in', 'is_debt', 'status', 'created_by', 'created_at', 'supplier_id', 'company_id'], 'integer'],
+            [['id', 'number_in', 'is_debt', 'status', 'created_by', 'created_at', 'supplier_id'], 'integer'],
             [['createTimeRange'], 'match', 'pattern' => '/^.+\s\-\s.+$/']
         ];
     }
@@ -58,8 +58,7 @@ class InvoiceSearch extends Invoice
      */
     public function search($params)
     {
-        $query = Invoice::find()
-            ->andWhere(['company_id' => \Yii::$app->user->identity->company_id]);
+        $query = Invoice::find();
 
         // add conditions that should always apply here
 
@@ -88,8 +87,7 @@ class InvoiceSearch extends Invoice
             'status' => $this->status,
             'created_by' => $this->created_by,
             'created_at' => $this->created_at,
-            'supplier_id' => $this->supplier_id,
-            'company_id' => $this->company_id,
+            'supplier_id' => $this->supplier_id
         ]);
 
         if ($this->createTimeRange) {

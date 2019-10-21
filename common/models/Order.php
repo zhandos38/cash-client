@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
 
@@ -21,10 +22,7 @@ use yii\helpers\VarDumper;
  * @property boolean $is_debt
  * @property int $created_at
  * @property int $updated_at
- * @property int $company_id
- *
  * @property DiscountHistory[] $discountHistories
- * @property Company $company
  * @property User $createdBy
  * @property OrderItems[] $orderItems
  */
@@ -59,10 +57,9 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_by', 'customer_id', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
+            [['created_by', 'customer_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['cost', 'service_cost', 'discount_cost', 'total_cost'], 'number'],
             ['is_debt', 'boolean'],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
         ];
     }
@@ -83,13 +80,12 @@ class Order extends \yii\db\ActiveRecord
             'status' => 'Статус',
             'created_at' => 'Создано в',
             'updated_at' => 'Обновлено в',
-            'is_debt' => 'В долг',
-            'company_id' => 'Компания'
+            'is_debt' => 'В долг'
         ];
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getDiscountHistories()
     {
@@ -97,15 +93,7 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompany()
-    {
-        return $this->hasOne(Company::className(), ['id' => 'company_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getCreatedBy()
     {
@@ -113,7 +101,7 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getCustomer()
     {
@@ -121,7 +109,7 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getOrderItems()
     {
@@ -129,7 +117,7 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getDebtHistory()
     {

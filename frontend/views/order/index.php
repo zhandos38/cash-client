@@ -35,8 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'attribute' => 'created_by',
-                'value' => 'createdBy.full_name'
+                'attribute' => 'staff_name',
+                'value' => 'createdBy.full_name',
+                'label' => 'Создал'
             ],
             [
                 'attribute' => 'customer_name',

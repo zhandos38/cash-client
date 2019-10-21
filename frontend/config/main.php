@@ -16,7 +16,10 @@ return [
     'modules' => [
         'gridview' => [
             'class' => 'kartik\grid\Module'
-        ]
+        ],
+        'settings' => [
+            'class' => 'pheme\settings\Module'
+        ],
     ],
     'components' => [
         'request' => [
@@ -50,6 +53,9 @@ return [
             'rules' => [
                 'add-staff' => 'site/add-staff'
             ],
+        ],
+        'settings' => [
+            'class' => 'frontend\components\Settings'
         ],
     ],
     'params' => $params,
