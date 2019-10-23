@@ -66,7 +66,7 @@ $totalPaid = $invoice->debtHistorySum;
 <?php
 
 $js =<<<JS
-$(document).on('beforeSubmit', 'form#{$model->formName()}', function(event) {
+$('form#{$model->formName()}').on('beforeSubmit', function(event) {
     let data = $( this ).serialize();
     
     $.post({
