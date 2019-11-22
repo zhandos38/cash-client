@@ -5,7 +5,9 @@ namespace console\controllers;
 
 use common\models\Order;
 use yii\console\Controller;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
+use yii\helpers\VarDumper;
 use yii\httpclient\Client;
 
 /**
@@ -16,9 +18,52 @@ class ExportController extends Controller
 {
     public function actionOrders()
     {
-        $data = [];
+        /** @var Order $orders */
+        $orders = Order::find()->where(['is_sent' => false])->all();
+
+        if (!$orders)
+            return false;
+
+        foreach ($orders as $order) {
+            $order->is_sent = true;
+            $order->save();
+
+            $data = ArrayHelper::toArray($orders, [
+                'common\models\Order' => [
+                    'number',
+                    'created_by',
+                    'customer_id',
+                    'cost',
+                    'total_cost',
+                    'taken_cash',
+                    'pay_id',
+                    'pay_status',
+                    'status',
+                    'is_debt',
+                    'shift_id',
+                    'comment',
+                    'is_sent',
+                    'created_at',
+                    'updated_at',
+                    'products' => function(Order $model) {
+                        return $model->orderItems;
+                    }
+                ]
+            ]);
+        }
+
+        $this->send($data);
+
+        return true;
+    }
+
+    private function send($data)
+    {
         $token = \Yii::$app->settings->getToken();
-        $orders = Order::find()->where(['is_sent' => false])->asArray()->all();
+
+        $fp = fopen("c:/test.txt", "a+");
+        fwrite($fp, Json::encode($data));
+        fclose($fp);
 
         $client = new Client();
         $response = $client->createRequest()
@@ -26,7 +71,7 @@ class ExportController extends Controller
             ->setUrl('http://api.cash/v1/orders')
             ->addHeaders(['Authorization' => 'Bearer ' . $token])
             ->addHeaders(['content-type' => 'application/json'])
-            ->setData(['token' => $token, 'orders' => $orders])
+            ->setData(['token' => $token, 'data' => $data])
             ->send();
 
         $fp = fopen("c:/test.txt", "a+");
