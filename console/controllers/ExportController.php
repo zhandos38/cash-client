@@ -68,7 +68,7 @@ class ExportController extends Controller
         $client = new Client();
         $response = $client->createRequest()
             ->setMethod('POST')
-            ->setUrl('http://api.cash/v1/orders')
+            ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/orders')
             ->addHeaders(['Authorization' => 'Bearer ' . $token])
             ->addHeaders(['content-type' => 'application/json'])
             ->setData(['token' => $token, 'data' => $data])
