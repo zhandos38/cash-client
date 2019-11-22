@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "order_items".
@@ -21,9 +22,13 @@ use Yii;
  *
  * @property Order $order
  * @property Product $product
+ * @property bool $status [tinyint(3)]
  */
 class OrderItems extends \yii\db\ActiveRecord
 {
+    const STATUS_CLOSED = 0;
+    const STATUS_PARTIAL_RETURNED = 1;
+    CONST STATUS_CANCELED = 2;
     /**
      * {@inheritdoc}
      */
@@ -32,13 +37,20 @@ class OrderItems extends \yii\db\ActiveRecord
         return 'order_items';
     }
 
+    public function behaviors()
+    {
+        return [
+            'class' => TimestampBehavior::className()
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['product_id', 'order_id', 'created_at', 'updated_at', 'took_at', 'finished_at'], 'integer'],
+            [['product_id', 'order_id', 'created_at', 'updated_at', 'took_at', 'finished_at', 'status'], 'integer'],
             [['quantity', 'real_price'], 'number'],
             [['name', 'barcode'], 'string', 'max' => 255],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],

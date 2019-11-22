@@ -1,0 +1,51 @@
+.cash-draw__container {
+    display: flex;
+}
+.transactions-list {
+    width: 75%;
+}
+.cash-draw__shift {
+    width: 25%;
+}
+
+/* Transaction */
+.transaction-modal__wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 80;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+}
+.transaction-modal {
+    background: #efefef;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(1);
+    width: 45%;
+    padding: 4px 8px;
+}
+.transaction-modal__container {
+    padding: 0 20px 40px 20px;
+}
+.transaction-modal__close {
+    cursor: pointer;
+}
+.numPad {
+    display: flex;
+    align-items: flex-end;
+}
+.numpad__button {
+    width: 110.6px;
+    height: 60px;
+}
+.numpad-extension {
+    /*display: flex;*/
+    margin-top: 5px;
+}
+.numpad-extension__button {
+    width: 108.4px;
+    height: 60px;
+}

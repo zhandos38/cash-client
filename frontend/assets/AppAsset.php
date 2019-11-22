@@ -12,9 +12,16 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'https://fonts.googleapis.com/css?family=Alegreya+Sans+SC&display=swap',
         'css/site.css',
+        'css/font-awesome.min.css',
+        'css/bootstrap.min.css',
+        'css/bootstrap-theme.min.css',
     ];
     public $js = [
+        'js/bootstrap.min.js',
+        'js/ymap.js',
+        'js/common.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

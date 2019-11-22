@@ -1,11 +1,17 @@
 <?php
 namespace frontend\controllers;
 
+use frontend\models\InitForm;
+use common\models\User;
 use frontend\models\AddStaffForm;
+use frontend\models\ChangePasswordForm;
+use frontend\models\EditProfile;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidParamException;
+use yii\helpers\VarDumper;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -28,16 +34,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'except' => ['login', 'error'],
+                'except' => ['login', 'request-password-reset', 'reset-password', 'verify', 'error', 'activate'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index'],
-                        'roles' => ['@']
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['logout'],
                         'roles' => ['@']
                     ]
                 ],
@@ -84,8 +84,15 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        $this->layout = '@app/views/layouts/login';
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
+        }
+
+
+        if (Yii::$app->settings->getBalance() === null) {
+            return $this->redirect(['site/activate']);
         }
 
         $model = new LoginForm();
@@ -98,6 +105,20 @@ class SiteController extends Controller
                 'model' => $model,
             ]);
         }
+    }
+
+    public function actionActivate()
+    {
+        $model = new InitForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->activate()) {
+            Yii::$app->settings->setBalance(0);
+            return $this->redirect(['site/index']);
+        }
+
+        return $this->render('activation', [
+            'model' => $model
+        ]);
     }
 
     /**
@@ -121,7 +142,7 @@ class SiteController extends Controller
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
+            if ($model->sendRequest(Yii::$app->params['adminEmail'])) {
                 Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
             } else {
                 Yii::$app->session->setFlash('error', 'There was an error sending your message.');
@@ -136,16 +157,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays about page.
-     *
-     * @return mixed
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
-
-    /**
      * Requests password reset.
      *
      * @return mixed
@@ -155,11 +166,11 @@ class SiteController extends Controller
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Проверьте свою электронную почту для получения дальнейших инструкций.'));
 
                 return $this->goHome();
             } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
+                Yii::$app->session->setFlash('error', Yii::t('app', 'Извините, мы не можем сбросить пароль для указанного ИИН/БИН.'));
             }
         }
 
@@ -179,12 +190,12 @@ class SiteController extends Controller
     {
         try {
             $model = new ResetPasswordForm($token);
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestHttpException($e->getMessage());
+        } catch (InvalidParamException $e) {
+            return $this->redirect('/site/login');
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-            Yii::$app->session->setFlash('success', 'New password saved.');
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Новый пароль сохранен.'));
 
             return $this->goHome();
         }
@@ -237,6 +248,47 @@ class SiteController extends Controller
 
         return $this->render('resendVerificationEmail', [
             'model' => $model
+        ]);
+    }
+
+    public function actionVerify($token){
+        try {
+            $model = User::findOne(['password_reset_token'=>$token]);
+            if($model){
+                $model->status = User::STATUS_ACTIVE;
+                $model->removePasswordResetToken();
+                $model->save();
+            }else{
+                return $this->redirect('/site/login');
+            }
+        } catch (InvalidParamException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        return $this->render('verify', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionEditProfile()
+    {
+        $editForm = new EditProfile();
+        $user = User::findOne(Yii::$app->user->identity->id);
+
+        $model = new ChangePasswordForm();
+        if (Yii::$app->request->isPost){
+            $model->load(Yii::$app->request->post());
+            if ($model->validate() && $model->save()){
+                Yii::$app->session->setFlash('success','Пароль успешно изменен!');
+                return $this->redirect('/site/index');
+            }else{
+                Yii::$app->session->setFlash('danger','Произошла ошибка при смене пароля');
+            }
+        }
+        return $this->render('edit-profile', [
+            'user' => $user,
+            'editForm' => $editForm,
+            'model' => $model,
         ]);
     }
 }

@@ -21,6 +21,7 @@ class CustomerForm extends Model
     public function rules()
     {
         return [
+            [['address', 'full_name', 'phone'], 'required'],
             [['address', 'full_name', 'phone', 'birthday_date'], 'string', 'max' => 255],
         ];
     }
@@ -45,6 +46,7 @@ class CustomerForm extends Model
      * Invoice adding.
      *
      * @return bool whether the creating new account was successful and email was sent
+     * @throws \yii\db\Exception
      */
     public function save()
     {
@@ -62,7 +64,7 @@ class CustomerForm extends Model
             $model->birthday_date = strtotime($this->birthday_date);
             $model->status = Customer::STATUS_ACTIVE;
             if (!$model->save(false)) {
-                throw new ErrorException( 'Customer not save!' );
+                throw new ErrorException( 'Customer is not saved!' );
             }
             $transaction->commit();
         } catch (ErrorException $e) {

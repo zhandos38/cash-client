@@ -6,6 +6,7 @@ use common\models\Supplier;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use frontend\assets\InvoiceAsset;
 
@@ -18,6 +19,8 @@ InvoiceAsset::register($this);
 ?>
 
 <div class="invoice-form">
+
+    <a href="<?= Url::to(['invoice/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 
     <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
 
@@ -221,7 +224,6 @@ $(document).scannerDetection({
 	avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
 	ignoreIfFocusOn: 'input',
 	onComplete: function(barcode, qty){
-        console.log('scanner works!');
         $('.add-item').trigger('click');
         checkProduct(barcode);
     }

@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use kartik\daterange\DateRangeBehavior;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Customer;
@@ -12,32 +11,6 @@ use common\models\Customer;
  */
 class CustomerSearch extends Customer
 {
-    public $createTimeRange;
-    public $createTimeStart;
-    public $createTimeEnd;
-
-    public $birthTimeRange;
-    public $birthTimeStart;
-    public $birthTimeEnd;
-
-    public function behaviors()
-    {
-        return [
-            [
-                'class' => DateRangeBehavior::className(),
-                'attribute' => 'createTimeRange',
-                'dateStartAttribute' => 'createTimeStart',
-                'dateEndAttribute' => 'createTimeEnd',
-            ],
-            [
-                'class' => DateRangeBehavior::className(),
-                'attribute' => 'birthTimeRange',
-                'dateStartAttribute' => 'birthTimeStart',
-                'dateEndAttribute' => 'birthTimeEnd',
-            ]
-        ];
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -46,8 +19,6 @@ class CustomerSearch extends Customer
         return [
             [['id', 'birthday_date', 'card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at'], 'integer'],
             [['full_name', 'phone', 'address'], 'safe'],
-            [['createTimeRange'], 'match', 'pattern' => '/^.+\s\-\s.+$/'],
-            [['birthTimeRange'], 'match', 'pattern' => '/^.+\s\-\s.+$/']
         ];
     }
 
@@ -102,16 +73,6 @@ class CustomerSearch extends Customer
         $query->andFilterWhere(['like', 'full_name', $this->full_name])
             ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'address', $this->address]);
-
-        if ($this->createTimeRange) {
-            $query->andFilterWhere(['>=', 'created_at', $this->createTimeStart+((60*60)*6)])
-                ->andFilterWhere(['<', 'created_at', $this->createTimeEnd+((60*60)*6)]);
-        }
-
-        if ($this->birthTimeRange) {
-            $query->andFilterWhere(['>=', 'created_at', $this->birthTimeStart+((60*60)*6)])
-                ->andFilterWhere(['<', 'created_at', $this->birthTimeEnd+((60*60)*6)]);
-        }
 
         return $dataProvider;
     }

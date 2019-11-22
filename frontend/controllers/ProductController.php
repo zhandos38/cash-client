@@ -37,7 +37,7 @@ class ProductController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['update'],
+                        'actions' => ['update', 'set-favourite'],
                         'roles' => ['updateWarehouse']
                     ],
                     [
@@ -49,6 +49,11 @@ class ProductController extends Controller
                         'allow' => true,
                         'actions' => ['search'],
                         'roles' => ['createOrder']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['main'],
+                        'roles' => ['manageWarehouse']
                     ],
                 ],
             ],
@@ -74,6 +79,11 @@ class ProductController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionMain()
+    {
+        return $this->render('main');
     }
 
     /**
@@ -133,6 +143,8 @@ class ProductController extends Controller
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -141,29 +153,15 @@ class ProductController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionSearch($term)
+    public function actionSetFavourite($id)
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $data = [];
-        $searchResult = \common\models\es\Product::find()
-            ->query([
-                "multi_match" => [
-                    'query' => $term,
-                    'fields' => [
-                        'name',
-                        'barcode'
-                    ]
-                ]
-            ])
-            ->asArray()
-            ->all();
-        foreach ( $searchResult as $value => $item ) {
-            $data[] = [
-                'id' => $item['_source']['id'],
-                'label' => $item['_source']['name'],
-            ];
+        if (Yii::$app->request->isAjax) {
+            $product = Product::findOne(['id' => $id]);
+            $product->is_favourite == 0 ? $product->is_favourite = 1 : $product->is_favourite = 0;
+            if ($product->save())
+                return true;
         }
-        return $data;
+        return false;
     }
 
     /**

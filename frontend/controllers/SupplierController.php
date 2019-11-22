@@ -44,6 +44,11 @@ class SupplierController extends Controller
                         'actions' => ['delete'],
                         'roles' => ['deleteSupplier']
                     ],
+                    [
+                        'allow' => true,
+                        'actions' => ['main'],
+                        'roles' => ['manageSupplier']
+                    ],
                 ],
             ],
             'verbs' => [
@@ -68,6 +73,11 @@ class SupplierController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionMain()
+    {
+        return $this->render('main');
     }
 
     /**

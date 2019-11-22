@@ -32,7 +32,7 @@ class DiscountHistory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'customer_id', 'discount_value', 'created_at'], 'integer'],
+            [['customer_id', 'discount_value', 'created_at'], 'integer'],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
         ];

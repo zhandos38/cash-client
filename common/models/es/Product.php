@@ -20,7 +20,7 @@ class Product extends ActiveRecord
 {
     public static function index()
     {
-        return 'products';
+        return 'local_products';
     }
 
     public static function type()
@@ -201,7 +201,7 @@ class Product extends ActiveRecord
     public static function addProductById($product_id)
     {
         if (!$product = \common\models\Product::findOne(['id' => $product_id])) {
-            throw new Exception('Product not found');
+            return false;
         }
 
         $esProduct = new ElasticProduct();
@@ -216,7 +216,16 @@ class Product extends ActiveRecord
         if ($esProduct = ElasticProduct::find()->andWhere(['id' => $product_id])->one()) {
             $esProduct->delete();
         } else {
-            throw new Exception('Product not found');
+            return false;
         }
+    }
+
+    public static function findProductById($product_id)
+    {
+        $esProduct = ElasticProduct::find()->andWhere(['id' => $product_id])->one();
+        if ($esProduct)
+            return true;
+        else
+            return false;
     }
 }

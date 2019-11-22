@@ -4,8 +4,10 @@ namespace frontend\controllers;
 
 use backend\modules\rbac\Module;
 use backend\modules\rbac\models\AssignmentSearch;
+use common\models\ShiftHistory;
 use frontend\models\forms\AssignmentForm;
 use frontend\models\AddStaffForm;
+use frontend\models\Staff;
 use Yii;
 use common\models\User;
 use frontend\models\StaffSearch;
@@ -34,12 +36,12 @@ class StaffController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index'],
+                        'actions' => ['index', 'main'],
                         'roles' => ['manageStaff']
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create'],
+                        'actions' => ['create', 'open-shift', 'close-shift'],
                         'roles' => ['createStaff']
                     ],
                     [
@@ -83,6 +85,11 @@ class StaffController extends Controller
         ]);
     }
 
+    public function actionMain()
+    {
+        return $this->render('main');
+    }
+
     /**
      * Displays a single User model.
      * @param integer $id
@@ -100,13 +107,14 @@ class StaffController extends Controller
      * Signs user up.
      *
      * @return mixed
+     * @throws \yii\base\Exception
      */
     public function actionCreate()
     {
         $model = new AddStaffForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
             Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+            return $this->render('main');
         }
 
         return $this->render('create', [
@@ -134,12 +142,26 @@ class StaffController extends Controller
         ]);
     }
 
+    public function actionOpenShift()
+    {
+        Yii::$app->object->createShift();
+        return $this->redirect(['/']);
+    }
+
+    public function actionCloseShift()
+    {
+        Yii::$app->object->closeShift();
+        return $this->redirect(['/']);
+    }
+
     /**
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -168,6 +190,7 @@ class StaffController extends Controller
      * Assignment roles to user
      * @param mixed $id The user id
      * @return mixed
+     * @throws UserException
      */
     public function actionPermissions() {
         $id = Yii::$app->request->post('id');

@@ -6,26 +6,29 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
-$this->title = 'Request password reset';
+$this->title = 'Сброс пароля';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-request-password-reset">
-    <h1><?= Html::encode($this->title) ?></h1>
+<a href="<?= Url::to('/site/login') ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
+<div class="site-login">
+    <img src="/img/ims.png" style="height: 110px; margin-bottom: 30px">
 
-    <p>Please fill out your email. A link to reset password will be sent there.</p>
+    <p class="signup-text"><?= Yii::t('signup','Для сброса пароля введите свой ИИН/БИН'); ?></p>
 
     <div class="row">
-        <div class="col-lg-5">
             <?php $form = ActiveForm::begin(['id' => 'request-password-reset-form']); ?>
 
-                <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+                <?= $form->field($model, 'username')->label(false)->textInput(['placeholder' => 'Введите ИИН/БИН']) ?>
 
                 <div class="form-group">
-                    <?= Html::submitButton('Send', ['class' => 'btn btn-primary']) ?>
+                    <?= Html::submitButton('Сбросить пароль', ['class' => 'login-button']) ?>
                 </div>
 
             <?php ActiveForm::end(); ?>
-        </div>
+    </div>
+    <div class="support-info">
+        <p>При возникновении вопросов по работе с платформой,<br/> обратитесь в техническую поддержку: +7(777)777-77-77</p>
     </div>
 </div>

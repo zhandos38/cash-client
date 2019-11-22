@@ -3,6 +3,11 @@
 
 namespace frontend\models;
 
+/**
+ * @property int $id
+ * @property int $shift_id
+ * @property double $cost
+ */
 
 use common\models\InvoiceDebtHistory;
 use common\models\Order;
@@ -23,6 +28,8 @@ class OrderForm extends Model
     public $status;
     public $customer_id;
     public $paid_amount;
+    public $shift_id;
+    public $number;
 
     /**
      * {@inheritdoc}
@@ -30,7 +37,7 @@ class OrderForm extends Model
     public function rules()
     {
         return [
-            [['customer_id'], 'integer'],
+            [['customer_id', 'shift_id', 'number'], 'integer'],
             [['cost'], 'number'],
             ['paid_amount', 'default', 'value' => 0],
             ['paid_amount', 'double'],
@@ -57,9 +64,12 @@ class OrderForm extends Model
      * Invoice adding.
      *
      * @return bool whether the creating new account was successful and email was sent
+     * @throws UserException
+     * @throws \yii\db\Exception
      */
     public function save()
     {
+        $user_id = Yii::$app->user->identity->getId();
         if (!$this->validate()) {
             return null;
         }
@@ -70,7 +80,9 @@ class OrderForm extends Model
             $model = new Order();
             $model->cost = $this->cost;
             $model->customer_id = $this->customer_id;
-            $model->created_by = Yii::$app->user->identity->getId();
+            $model->created_by = $user_id;
+            $model->shift_id = $this->shift_id;
+            $model->number = $this->number;
             $model->created_at = time();
 
             $model->is_debt = $this->is_debt;

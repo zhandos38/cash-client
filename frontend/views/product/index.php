@@ -1,10 +1,11 @@
 <?php
 
+use yii\widgets\Pjax;
 use common\models\Product;
 use kartik\daterange\DateRangePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\ProductSearch */
@@ -17,11 +18,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Добавить товар', ['invoice/create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <a href="<?= Url::to(['product/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 
-    <?php Pjax::begin() ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <?php Pjax::begin(['id' => 'product-index__table']); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -31,10 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'name',
             'barcode',
-//            'quantity',
-//            'price_wholesale',
-            //'price_retail',
-            //'wholesale_value',
             [
                 'attribute' => 'is_partial',
                 'value' => function(Product $model) {
@@ -62,6 +59,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => false
             ],
             [
+                'attribute' => 'is_favourite',
+                'value' => function(Product $model) {
+                    if ($model->is_favourite == Product::IS_FAVOURITE_NO) {
+                        return '<div class="product__favourite-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-remove"></i> Не избранный</div>';
+                    } elseif ($model->is_favourite == Product::IS_FAVOURITE_YES) {
+                        return '<div class="product__favourite-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-ok"></i> Избранный</div>';
+                    }
+                    return false;
+                },
+                'filter' => Product::getIsFavouriteLabels(),
+                'format' => 'raw'
+            ],
+            [
                 'attribute' => 'updated_at',
                 'value' => function(Product $model) {
                     return date('d-m-Y H:i', $model->updated_at);
@@ -78,14 +88,29 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]),
             ],
-
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template'=>'{update}',
-            ],
         ],
     ]); ?>
+    <?php Pjax::end(); ?>
 
-    <?php Pjax::end() ?>
 
 </div>
+<?php
+$js =<<<JS
+$(document).on("click", '.product__favourite-btn', function() {
+    let id = $( this ).data('id');
+    $.get({
+        url: '/product/set-favourite',
+        data: {id: id},
+        success: function(result) {
+            console.log(result);
+            $.pjax.reload({container: '#product-index__table'});
+        },
+        error: function() {
+          console.log('Возникла ошибка!');
+        }
+    });
+});
+JS;
+
+$this->registerJs($js);
+?>

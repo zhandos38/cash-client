@@ -6,10 +6,10 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model common\models\Order */
 
-$this->title = 'Обновить заказ: ' . $model->id;
+$this->title = 'Изменить заказ: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Заказы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Обновить';
+$this->params['breadcrumbs'][] = 'Изменить';
 ?>
 <div class="order-update">
 

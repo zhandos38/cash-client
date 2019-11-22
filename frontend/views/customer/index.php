@@ -1,28 +1,25 @@
 <?php
 
 use common\models\Customer;
-use kartik\daterange\DateRangePicker;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\CustomerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Покупатели';
+$this->title = 'Клиенты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="customer-index">
 
+    <a href="<?= Url::to(['customer/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
+
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Добавить покупателя', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php Pjax::begin() ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -37,18 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'birthday_date',
                 'value' => function(Customer $model) {
                     return date('d/m/Y', $model->created_at);
-                },
-                'filter' => DateRangePicker::widget([
-                    'model' => $searchModel,
-                    'attribute' => 'birthTimeRange',
-                    'convertFormat' => true,
-                    'pluginOptions' => [
-                        'locale' => [
-                            'format'=>'Y-m-d'
-                        ],
-                        'convertFormat'=>true,
-                    ]
-                ]),
+                }
             ],
             [
                 'attribute' => 'status',
@@ -61,25 +47,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'created_at',
                 'value' => function(Customer $model) {
                     return date('d/m/Y', $model->created_at);
-                },
-                'filter' => DateRangePicker::widget([
-                    'model' => $searchModel,
-                    'attribute' => 'createTimeRange',
-                    'convertFormat' => true,
-                    'pluginOptions' => [
-                        'locale' => [
-                            'format'=>'Y-m-d'
-                        ],
-                        'convertFormat'=>true,
-                    ]
-                ]),
-            ],
-            [
-                'class' => 'yii\grid\ActionColumn'
+                }
             ],
         ],
     ]); ?>
 
-    <?php Pjax::end() ?>
 
 </div>

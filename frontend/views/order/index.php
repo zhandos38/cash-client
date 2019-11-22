@@ -6,6 +6,7 @@ use kartik\daterange\DateRangePicker;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
@@ -19,15 +20,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Создать заказ', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <a href="<?= Url::to(['order/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 
     <?php Pjax::begin([
         'id' => 'order-list'
     ]);?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -35,9 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'attribute' => 'staff_name',
-                'value' => 'createdBy.full_name',
-                'label' => 'Создал'
+                'attribute' => 'created_by',
+                'value' => 'createdBy.full_name'
             ],
             [
                 'attribute' => 'customer_name',
@@ -88,14 +85,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]),
             ],
-
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {delete}'
-            ],
         ],
     ]); ?>
+
     <?php Pjax::end();?>
+
 </div>
 <?php
 Modal::begin([

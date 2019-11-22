@@ -15,6 +15,7 @@ use Yii;
  * @property int $status
  * @property int $created_at
  * @property int $updated_at
+ *
  * @property Customer[] $customers
  */
 class Discount extends \yii\db\ActiveRecord
@@ -33,9 +34,8 @@ class Discount extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['value', 'quantity', 'is_limited', 'status', 'created_at', 'updated_at', 'company_id'], 'integer'],
-            [['name'], 'string', 'max' => 255],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
+            [['value', 'quantity', 'is_limited', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['name'], 'string', 'max' => 255]
         ];
     }
 
@@ -52,8 +52,7 @@ class Discount extends \yii\db\ActiveRecord
             'is_limited' => 'Is Limited',
             'status' => 'Status',
             'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'company_id' => 'Company ID',
+            'updated_at' => 'Updated At'
         ];
     }
 

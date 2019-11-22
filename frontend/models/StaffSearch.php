@@ -42,6 +42,7 @@ class StaffSearch extends User
     public function search($params)
     {
         $user = Yii::$app->user->identity;
+        $session = Yii::$app->session;
         $query = User::find()
             ->andWhere(['!=', 'id', $user->getId()]);
 

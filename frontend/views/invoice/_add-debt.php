@@ -68,13 +68,14 @@ $totalPaid = $invoice->debtHistorySum;
 $js =<<<JS
 $('form#{$model->formName()}').on('beforeSubmit', function(event) {
     let data = $( this ).serialize();
+    let parent_modal = $( this ).parents('.modal');
     
     $.post({
         url: '/invoice/add-debt',
         data: data,
         success: function(result) {
             $.pjax.reload({container: '#invoice-list'});
-            $('#invoice-debt-modal').modal('hide');
+            parent_modal.modal('hide');
         },
         error: function() {
             console.log('error');

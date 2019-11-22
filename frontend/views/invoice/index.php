@@ -5,6 +5,7 @@ use kartik\daterange\DateRangePicker;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
@@ -18,10 +19,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <a href="<?= Url::to(['invoice/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
+
     <?php Pjax::begin(['id' => 'invoice-list']);?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -70,11 +71,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             'convertFormat'=>true,
                         ]
                     ]),
-            ],
-
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template'=>'{view} {delete}',
             ],
         ],
     ]); ?>

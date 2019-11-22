@@ -54,8 +54,11 @@ return [
                 'add-staff' => 'site/add-staff'
             ],
         ],
+        'object' => [
+            'class' => 'frontend\components\ObjectComponent'
+        ],
         'settings' => [
-            'class' => 'frontend\components\Settings'
+            'class' => 'common\components\Settings'
         ],
     ],
     'params' => $params,

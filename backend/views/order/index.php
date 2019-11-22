@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Order;
+use common\models\CompanyObjects;
 use insolita\wgadminlte\LteBox;
 use insolita\wgadminlte\LteConst;
 use kartik\daterange\DateRangePicker;
@@ -37,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function(Order $model) {
                     return $model->company->name;
                 },
-                'filter' => ArrayHelper::map(\common\models\Company::find()->asArray()->all(), 'id', 'name'),
+                'filter' => ArrayHelper::map(CompanyObjects::find()->asArray()->all(), 'id', 'name'),
                 'filterType' => GridView::FILTER_SELECT2,
                 'filterWidgetOptions' => [
                     'options' => ['prompt' => ''],

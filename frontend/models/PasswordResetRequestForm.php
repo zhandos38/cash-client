@@ -10,8 +10,8 @@ use common\models\User;
  */
 class PasswordResetRequestForm extends Model
 {
+    public $username;
     public $email;
-
 
     /**
      * {@inheritdoc}
@@ -19,15 +19,30 @@ class PasswordResetRequestForm extends Model
     public function rules()
     {
         return [
-            ['email', 'trim'],
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'exist',
+            ['username', 'trim'],
+            ['username', 'required', 'message' => 'Введите "{attribute}"'],
+            ['username', 'exist',
                 'targetClass' => '\common\models\User',
-                'filter' => ['status' => User::STATUS_ACTIVE],
-                'message' => 'There is no user with this email address.'
+                'message' => 'Данный ИИН/БИН не зарегистрирован в системе!'
             ],
         ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'username' => Yii::t('user', 'Username'),
+        ];
+    }
+
+    public function sendRequest()
+    {
+
+        $email = User::findOne(['email' => $this->email]);
+
+        if ($this->$email) {
+            return $this->sendEmail();
+        }
     }
 
     /**
@@ -35,13 +50,11 @@ class PasswordResetRequestForm extends Model
      *
      * @return bool whether the email was send
      */
+
     public function sendEmail()
     {
         /* @var $user User */
-        $user = User::findOne([
-            'status' => User::STATUS_ACTIVE,
-            'email' => $this->email,
-        ]);
+        $user = User::findOne(['username' => $this->username]);
 
         if (!$user) {
             return false;
@@ -60,9 +73,9 @@ class PasswordResetRequestForm extends Model
                 ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
                 ['user' => $user]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
-            ->setTo($this->email)
-            ->setSubject('Password reset for ' . Yii::$app->name)
+            ->setFrom([Yii::$app->params['supportEmail'] => 'Платформа IMS'])
+            ->setTo($user->email)
+            ->setSubject('Запрос на сброс пароля')
             ->send();
     }
 }

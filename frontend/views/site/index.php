@@ -2,53 +2,150 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'Index';
+$this->title = 'Главная';
 
-?>
+use yii\helpers\Url; ?>
+
+<a href="<?= Url::to('/site/logout') ?>" data-method="post" class="back-button"><i class="fa fa-reply-all" aria-hidden="true"></i> Выйти (<?php  if (!Yii::$app->user->isGuest) echo Yii::$app->user->identity->username;?>)</a>
+
 <div class="site-index">
-
-    <div class="jumbotron">
-        <h1>Frontend!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4">
+            <a class="admin-block" href="<?= Url::to('/site/edit-profile') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fa fa-address-card" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Профиль
+                    </div>
+                </div>
+            </a>
         </div>
-
+        <div class="col-xs-6 col-sm-6 col-md-4" style="<?= Yii::$app->user->can('manageStaff') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/staff/main') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-address-card" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Сотрудники
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-4" style="<?= Yii::$app->user->can('manageCustomer') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/customer/main') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-users" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Клиенты
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-4" style="<?= Yii::$app->user->can('manageWarehouse') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/product/main') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-inventory" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Склад
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-4" style="<?= Yii::$app->user->can('manageOrder') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/order/index') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-clipboard" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Заказы
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-4" style="<?= Yii::$app->user->can('manageInvoice') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/invoice/main') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-file-invoice" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Накладные
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-4" style="<?= Yii::$app->user->can('manageSupplier') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/supplier/main') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-industry-alt" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Поставщики
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-4" style="<?= Yii::$app->user->can('createOrder') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/order/test-create') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-store" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Режим магазина
+                    </div>
+                </div>
+            </a>
+        </div>
+        <?php if (!Yii::$app->object->getShiftId()): ?>
+            <div class="col-xs-6 col-sm-6 col-md-4" style="<?= Yii::$app->user->can('createOrder') ? '' : 'display: none' ?>">
+                <a class="admin-block" href="<?= Url::to(['/staff/open-shift']) ?>">
+                    <div class="admin-block__item">
+                        <div class="admin-block__icon">
+                            <i class="fas fa-hourglass-start" aria-hidden="true"></i>
+                        </div>
+                        <div class="admin-block__title">
+                            Открыть смену
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <?php else: ?>
+            <div class="col-xs-6 col-sm-6 col-md-4" style="<?= Yii::$app->user->can('createOrder') ? '' : 'display: none' ?>">
+                <a class="admin-block" href="<?= Url::to('/staff/close-shift') ?>">
+                    <div class="admin-block__item">
+                        <div class="admin-block__icon">
+                            <i class="fas fa-flag-checkered" aria-hidden="true"></i>
+                        </div>
+                        <div class="admin-block__title">
+                            Закрыть смену
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <?php endif; ?>
+        <div class="col-xs-6 col-sm-6 col-md-4">
+            <a class="admin-block" href="<?= Url::to('/cash-draw/index') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-cash-register" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Касса
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
+
+

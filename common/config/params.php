@@ -5,4 +5,6 @@ return [
     'senderEmail' => 'noreply@example.com',
     'senderName' => 'Example.com mailer',
     'user.passwordResetTokenExpire' => 3600,
+    'robotEmail' => 'robot@ims.kz',
+    'frontendDomain' => 'http://ims-tmt.kz/',
 ];

@@ -2,6 +2,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\Model;
 use common\models\User;
 use yii\helpers\VarDumper;
@@ -39,7 +40,7 @@ class AddStaffForm extends Model
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
 
             ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            ['password', 'string', 'min' => 4],
 
             [['full_name', 'address', 'role', 'phone'], 'string'],
             [['status'], 'integer']
@@ -62,9 +63,13 @@ class AddStaffForm extends Model
      * Signs user up.
      *
      * @return bool whether the creating new account was successful and email was sent
+     * @throws ErrorException
+     * @throws \yii\base\Exception
      */
     public function signup()
     {
+        $authManager = Yii::$app->authManager;
+
         if (!$this->validate()) {
             return null;
         }
@@ -80,8 +85,14 @@ class AddStaffForm extends Model
         $user->phone = $this->phone;
         $user->role = $this->role;
         $user->status = User::STATUS_ACTIVE;
-        return $user->save();
 
+        if ($user->save()) {
+            $authManager->assign($authManager->getRole(User::ROLE_DIRECTOR), $user->id);
+        } else {
+            throw new ErrorException('Staff is not created!');
+        }
+
+        return true;
     }
 
     /**

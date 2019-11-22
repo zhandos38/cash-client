@@ -27,11 +27,15 @@ use common\models\es\Product as ElasticProduct;
  * @property int $percentage_rate
  *
  * @property OrderItems[] $orderItems
+ * @property bool $is_favourite [tinyint(1)]
  */
 class Product extends \yii\db\ActiveRecord
 {
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 1;
+
+    const IS_FAVOURITE_NO = 0;
+    const IS_FAVOURITE_YES = 1;
 
     /**
      * {@inheritdoc}
@@ -57,6 +61,7 @@ class Product extends \yii\db\ActiveRecord
             [['wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at'], 'integer'],
             [['quantity', 'price_wholesale', 'price_retail', 'percentage_rate'], 'number'],
             [['barcode', 'name'], 'string', 'max' => 255],
+            ['is_favourite', 'boolean']
         ];
     }
 
@@ -75,6 +80,7 @@ class Product extends \yii\db\ActiveRecord
             'wholesale_value' => 'Оптом',
             'is_partial' => 'Частичный',
             'status' => 'Статус',
+            'is_favourite' => 'Избранный',
             'created_at' => 'Дата добавление',
             'updated_at' => 'Дата обновление',
         ];
@@ -86,11 +92,6 @@ class Product extends \yii\db\ActiveRecord
     public function getOrderItems()
     {
         return $this->hasMany(OrderItems::className(), ['product_id' => 'id']);
-    }
-
-    public function getCompany()
-    {
-        return $this->hasOne(Company::className(), ['id' => 'company_id']);
     }
 
     public static function getStatuses() {
@@ -124,14 +125,39 @@ class Product extends \yii\db\ActiveRecord
         return ArrayHelper::getValue(static::getBooleanStatuses(), $this->is_partial);
     }
 
+    public static function getIsFavouriteLabels()
+    {
+        return [
+            0 => 'Нет',
+            1 => 'Да'
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsFavouriteLabel()
+    {
+        return ArrayHelper::getValue(static::getBooleanStatuses(), $this->is_partial);
+    }
+
     public function afterSave($insert, $changedAttributes)
     {
         if (!$insert) {
-            if (!$changedAttributes['quantity']) {
+            if (!empty($changedAttributes['status']) && $changedAttributes['status'] <> $this->status) {
                 if ($changedAttributes['status'] == self::STATUS_INACTIVE) {
                     ElasticProduct::addProductById($this->id);
                 } elseif ($changedAttributes['status'] == self::STATUS_ACTIVE) {
                     ElasticProduct::deleteProductById($this->id);
+                }
+            }
+
+            if (!empty($changedAttributes['quantity']) && $changedAttributes['quantity'] <> $this->quantity) {
+
+                if ($this->quantity <= 0 || $this->quantity == 0) {
+                    ElasticProduct::deleteProductById($this->id);
+                } elseif ($this->quantity > 0 && !ElasticProduct::findProductById($this->id)) {
+                    ElasticProduct::addProductById($this->id);
                 }
             }
 
@@ -141,6 +167,7 @@ class Product extends \yii\db\ActiveRecord
                 ElasticProduct::addProductById($this->id);
             }
         }
+
         parent::afterSave($insert, $changedAttributes);
     }
 }

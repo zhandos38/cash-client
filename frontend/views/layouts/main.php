@@ -6,6 +6,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
@@ -26,61 +27,55 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
+<header>
+    <div class="container">
+        <div class="user-info">
+            <?php if (Yii::$app->user->isGuest):?>
+                <a class="ims-title" href="<?= Url::to('/site/login') ?>"></a>
+            <?php else:?>
+                <a class="user-info-btn" href="<?= Url::to('/site/edit-profile') ?>">Вы вошли как: (<?php  if (!Yii::$app->user->isGuest) echo Yii::$app->user->identity->username;?>)</a>
+            <?php endif;?>
+        </div>
+    </div>
+</header>
+
 <div class="wrap">
-    <?php
-    NavBar::begin([
-        'brandLabel' => Html::encode(Yii::$app->name),
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Главная', 'url' => ['/site/index']],
-        ['label' => 'Сотрудники', 'url' => ['/staff']],
-        ['label' => 'Клиенты', 'url' => ['/customer']],
-        ['label' => 'Склад', 'url' => ['/product']],
-        ['label' => 'Заказы', 'url' => ['/order']],
-        ['label' => 'Накладные', 'url' => ['/invoice']],
-        ['label' => 'Поставщики', 'url' => ['/supplier']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        $menuItems[] = ['label' => 'Баланс '. Yii::$app->settings->getBalance(), 'url' => ['#']];
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
-    }
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
-    ?>
+
+<!--    --><?php
+//    NavBar::begin([
+//        'brandLabel' => Html::encode(Yii::$app->name),
+//        'brandUrl' => Yii::$app->homeUrl,
+//        'options' => [
+//            'class' => 'navbar-inverse navbar-fixed-top',
+//        ],
+//    ]);
+//
+//    if (Yii::$app->user->isGuest) {
+//        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+//        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+//    } else {
+//        $menuItems[] = '<li>'
+//            . Html::beginForm(['/site/logout'], 'post')
+//            . Html::submitButton(
+//                'Logout (' . Yii::$app->user->identity->username . ')',
+//                ['class' => 'btn btn-link logout']
+//            )
+//            . Html::endForm()
+//            . '</li>';
+//    }
+//    echo Nav::widget([
+//        'options' => ['class' => 'navbar-nav navbar-right'],
+//        'items' => $menuItems,
+//    ]);
+//    NavBar::end();
+//    ?>
 
     <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
 </div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
-    </div>
-</footer>
 
 <?php $this->endBody() ?>
 </body>

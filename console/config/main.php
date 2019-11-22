@@ -30,6 +30,9 @@ return [
                 ],
             ],
         ],
+        'settings' => [
+            'class' => 'common\components\Settings'
+        ],
     ],
     'params' => $params,
 ];

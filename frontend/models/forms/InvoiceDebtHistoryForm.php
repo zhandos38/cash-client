@@ -44,6 +44,7 @@ class InvoiceDebtHistoryForm extends Model
                 $invoice_debt_history->invoice_id = $this->invoice_id;
                 $invoice_debt_history->created_at = time();
                 $invoice_debt_history->save();
+
             }
 
             if ($invoice->itemsCost == ($invoice->debtHistorySum + $this->paid_amount)) {

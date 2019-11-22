@@ -5,6 +5,7 @@ use marekpetras\yii2ajaxboxwidget\Box;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\StaffSearch */
@@ -14,12 +15,8 @@ $this->title = 'Список сотрудников';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
-
+    <a href="<?= Url::to('/staff/main') ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
     <h1>Список сотрудников</h1>
-
-    <p>
-        <?= Html::a('Добавить сотрудника', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -48,23 +45,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'created_at',
                 'value' => function(User $model) {
                     return date('m.d.Y H:i', $model->created_at);
-                },
-                'filter' => false
-            ],
-
-            [
-                'class' => \yii\grid\ActionColumn::className(),
-                'buttons' => [
-                    'permissions' => function ($url, $model) {
-                        return '<span data-id="' . $model['id'] . '" class="glyphicon glyphicon-book staff__permissions-btn"></span>';
-                    }
-                ],
-                'template'=>'{permissions} {update} {delete}',
+                }
             ],
         ],
     ]); ?>
 
 </div>
+
 <?php
 Modal::begin([
     'header' => '<h4>Разрешения</h4>',

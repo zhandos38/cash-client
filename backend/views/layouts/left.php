@@ -20,6 +20,7 @@
                     ['label' => 'Разделы', 'options' => ['class' => 'header']],
                     ['label' => 'Пользователи', 'icon' => 'fas fa-user', 'url' => ['/user/index']],
                     ['label' => 'Компании', 'icon' => 'fas fa-cubes', 'url' => ['/company/index']],
+                    ['label' => 'Типы объектов', 'icon' => 'fas fa-object-group', 'url' => ['/object-type/index']],
                     ['label' => 'Склады', 'icon' => 'fas fa-home', 'url' => ['/warehouse/index']],
                     ['label' => 'Заказы', 'icon' => 'fas fa-cubes', 'url' => ['/order/index']],
                     ['label' => 'Накладные', 'icon' => 'fas fa-cubes', 'url' => ['/invoice/index']],

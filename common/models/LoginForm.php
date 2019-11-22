@@ -10,7 +10,6 @@ use yii\helpers\VarDumper;
  */
 class LoginForm extends Model
 {
-    public $username;
     public $password;
     public $rememberMe = true;
 
@@ -24,11 +23,19 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['username', 'password'], 'required'],
+            [['password'], 'required', 'message' => 'Введите "{attribute}"'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'rememberMe' => Yii::t('user', 'Remember Me'),
+            'password' => Yii::t('user', 'Password'),
         ];
     }
 
@@ -42,10 +49,16 @@ class LoginForm extends Model
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
-            }
+            $user = $this->getUserByPassword();
+            if (!$user){
+                $this->addError($attribute, 'Неверный ИИН/БИН или пароль!');
+            }else
+                if ($user && $user->status == User::STATUS_INACTIVE){
+                    $this->addError($attribute, 'Ваш аккаунт не активирован, для активации аккаунта сбросьте пароль!');
+                }else
+                    if ($user && !$user->validatePassword($this->password)) {
+                        $this->addError($attribute, 'Неверный ИИН/БИН или пароль!');
+                    }
         }
     }
 
@@ -57,8 +70,9 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            Yii::$app->session->set('object_id', 1);
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            $flag = Yii::$app->user->login($this->getUserByPassword(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            Yii::$app->object->setShift();
+            return $flag;
         }
         
         return false;
@@ -73,6 +87,20 @@ class LoginForm extends Model
     {
         if ($this->_user === null) {
             $this->_user = User::findByUsername($this->username);
+        }
+
+        return $this->_user;
+    }
+
+    /**
+     * Find user by [[password]]
+     *
+     * @return User|null
+     */
+    protected function getUserByPassword()
+    {
+        if ($this->_user === null) {
+            $this->_user = User::findByPassword($this->password);
         }
 
         return $this->_user;

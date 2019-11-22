@@ -6,11 +6,9 @@ use kartik\daterange\DateRangeBehavior;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Order;
-use yii\helpers\VarDumper;
 
 /**
  * OrderSearch represents the model behind the search form of `common\models\Order`.
- * @property int $object_id [int(11)]
  */
 class OrderSearch extends Order
 {
@@ -19,7 +17,6 @@ class OrderSearch extends Order
     public $createTimeEnd;
     public $phone;
     public $customer_name;
-    public $staff_name;
 
     public function behaviors()
     {
@@ -39,8 +36,8 @@ class OrderSearch extends Order
     public function rules()
     {
         return [
-            [['id', 'created_by', 'customer_id', 'cost', 'service_cost', 'discount_cost', 'total_cost', 'status', 'is_debt', 'created_at', 'updated_at'], 'integer'],
-            [['phone', 'customer_name', 'staff_name'], 'string', 'max' => 255],
+            [['id', 'created_by', 'cost', 'service_cost', 'discount_cost', 'total_cost', 'status', 'is_debt', 'created_at', 'updated_at'], 'integer'],
+            [['phone', 'customer_name'], 'string'],
             [['createTimeRange'], 'match', 'pattern' => '/^.+\s\-\s.+$/']
         ];
     }
@@ -65,7 +62,8 @@ class OrderSearch extends Order
     {
         $query = Order::find()
                 ->alias('t1')
-                ->joinWith(['customer t2', 'createdBy t3']);
+                ->with('createdBy')
+                ->joinWith('customer t2');
 
         // add conditions that should always apply here
 
@@ -100,7 +98,6 @@ class OrderSearch extends Order
 
         $query->andFilterWhere(['like', 't2.phone', $this->phone]);
         $query->andFilterWhere(['like', 't2.full_name', $this->customer_name]);
-        $query->andFilterWhere(['like', 't3.full_name', $this->staff_name]);
 
         if ($this->createTimeRange) {
             $query->andFilterWhere(['>=', 'created_at', $this->createTimeStart+((60*60)*6)])

@@ -11,9 +11,9 @@ use Yii;
  * @property int $number
  * @property string $name
  * @property string $img
- * @property int $is_partial
+ * @property int $ is_partial
  *
- * @property Company $company
+ * @property bool $is_partial [tinyint(1)]
  */
 class BarcodeTemp extends \yii\db\ActiveRecord
 {

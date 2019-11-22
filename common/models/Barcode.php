@@ -11,6 +11,7 @@ use Yii;
  * @property int $number
  * @property string $name
  * @property string $img
+ * @property bool $is_partial [tinyint(1)]
  */
 class Barcode extends \yii\db\ActiveRecord
 {

@@ -2,6 +2,7 @@
 
 use kartik\date\DatePicker;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
 
@@ -11,6 +12,8 @@ use yii\widgets\MaskedInput;
 ?>
 
 <div class="customer-form">
+
+    <a href="<?= Url::to(['customer/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 
     <?php $form = ActiveForm::begin(); ?>
 

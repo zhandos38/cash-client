@@ -16,7 +16,7 @@ class m190904_100100_invoice_table extends Migration
         $this->createTable($this->tableName,
             [
                 'id' => $this->primaryKey(),
-                'number_in' => $this->string(22),
+                'number_in' => $this->integer(),
                 'is_debt' => $this->boolean()->defaultValue(0),
                 'status' => $this->boolean()->defaultValue(0),
                 'created_by' => $this->integer(),

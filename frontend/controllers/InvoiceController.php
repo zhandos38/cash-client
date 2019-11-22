@@ -9,7 +9,6 @@ use common\models\InvoiceDebtHistory;
 use common\models\InvoiceItems;
 use common\models\Product;
 use Exception;
-use frontend\components\Settings;
 use frontend\models\forms\InvoiceDebtHistoryForm;
 use frontend\models\InvoiceForm;
 use phpDocumentor\Reflection\Types\String_;
@@ -17,7 +16,6 @@ use Picqer\Barcode\BarcodeGeneratorJPG;
 use Yii;
 use common\models\Invoice;
 use frontend\models\InvoiceSearch;
-use yii\base\ErrorException;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -68,6 +66,11 @@ class InvoiceController extends Controller
                         'actions' => ['delete'],
                         'roles' => ['deleteInvoice']
                     ],
+                    [
+                        'allow' => true,
+                        'actions' => ['main'],
+                        'roles' => ['manageInvoice']
+                    ],
                 ],
             ],
             'verbs' => [
@@ -94,6 +97,11 @@ class InvoiceController extends Controller
         ]);
     }
 
+    public function actionMain()
+    {
+        return $this->render('main');
+    }
+
     /**
      * Displays a single Invoice model.
      * @param integer $id
@@ -115,6 +123,7 @@ class InvoiceController extends Controller
      * Creates a new Invoice model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
+     * @throws Exception
      */
     public function actionCreate()
     {
@@ -336,21 +345,25 @@ class InvoiceController extends Controller
 
     public function actionAddDebt()
     {
-        $invoice_id = Yii::$app->request->post('id');
+        if (Yii::$app->request->isAjax) {
+            $invoice_id = Yii::$app->request->post('id');
 
-        $model = new InvoiceDebtHistoryForm();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->settings->setBalance($model->paid_amount, true);
-            return true;
+            $model = new InvoiceDebtHistoryForm();
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Yii::$app->settings->setBalance($model->paid_amount, true);
+                return true;
+            }
+
+            /** @var Invoice $invoice */
+            $invoice = Invoice::findOne(['id' => $invoice_id, 'is_debt' => Invoice::STATUS_IS_DEBT_ACTIVE]);
+
+            return $this->renderAjax('_add-debt', [
+                'model' => $model,
+                'invoice' => $invoice
+            ]);
         }
-
-        /** @var Invoice $invoice */
-        $invoice = Invoice::findOne(['id' => $invoice_id, 'is_debt' => Invoice::STATUS_IS_DEBT_ACTIVE]);
-
-        return $this->renderAjax('_add-debt', [
-            'model' => $model,
-            'invoice' => $invoice
-        ]);
+        
+        return false;
     }
 
 

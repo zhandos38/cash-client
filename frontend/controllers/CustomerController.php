@@ -29,7 +29,7 @@ class CustomerController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index'],
+                        'actions' => ['index', 'view'],
                         'roles' => ['manageCustomer']
                     ],
                     [
@@ -46,6 +46,11 @@ class CustomerController extends Controller
                         'allow' => true,
                         'actions' => ['delete'],
                         'roles' => ['deleteCustomer']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['main'],
+                        'roles' => ['manageCustomer']
                     ],
                 ],
             ],
@@ -73,6 +78,11 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function actionMain()
+    {
+        return $this->render('main');
+    }
+
     /**
      * Displays a single Customer model.
      * @param integer $id
@@ -90,6 +100,7 @@ class CustomerController extends Controller
      * Creates a new Customer model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
+     * @throws \yii\db\Exception
      */
     public function actionCreate()
     {
@@ -114,7 +125,6 @@ class CustomerController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         }

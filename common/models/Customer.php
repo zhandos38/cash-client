@@ -23,6 +23,7 @@ use yii\helpers\VarDumper;
  * @property int $status
  * @property int $created_at
  * @property int $updated_at
+ *
  * @property Discount $discount
  * @property DiscountHistory[] $discountHistories
  */
@@ -53,7 +54,7 @@ class Customer extends \yii\db\ActiveRecord
         return [
             [['card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at'], 'integer'],
             [['address', 'full_name', 'phone', 'birthday_date'], 'string', 'max' => 255],
-            [['discount_id'], 'exist', 'skipOnError' => true, 'targetClass' => Discount::className(), 'targetAttribute' => ['discount_id' => 'id']],
+            [['discount_id'], 'exist', 'skipOnError' => true, 'targetClass' => Discount::class, 'targetAttribute' => ['discount_id' => 'id']],
         ];
     }
 
@@ -72,7 +73,6 @@ class Customer extends \yii\db\ActiveRecord
             'created_at' => 'Дата добавления',
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery

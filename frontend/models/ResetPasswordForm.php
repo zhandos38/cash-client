@@ -43,8 +43,15 @@ class ResetPasswordForm extends Model
     public function rules()
     {
         return [
-            ['password', 'required'],
+            [['password'], 'required', 'message' => 'Введите "{attribute}".'],
             ['password', 'string', 'min' => 6],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'password' => 'Новый пароль'
         ];
     }
 
@@ -57,6 +64,7 @@ class ResetPasswordForm extends Model
     {
         $user = $this->_user;
         $user->setPassword($this->password);
+        $user->status = User::STATUS_ACTIVE;
         $user->removePasswordResetToken();
 
         return $user->save(false);

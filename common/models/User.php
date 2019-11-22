@@ -7,6 +7,7 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
 use yii\rbac\Assignment;
 use yii\web\IdentityInterface;
 
@@ -25,10 +26,10 @@ use yii\web\IdentityInterface;
  * @property string $phone
  * @property integer $status
  * @property integer $role
- * @property integer $code_number
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property int $code_number [int(11)]
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -91,8 +92,7 @@ class User extends ActiveRecord implements IdentityInterface
             'role' => 'Роль',
             'status' => 'Статус',
             'address' => 'Адрес',
-            'created_at' => 'Дата добавление',
-            'company_id' => 'Компания'
+            'created_at' => 'Дата добавление'
         ];
     }
 
@@ -109,7 +109,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        return static::find()
+            ->joinWith('tokens t')
+            ->andWhere(['t.token' => $token])
+            ->andWhere(['>', 't.expired_at', time()])
+            ->one();
     }
 
     /**
@@ -121,6 +125,18 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+    }
+
+    public static function findByPassword($password)
+    {
+        $foundUser = null;
+        $users = static::find()->all();
+        foreach ($users as $user) {
+            if (Yii::$app->security->validatePassword($password, $user->password_hash)) {
+                $foundUser = $user;
+            }
+        }
+        return $foundUser;
     }
 
     /**
@@ -147,7 +163,8 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $token verify email token
      * @return static|null
      */
-    public static function findByVerificationToken($token) {
+    public static function findByVerificationToken($token)
+    {
         return static::findOne([
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
@@ -166,7 +183,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
@@ -210,6 +227,7 @@ class User extends ActiveRecord implements IdentityInterface
      * Generates password hash from password and sets it to the model
      *
      * @param string $password
+     * @throws \yii\base\Exception
      */
     public function setPassword($password)
     {
@@ -245,7 +263,8 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    public static function getStatuses() {
+    public static function getStatuses()
+    {
         return [
             self::STATUS_DELETED => 'Удален',
             self::STATUS_INACTIVE => 'Отключен',
@@ -261,7 +280,8 @@ class User extends ActiveRecord implements IdentityInterface
         return ArrayHelper::getValue(static::getStatuses(), $this->status);
     }
 
-    public static function getRolesForBackend() {
+    public static function getRolesForBackend()
+    {
         return [
             self::ROLE_ADMIN => 'Админ',
             self::ROLE_DIRECTOR => 'Директор',
@@ -271,7 +291,8 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public static function getRoles() {
+    public static function getRoles()
+    {
         return [
             self::ROLE_ADMINISTRATOR => 'Администратор',
             self::ROLE_CASHIER => 'Кассир'
@@ -284,19 +305,5 @@ class User extends ActiveRecord implements IdentityInterface
     public function getRoleLabel()
     {
         return ArrayHelper::getValue(static::getRoles(), $this->status);
-    }
-
-    public function afterSave($insert, $changedAttributes)
-    {
-        if ($insert || $changedAttributes['role']) {
-            $role = $changedAttributes['role'] ? $changedAttributes['role'] : $this->role;
-            $oldAssignment = AuthAssignment::find()->where(['user_id' => $this->id, 'item_name' => $role])->one();
-            if ($oldAssignment) {
-                $oldAssignment->delete();
-            }
-            $auth = Yii::$app->authManager;
-            $newRole = $auth->getRole($this->role); // Получаем роль
-            $auth->assign($newRole, $this->id); // Назначаем пользователю, которому принадлежит модель User
-        }
     }
 }
