@@ -1,6 +1,6 @@
 <?php
 return [
     'adminEmail' => 'admin@example.com',
-    'apiUrl' => 'http://api.tmt-group.kz/',
+    'apiUrl' => 'http://apicash.tmt-group.kz/',
     'apiUrlDev' => 'http://api.cash/',
 ];
