@@ -69,7 +69,7 @@ class InitForm extends Model
             Yii::$app->settings->setBalance($responseSettings['balance']);
             Yii::$app->settings->setAddress($responseSettings['address']);
             Yii::$app->settings->setPhone($responseSettings['phone']);
-            Yii::$app->settings->setToken($responseSettings['token']);
+            Yii::$app->settings->setToken($this->token);
 
             $transaction->commit();
 
