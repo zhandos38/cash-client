@@ -60,7 +60,7 @@ class InitForm extends Model
             $user->password_hash = $responseUser['password_hash'];
             $user->generateAuthKey();
 
-            if (!$user->save())
+            if (!$user->validate() || !$user->save())
                 throw new Exception('User is not saved!');
 
             $authManager->assign($authManager->getRole(User::ROLE_DIRECTOR), $user->id);

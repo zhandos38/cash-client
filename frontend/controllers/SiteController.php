@@ -90,8 +90,8 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-
-        if (Yii::$app->settings->getBalance() === null) {
+//        VarDumper::dump(Yii::$app->settings->getBalance()); die;
+        if (Yii::$app->settings->getBalance() === null || Yii::$app->settings->getBalance() === 0) {
             return $this->redirect(['site/activate']);
         }
 
