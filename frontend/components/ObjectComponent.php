@@ -17,9 +17,14 @@ class ObjectComponent extends Component
             ->where(['user_id' => \Yii::$app->user->identity->getId()])
             ->one();
 
+        if (empty($lastShift)) {
+            \Yii::$app->session->set('shift_id', null);
+            return true;
+        }
+
         if ($lastShift->status == ShiftHistory::STATUS_CLOSED) {
             \Yii::$app->session->set('shift_id', null);
-            return false;
+            return true;
         } else {
             \Yii::$app->session->set('shift_id', $lastShift->id);
             return true;
