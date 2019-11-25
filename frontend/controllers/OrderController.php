@@ -330,6 +330,7 @@ class OrderController extends Controller
                         $orderItem->product_id = $product['id'];
                         $orderItem->quantity = $product['quantity'];
                         $orderItem->real_price = $product['priceRetail'];
+                        $orderItem->status = OrderItems::STATUS_SUCCESS;
 
                         $productStock = Product::findOne(['id' => $product['id']]);
                         $productStock->quantity -= $orderItem->quantity;

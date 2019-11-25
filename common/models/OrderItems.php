@@ -26,9 +26,10 @@ use yii\behaviors\TimestampBehavior;
  */
 class OrderItems extends \yii\db\ActiveRecord
 {
-    const STATUS_CLOSED = 0;
-    const STATUS_PARTIAL_RETURNED = 1;
-    CONST STATUS_CANCELED = 2;
+    const STATUS_SUCCESS = 0;
+    const STATUS_CLOSED = 1;
+    CONST STATUS_PARTIAL_RETURNED = 2;
+    CONST STATUS_CANCELED = 3;
     /**
      * {@inheritdoc}
      */
