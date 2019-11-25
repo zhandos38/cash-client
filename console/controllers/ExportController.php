@@ -171,9 +171,9 @@ class ExportController extends Controller
     {
         $token = \Yii::$app->settings->getToken();
 
-        $fp = fopen("c:/test.txt", "a+");
-        fwrite($fp, Json::encode($data));
-        fclose($fp);
+//        $fp = fopen("c:/test.txt", "a+");
+//        fwrite($fp, Json::encode($data));
+//        fclose($fp);
 
         $client = new Client();
         $response = $client->createRequest()
@@ -184,9 +184,9 @@ class ExportController extends Controller
             ->setData(['token' => $token, 'data' => $data])
             ->send();
 
-        $fp = fopen("c:/test.txt", "a+");
-        fwrite($fp, $response->content);
-        fclose($fp);
+//        $fp = fopen("c:/test.txt", "a+");
+//        fwrite($fp, $response->content);
+//        fclose($fp);
 
         if (!$response->isOk) {
             return false;
