@@ -40,6 +40,7 @@ class ExportController extends Controller
 
             if (!$orders) {
                 $this->log(false, 'All orders already have sent!');
+                return false;
             }
 
             foreach ($orders as $order) {
