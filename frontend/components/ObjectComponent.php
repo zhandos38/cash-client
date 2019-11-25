@@ -17,9 +17,9 @@ class ObjectComponent extends Component
             ->where(['user_id' => \Yii::$app->user->identity->getId()])
             ->one();
 
-//        if (empty($lastShift)) {
-//            return $this->createShift();
-//        }
+        if (empty($lastShift)) {
+            return $this->createShift();
+        }
 
         if ($lastShift->status == ShiftHistory::STATUS_CLOSED) {
             \Yii::$app->session->set('shift_id', null);
@@ -32,7 +32,6 @@ class ObjectComponent extends Component
 
     public function createShift()
     {
-        $lastShift = $this->setShift();
         $shift = new ShiftHistory();
         if ($shift->save()) {
             \Yii::$app->session->set('shift_id', $shift->id);
