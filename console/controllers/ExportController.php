@@ -7,6 +7,7 @@ use common\models\Invoice;
 use common\models\Log;
 use common\models\Order;
 use common\models\Product;
+use Yii;
 use yii\console\Controller;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
@@ -70,9 +71,11 @@ class ExportController extends Controller
             }
             if ($this->send($data, self::TARGET_ORDERS)) {
                 $transaction->commit();
+                Log::createLog(Log::SOURCE_EXPORT_ORDER, 'Order exporting success!', Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+            } else {
+                throw new \Exception('Orders is not sent');
             }
-            Log::createLog(Log::SOURCE_EXPORT_ORDER, 'Order exporting success!', Log::STATUS_SUCCESS, $started_at);
-            $this->log(true);
         } catch (\Exception $excectpion) {
             $transaction->rollBack();
             Log::createLog(Log::SOURCE_EXPORT_ORDER, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
