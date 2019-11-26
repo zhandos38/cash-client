@@ -28,6 +28,8 @@ use common\models\es\Product as ElasticProduct;
  *
  * @property OrderItems[] $orderItems
  * @property bool $is_favourite [tinyint(1)]
+ * @property int $exported_at [int(11)]
+ * @property bool $is_sent [tinyint(1)]
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -48,7 +50,9 @@ class Product extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
         ];
     }
 
@@ -58,7 +62,7 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at', 'exported_at', 'is_sent', 'exported_at'], 'integer'],
             [['quantity', 'price_wholesale', 'price_retail', 'percentage_rate'], 'number'],
             [['barcode', 'name'], 'string', 'max' => 255],
             ['is_favourite', 'boolean']

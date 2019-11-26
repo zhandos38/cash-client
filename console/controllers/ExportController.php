@@ -3,6 +3,7 @@
 namespace console\controllers;
 
 
+use common\models\Customer;
 use common\models\Invoice;
 use common\models\Log;
 use common\models\Order;
@@ -39,8 +40,7 @@ class ExportController extends Controller
             $orders = Order::find()->where(['is_sent' => false])->all();
 
             if (!$orders) {
-                $this->log(false, 'All orders already have sent!');
-                return false;
+                throw new \Exception('All orders already have been sent!');
             }
 
             foreach ($orders as $order) {
@@ -81,7 +81,7 @@ class ExportController extends Controller
             $transaction->rollBack();
             Log::createLog(Log::SOURCE_EXPORT_ORDER, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
             $this->log(false);
-            throw new Exception($excectpion->getMessage());
+            throw new \Exception($excectpion->getMessage());
         }
 
         return true;
@@ -90,24 +90,27 @@ class ExportController extends Controller
     public function actionInvoices()
     {
         $started_at = time();
+        $transaction = \Yii::$app->db->beginTransaction();
         try {
             /** @var Invoice $invoices */
             $invoices = Invoice::find()->where(['is_sent' => false])->all();
 
-            if (!$invoices)
-                return false;
+            if (!$invoices) {
+                throw new \Exception('All invoices already have been sent!');
+            }
 
             foreach ($invoices as $invoice) {
                 $invoice->is_sent = true;
                 $invoice->save();
 
                 $data = ArrayHelper::toArray($invoices, [
-                    'common\models\Invoices' => [
+                    'common\models\Invoice' => [
                         'number_in',
                         'is_debt',
                         'status',
                         'created_by',
                         'created_at',
+                        'supplier_id',
                         'cost',
                         'items' => function(Invoice $model) {
                             return $model->invoiceItems;
@@ -116,27 +119,40 @@ class ExportController extends Controller
                 ]);
             }
 
-            $this->send($data, self::TARGET_INVOICES);
-            Log::createLog(Log::SOURCE_EXPORT_ORDER, 'Invoice exporting success!', Log::STATUS_SUCCESS, $started_at);
+            if ($this->send($data, self::TARGET_INVOICES)) {
+                $transaction->commit();
+                Log::createLog(Log::SOURCE_EXPORT_INVOICE, 'Invoice exporting success!', Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+            } else {
+                throw new \Exception('Invoices is not sent');
+            }
         } catch (\Exception $excectpion) {
-            Log::createLog(Log::SOURCE_EXPORT_ORDER, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
-            throw new Exception($excectpion->getMessage());
+            $transaction->rollBack();
+            Log::createLog(Log::SOURCE_EXPORT_INVOICE, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            $this->log(false);
+            throw new \Exception($excectpion->getMessage());
         }
 
         return true;
     }
 
-    public function actionProduct()
+    public function actionProducts()
     {
         $started_at = time();
+        $transaction = \Yii::$app->db->beginTransaction();
         try {
             /** @var Invoice $invoices */
-            $products = Product::find()->where(['>', 'updated_at', 'exported_at'])->all();
+            $products = Product::find()->where('updated_at > exported_at')->all();
 
-            if (!$products)
-                return false;
+            if (!$products) {
+                throw new \Exception('All product already have been updated!');
+            }
 
             foreach ($products as $product) {
+                if ($product->is_sent) {
+                    $product->is_sent = true;
+                }
+                $product->detachBehavior('timestamp');
                 $product->exported_at = time();
                 $product->save();
 
@@ -146,6 +162,7 @@ class ExportController extends Controller
                         'name',
                         'quantity',
                         'price_wholesale',
+                        'price_retail',
                         'percentage_rate',
                         'wholesale_value',
                         'is_partial',
@@ -157,9 +174,15 @@ class ExportController extends Controller
                 ]);
             }
 
-            $this->send($data, self::TARGET_PRODUCT);
-            Log::createLog(Log::SOURCE_EXPORT_PRODUCT, 'Product exporting success!', Log::STATUS_SUCCESS, $started_at);
+            if ($this->send($data, self::TARGET_PRODUCT)) {
+                $transaction->commit();
+                Log::createLog(Log::SOURCE_EXPORT_PRODUCT, 'Product exported success!', Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+            } else {
+                throw new \Exception('Product is not sent');
+            }
         } catch (\Exception $excectpion) {
+            $transaction->rollBack();
             Log::createLog(Log::SOURCE_EXPORT_PRODUCT, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
             throw new Exception($excectpion->getMessage());
         }
@@ -167,26 +190,83 @@ class ExportController extends Controller
         return true;
     }
 
+    public function actionCustomers()
+    {
+        $started_at = time();
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            /** @var Invoice $invoices */
+            $customers = Customer::find()->where('is_sent = false or updated_at > exported_at')->all();
+
+            if (!$customers) {
+                throw new \Exception('All customers already have been updated!');
+            }
+
+            foreach ($customers as $customer) {
+                if ($customer->is_sent) {
+                    $customer->is_sent = true;
+                }
+                $customer->detachBehavior('timestamp');
+                $customer->exported_at = time();
+
+                $customer->save();
+
+                $data = ArrayHelper::toArray($customers, [
+                    'common\models\Customer' => [
+                        'full_name',
+                        'phone',
+                        'address',
+                        'birthday_date',
+                        'card_number',
+                        'discount_id',
+                        'is_discount_limited',
+                        'discount_value',
+                        'discount_quantity',
+                        'status',
+                        'created_at',
+                        'updated_at'
+                    ]
+                ]);
+            }
+
+            if ($this->send($data, self::TARGET_PRODUCT)) {
+                $transaction->commit();
+                Log::createLog(Log::SOURCE_EXPORT_CUSTOMER, 'Customer exported success!', Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+            } else {
+                throw new \Exception('Customer is not sent');
+            }
+        } catch (\Exception $excectpion) {
+            $transaction->rollBack();
+            Log::createLog(Log::SOURCE_EXPORT_CUSTOMER, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            throw new Exception($excectpion->getMessage());
+        }
+
+        return true;
+    }
+
+
     private function send($data, $target)
     {
+        Yii::$app->settings->setToken('0gdvpk3i308ZljkbzpRQIxj1HWMEb--v');
         $token = \Yii::$app->settings->getToken();
 
-//        $fp = fopen("c:/test.txt", "a+");
-//        fwrite($fp, Json::encode($data));
-//        fclose($fp);
+        $fp = fopen("c:/test.txt", "a+");
+        fwrite($fp, Json::encode($data));
+        fclose($fp);
 
         $client = new Client();
         $response = $client->createRequest()
             ->setMethod('POST')
-            ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/' . $target)
+            ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/' . $target)
             ->addHeaders(['Authorization' => 'Bearer ' . $token])
             ->addHeaders(['content-type' => 'application/json'])
             ->setData(['token' => $token, 'data' => $data])
             ->send();
 
-//        $fp = fopen("c:/test.txt", "a+");
-//        fwrite($fp, $response->content);
-//        fclose($fp);
+        $fp = fopen("c:/test.txt", "a+");
+        fwrite($fp, $response->content);
+        fclose($fp);
 
         if (!$response->isOk) {
             return false;

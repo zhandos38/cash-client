@@ -13,7 +13,7 @@ class m190921_094120_add_is_partial_column_to_invoice_items_table extends Migrat
      */
     public function safeUp()
     {
-        $this->addColumn($this->tableName, 'is_partial', $this->boolean());
+        $this->addColumn($this->tableName, 'is_partial', $this->boolean()->defaultValue(false));
     }
 
     /**
