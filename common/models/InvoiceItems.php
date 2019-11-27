@@ -14,10 +14,6 @@ use Yii;
  * @property int $quantity
  * @property int $price_in
  * @property boolean $is_partial
- * @property integer $percentage_rate
- * @property integer $price_retail
- * @property integer $wholesale_value
- * @property integer $wholesale_price
  *
  * @property Invoice $invoice
  */

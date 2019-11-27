@@ -14,6 +14,8 @@ use yii\behaviors\TimestampBehavior;
  * @property int $updated_at
  *
  * @property Invoice[] $invoices
+ * @property bool $is_sent [tinyint(1)]
+ * @property int $exported_at [int(11)]
  */
 class Supplier extends \yii\db\ActiveRecord
 {
@@ -28,7 +30,9 @@ class Supplier extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
         ];
     }
 
@@ -38,8 +42,9 @@ class Supplier extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at'], 'integer'],
+            [['created_at', 'updated_at', 'exported_at'], 'integer'],
             [['name'], 'string', 'max' => 255],
+            ['is_sent', 'boolean']
         ];
     }
 

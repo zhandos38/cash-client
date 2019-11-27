@@ -24,6 +24,8 @@ class Log extends \yii\db\ActiveRecord
     const SOURCE_EXPORT_INVOICE = 1;
     const SOURCE_EXPORT_PRODUCT = 2;
     const SOURCE_EXPORT_CUSTOMER = 3;
+    const SOURCE_EXPORT_SUPPLIER = 4;
+    const SOURCE_EXPORT_SHIFT = 5;
 
     /**
      * {@inheritdoc}

@@ -44,7 +44,9 @@ class Customer extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
         ];
     }
 
@@ -54,9 +56,10 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at', 'is_sent', 'exported_at'], 'integer'],
-            [['address', 'full_name', 'phone', 'birthday_date'], 'string', 'max' => 255],
+            [['card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at', 'exported_at', 'birthday_date'], 'integer'],
+            [['address', 'full_name', 'phone'], 'string', 'max' => 255],
             [['discount_id'], 'exist', 'skipOnError' => true, 'targetClass' => Discount::class, 'targetAttribute' => ['discount_id' => 'id']],
+            ['is_sent', 'boolean']
         ];
     }
 

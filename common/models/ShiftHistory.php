@@ -15,6 +15,7 @@ use yii\helpers\VarDumper;
  * @property int $closed_at
  *
  * @property User $user
+ * @property bool $is_sent [tinyint(1)]
  */
 class ShiftHistory extends \yii\db\ActiveRecord
 {
@@ -37,6 +38,7 @@ class ShiftHistory extends \yii\db\ActiveRecord
         return [
             [['user_id', 'status', 'started_at', 'closed_at'], 'integer'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            ['is_sent', 'boolean']
         ];
     }
 
@@ -60,6 +62,11 @@ class ShiftHistory extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    public function getTransactions()
+    {
+        return $this->hasMany(ShiftTransactions::className(), ['shift_id' => 'id']);
     }
 
     public function beforeSave($insert)

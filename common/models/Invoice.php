@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -20,6 +21,7 @@ use yii\helpers\ArrayHelper;
  * @property Supplier $supplier
  * @property InvoiceItems[] $invoiceItems
  * @property InvoiceDebtHistory[] $debtHistory
+ * @property int $is_sent [int(11)]
  */
 class Invoice extends \yii\db\ActiveRecord
 {

@@ -8,6 +8,8 @@ use common\models\Invoice;
 use common\models\Log;
 use common\models\Order;
 use common\models\Product;
+use common\models\ShiftHistory;
+use common\models\Supplier;
 use Yii;
 use yii\console\Controller;
 use yii\db\Exception;
@@ -29,7 +31,7 @@ class ExportController extends Controller
     const TARGET_PRODUCT = 'product';
     const TARGET_BARCODE = 'barcode';
     const TARGET_BARCODE_TEMP = 'temp-barcode';
-    const TARGET_SHIFT = 'shift';
+    const TARGET_SHIFT = 'shifts';
 
     public function actionOrders()
     {
@@ -77,11 +79,11 @@ class ExportController extends Controller
             } else {
                 throw new \Exception('Orders is not sent');
             }
-        } catch (\Exception $excectpion) {
+        } catch (\Exception $exception) {
             $transaction->rollBack();
-            Log::createLog(Log::SOURCE_EXPORT_ORDER, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            Log::createLog(Log::SOURCE_EXPORT_ORDER, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
             $this->log(false);
-            throw new \Exception($excectpion->getMessage());
+            throw new \Exception($exception->getMessage());
         }
 
         return true;
@@ -105,6 +107,7 @@ class ExportController extends Controller
 
                 $data = ArrayHelper::toArray($invoices, [
                     'common\models\Invoice' => [
+                        'id',
                         'number_in',
                         'is_debt',
                         'status',
@@ -126,11 +129,11 @@ class ExportController extends Controller
             } else {
                 throw new \Exception('Invoices is not sent');
             }
-        } catch (\Exception $excectpion) {
+        } catch (\Exception $exception) {
             $transaction->rollBack();
-            Log::createLog(Log::SOURCE_EXPORT_INVOICE, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            Log::createLog(Log::SOURCE_EXPORT_INVOICE, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
             $this->log(false);
-            throw new \Exception($excectpion->getMessage());
+            throw new \Exception($exception->getMessage());
         }
 
         return true;
@@ -149,7 +152,7 @@ class ExportController extends Controller
             }
 
             foreach ($products as $product) {
-                if ($product->is_sent) {
+                if (!$product->is_sent) {
                     $product->is_sent = true;
                 }
                 $product->detachBehavior('timestamp');
@@ -181,10 +184,10 @@ class ExportController extends Controller
             } else {
                 throw new \Exception('Product is not sent');
             }
-        } catch (\Exception $excectpion) {
+        } catch (\Exception $exception) {
             $transaction->rollBack();
-            Log::createLog(Log::SOURCE_EXPORT_PRODUCT, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
-            throw new Exception($excectpion->getMessage());
+            Log::createLog(Log::SOURCE_EXPORT_PRODUCT, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            throw new Exception($exception->getMessage());
         }
 
         return true;
@@ -203,7 +206,7 @@ class ExportController extends Controller
             }
 
             foreach ($customers as $customer) {
-                if ($customer->is_sent) {
+                if (!$customer->is_sent) {
                     $customer->is_sent = true;
                 }
                 $customer->detachBehavior('timestamp');
@@ -213,6 +216,7 @@ class ExportController extends Controller
 
                 $data = ArrayHelper::toArray($customers, [
                     'common\models\Customer' => [
+                        'id',
                         'full_name',
                         'phone',
                         'address',
@@ -229,22 +233,115 @@ class ExportController extends Controller
                 ]);
             }
 
-            if ($this->send($data, self::TARGET_PRODUCT)) {
+            if ($this->send($data, self::TARGET_CUSTOMERS)) {
                 $transaction->commit();
                 Log::createLog(Log::SOURCE_EXPORT_CUSTOMER, 'Customer exported success!', Log::STATUS_SUCCESS, $started_at);
                 $this->log(true);
             } else {
                 throw new \Exception('Customer is not sent');
             }
-        } catch (\Exception $excectpion) {
+        } catch (\Exception $exception) {
             $transaction->rollBack();
-            Log::createLog(Log::SOURCE_EXPORT_CUSTOMER, $excectpion->getMessage(), Log::STATUS_EXCEPTION, $started_at);
-            throw new Exception($excectpion->getMessage());
+            Log::createLog(Log::SOURCE_EXPORT_CUSTOMER, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            throw new Exception($exception->getMessage());
         }
 
         return true;
     }
 
+    public function actionSuppliers()
+    {
+        $started_at = time();
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            /** @var Supplier $suppliers */
+            $suppliers = Supplier::find()->where('is_sent = false or updated_at > exported_at')->all();
+
+            if (!$suppliers) {
+                throw new \Exception('All suppliers already have been updated!');
+            }
+
+            foreach ($suppliers as $supplier) {
+                if (!$supplier->is_sent) {
+                    $supplier->is_sent = true;
+                }
+                $supplier->detachBehavior('timestamp');
+                $supplier->exported_at = time();
+
+                $supplier->save();
+
+                $data = ArrayHelper::toArray($suppliers, [
+                    'common\models\Supplier' => [
+                        'id',
+                        'name',
+                        'created_at'
+                    ]
+                ]);
+            }
+
+            if ($this->send($data, self::TARGET_SUPPLIERS)) {
+                $transaction->commit();
+                Log::createLog(Log::SOURCE_EXPORT_SUPPLIER, 'Suppliers exported success!', Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+            } else {
+                throw new \Exception('Suppliers is not sent');
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            Log::createLog(Log::SOURCE_EXPORT_SUPPLIER, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            throw new Exception($exception->getMessage());
+        }
+
+        return true;
+    }
+
+    public function actionShifts()
+    {
+        $started_at = time();
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            /** @var Supplier $suppliers */
+            $shifts = ShiftHistory::find()->where('is_sent = false and closed_at > 0')->all();
+
+            if (!$shifts) {
+                throw new \Exception('All shift already have been updated!');
+            }
+
+            foreach ($shifts as $shift) {
+                if (!$shift->is_sent) {
+                    $shift->is_sent = true;
+                }
+                $shift->save();
+
+                $data = ArrayHelper::toArray($shifts, [
+                    'common\models\ShiftHistory' => [
+                        'id',
+                        'user_id',
+                        'status',
+                        'started_at',
+                        'closed_at',
+                        'transactions' => function(ShiftHistory $model) {
+                            return $model->transactions;
+                        }
+                    ]
+                ]);
+            }
+
+            if ($this->send($data, self::TARGET_SHIFT)) {
+                $transaction->commit();
+                Log::createLog(Log::SOURCE_EXPORT_SHIFT, 'Shift exported success!', Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+            } else {
+                throw new \Exception('Shift is not sent');
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            Log::createLog(Log::SOURCE_EXPORT_SHIFT, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            throw new Exception($exception->getMessage());
+        }
+
+        return true;
+    }
 
     private function send($data, $target)
     {
@@ -252,7 +349,7 @@ class ExportController extends Controller
         $token = \Yii::$app->settings->getToken();
 
         $fp = fopen("c:/test.txt", "a+");
-        fwrite($fp, Json::encode($data));
+        fwrite($fp, VarDumper::dumpAsString($data,10));
         fclose($fp);
 
         $client = new Client();

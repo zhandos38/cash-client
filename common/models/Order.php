@@ -65,7 +65,9 @@ class Order extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            'class' => TimestampBehavior::className()
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
         ];
     }
 
