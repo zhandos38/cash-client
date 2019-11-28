@@ -10,6 +10,7 @@ use common\models\Order;
 use common\models\Product;
 use common\models\ShiftHistory;
 use common\models\Supplier;
+use common\models\User;
 use Yii;
 use yii\console\Controller;
 use yii\db\Exception;
@@ -32,6 +33,59 @@ class ExportController extends Controller
     const TARGET_BARCODE = 'barcode';
     const TARGET_BARCODE_TEMP = 'temp-barcode';
     const TARGET_SHIFT = 'shifts';
+    const TARGET_STAFF = 'staff';
+
+    public function actionStaff()
+    {
+        $started_at = time();
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            /** @var Supplier $suppliers */
+            $staff = User::find()
+                ->where('is_sent = false or updated_at > exported_at')
+                ->all();
+
+            if (!$staff) {
+                throw new \Exception('Staff has been already updated!');
+            }
+
+            foreach ($staff as $item) {
+                if (!$item->is_sent) {
+                    $item->is_sent = true;
+                }
+                $item->detachBehavior('timestamp');
+                $item->exported_at = time();
+
+                $item->save();
+
+                $data = ArrayHelper::toArray($staff, [
+                    'common\models\User' => [
+                        'id',
+                        'full_name',
+                        'email',
+                        'phone',
+                        'address',
+                        'code_number',
+                        'status'
+                    ]
+                ]);
+            }
+
+            if ($this->send($data, self::TARGET_STAFF)) {
+                $transaction->commit();
+                Log::createLog(Log::SOURCE_EXPORT_STAFF, 'Staff is exported successfully!', Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+            } else {
+                throw new \Exception('Staff is not sent');
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            Log::createLog(Log::SOURCE_EXPORT_STAFF, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            throw new Exception($exception->getMessage());
+        }
+
+        return true;
+    }
 
     public function actionOrders()
     {
@@ -42,7 +96,7 @@ class ExportController extends Controller
             $orders = Order::find()->where(['is_sent' => false])->all();
 
             if (!$orders) {
-                throw new \Exception('All orders already have been sent!');
+                throw new \Exception('All orders have been already sent!');
             }
 
             foreach ($orders as $order) {
@@ -74,7 +128,7 @@ class ExportController extends Controller
             }
             if ($this->send($data, self::TARGET_ORDERS)) {
                 $transaction->commit();
-                Log::createLog(Log::SOURCE_EXPORT_ORDER, 'Order exporting success!', Log::STATUS_SUCCESS, $started_at);
+                Log::createLog(Log::SOURCE_EXPORT_ORDER, 'Order is exported successfully!', Log::STATUS_SUCCESS, $started_at);
                 $this->log(true);
             } else {
                 throw new \Exception('Orders is not sent');
@@ -98,7 +152,7 @@ class ExportController extends Controller
             $invoices = Invoice::find()->where(['is_sent' => false])->all();
 
             if (!$invoices) {
-                throw new \Exception('All invoices already have been sent!');
+                throw new \Exception('All invoices have been already sent!');
             }
 
             foreach ($invoices as $invoice) {
@@ -124,7 +178,7 @@ class ExportController extends Controller
 
             if ($this->send($data, self::TARGET_INVOICES)) {
                 $transaction->commit();
-                Log::createLog(Log::SOURCE_EXPORT_INVOICE, 'Invoice exporting success!', Log::STATUS_SUCCESS, $started_at);
+                Log::createLog(Log::SOURCE_EXPORT_INVOICE, 'Invoice is exported successfully!', Log::STATUS_SUCCESS, $started_at);
                 $this->log(true);
             } else {
                 throw new \Exception('Invoices is not sent');
@@ -148,7 +202,7 @@ class ExportController extends Controller
             $products = Product::find()->where('updated_at > exported_at')->all();
 
             if (!$products) {
-                throw new \Exception('All product already have been updated!');
+                throw new \Exception('All product have been already updated!');
             }
 
             foreach ($products as $product) {
@@ -179,7 +233,7 @@ class ExportController extends Controller
 
             if ($this->send($data, self::TARGET_PRODUCT)) {
                 $transaction->commit();
-                Log::createLog(Log::SOURCE_EXPORT_PRODUCT, 'Product exported success!', Log::STATUS_SUCCESS, $started_at);
+                Log::createLog(Log::SOURCE_EXPORT_PRODUCT, 'Product is exported successfully!', Log::STATUS_SUCCESS, $started_at);
                 $this->log(true);
             } else {
                 throw new \Exception('Product is not sent');
@@ -202,7 +256,7 @@ class ExportController extends Controller
             $customers = Customer::find()->where('is_sent = false or updated_at > exported_at')->all();
 
             if (!$customers) {
-                throw new \Exception('All customers already have been updated!');
+                throw new \Exception('All customers have been already updated!');
             }
 
             foreach ($customers as $customer) {
@@ -235,7 +289,7 @@ class ExportController extends Controller
 
             if ($this->send($data, self::TARGET_CUSTOMERS)) {
                 $transaction->commit();
-                Log::createLog(Log::SOURCE_EXPORT_CUSTOMER, 'Customer exported success!', Log::STATUS_SUCCESS, $started_at);
+                Log::createLog(Log::SOURCE_EXPORT_CUSTOMER, 'Customer is exported successfully!', Log::STATUS_SUCCESS, $started_at);
                 $this->log(true);
             } else {
                 throw new \Exception('Customer is not sent');
@@ -258,7 +312,7 @@ class ExportController extends Controller
             $suppliers = Supplier::find()->where('is_sent = false or updated_at > exported_at')->all();
 
             if (!$suppliers) {
-                throw new \Exception('All suppliers already have been updated!');
+                throw new \Exception('All suppliers have been already updated!');
             }
 
             foreach ($suppliers as $supplier) {
@@ -281,7 +335,7 @@ class ExportController extends Controller
 
             if ($this->send($data, self::TARGET_SUPPLIERS)) {
                 $transaction->commit();
-                Log::createLog(Log::SOURCE_EXPORT_SUPPLIER, 'Suppliers exported success!', Log::STATUS_SUCCESS, $started_at);
+                Log::createLog(Log::SOURCE_EXPORT_SUPPLIER, 'Suppliers is exported successfully!', Log::STATUS_SUCCESS, $started_at);
                 $this->log(true);
             } else {
                 throw new \Exception('Suppliers is not sent');
@@ -304,7 +358,7 @@ class ExportController extends Controller
             $shifts = ShiftHistory::find()->where('is_sent = false and closed_at > 0')->all();
 
             if (!$shifts) {
-                throw new \Exception('All shift already have been updated!');
+                throw new \Exception('All shift have been already updated!');
             }
 
             foreach ($shifts as $shift) {
@@ -329,7 +383,7 @@ class ExportController extends Controller
 
             if ($this->send($data, self::TARGET_SHIFT)) {
                 $transaction->commit();
-                Log::createLog(Log::SOURCE_EXPORT_SHIFT, 'Shift exported success!', Log::STATUS_SUCCESS, $started_at);
+                Log::createLog(Log::SOURCE_EXPORT_SHIFT, 'Shift is exported successfully!', Log::STATUS_SUCCESS, $started_at);
                 $this->log(true);
             } else {
                 throw new \Exception('Shift is not sent');
