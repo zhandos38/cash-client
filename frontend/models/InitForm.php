@@ -39,14 +39,28 @@ class InitForm extends Model
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            /* Getting serial number */
+            $serialNumber = shell_exec('wmic DISKDRIVE GET SerialNumber 2>&1');
+            $serialNumber = md5($serialNumber);
+
             $client = new Client();
             $response = $client->createRequest()
                 ->setMethod('GET')
-                ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/activate')
+                ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/activate')
                 ->addHeaders(['Authorization' => 'Bearer ' . $this->token])
                 ->addHeaders(['content-type' => 'application/json'])
-                ->setData(['token' => $this->token])
+                ->setData(['token' => $this->token, 'serialNumber' => $serialNumber])
                 ->send();
+
+            if (!$response->content) {
+                Yii::$app->session->setFlash('error', 'Данный токен не найден или уже активирован');
+                $transaction->rollBack();
+                return false;
+            }
+
+            $fp = fopen("c:/test.txt", "a+");
+            fwrite($fp, VarDumper::dumpAsString($response->content));
+            fclose($fp);
 
             $responseData = Json::decode($response->content);
             $responseUser = $responseData['user'];
