@@ -46,7 +46,7 @@ class InitForm extends Model
             $client = new Client();
             $response = $client->createRequest()
                 ->setMethod('GET')
-                ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/activate')
+                ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/activate')
                 ->addHeaders(['Authorization' => 'Bearer ' . $this->token])
                 ->addHeaders(['content-type' => 'application/json'])
                 ->setData(['token' => $this->token, 'serialNumber' => $serialNumber])
