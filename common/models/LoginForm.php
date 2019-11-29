@@ -70,7 +70,7 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate() && $this->checkSerialNumberLocal() && $this->checkSerialNumber()) {
+        if ($this->validate() && $this->checkSerialNumberLocal()) {
             $flag = Yii::$app->user->login($this->getUserByPassword(), $this->rememberMe ? 3600 * 24 * 30 : 0);
             Yii::$app->object->setShift();
             return $flag;

@@ -1,16 +1,19 @@
 <?php
 
 use frontend\assets\CashDrawAsset;
+use yii\helpers\Url;
+
 CashDrawAsset::register($this);
 
 /* @var \yii\web\View $this*/
 
 $this->title = 'Касса';
 ?>
+<a href="<?= Url::to(['site/index']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div id="cash-draw-app" class="cash-draw">
     <div class="cash-draw__container">
         <div class="transactions-list">
-            <table class="table">
+            <table class="table table-striped">
                 <tbody>
                 <tr>
                     <th>Создано в</th>
@@ -32,35 +35,70 @@ $this->title = 'Касса';
             </table>
         </div>
         <div class="cash-draw__shift">
-            <div class="cash-draw__opened-by">
-                {{ shift.openedBy }}
+            <div class="cash-draw-shift__title text-center">
+                <h4>Информация о смене</h4>
             </div>
-            <div class="cash-draw__opened-at">
-                {{ shift.openedAt }}
-            </div>
-            <div class="cash-draw__balance-at-start">
-                {{ shift.balanceAtStart }}
-            </div>
-            <div class="cash-draw__inserted-money">
-                {{ shift.insertedMoney }}
-            </div>
-            <div class="cash-draw__current-balance">
-                {{ shift.currentBalance }}
+            <table class="table table-striped">
+                <tbody>
+                <tr>
+                    <th>Смену открыл(-а):</th>
+                    <th>
+                        <div class="cash-draw__opened-by">
+                            {{ shift.openedBy }}
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Смена открыта:</th>
+                    <th>
+                        <div class="cash-draw__opened-at">
+                            {{ shift.openedAt }}
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Остаток в начале:</th>
+                    <th>
+                        <div class="cash-draw__balance-at-start">
+                            {{ shift.balanceAtStart }}
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Внесено в кассу:</th>
+                    <th>
+                        <div class="cash-draw__inserted-money">
+                            {{ shift.insertedMoney }}
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Текущий остаток:</th>
+                    <th>
+                        <div class="cash-draw__current-balance">
+                            {{ shift.currentBalance }}
+                        </div>
+                    </th>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="cash-draw__buttons">
+                <button @click="openTransactionModal" class="cash-draw__introduction-button">
+                    Внесение/Изъятие
+                </button>
+                <button @click="closeShift" class="cash-draw__close-shift-button">
+                    Закрыть смену
+                </button>
             </div>
         </div>
-        <button @click="openTransactionModal">
-            Внесение/Изъятие
-        </button>
-        <button @click="closeShift">
-            Закрыть смену
-        </button>
     </div>
 
     <!-- Transaction Modal -->
     <div class="transaction-modal__wrapper" v-show="isTransactionModalActive">
         <div class="transaction-modal">
             <div class="transaction-modal__name">
-                Внесение/Изъятие
+                <h3>Внесение/Изъятие</h3>
             </div>
             <div class="transaction-modal__close pull-right" @click="closeTransactionModal">
                 <i class="fas fa-times"></i>
@@ -71,17 +109,19 @@ $this->title = 'Касса';
                         Сумма транзакции:
                         <input type="text" class="transaction-modal__value" v-model.number="transactionValue">
                     </label>
-                    <label>
-                        Внесение
-                        <input type="radio" name="radio" value="0" v-model.number="transactionType">
-                    </label>
-                    <label>
-                        Изъятие
-                        <input type="radio" name="radio" value="1" v-model.number="transactionType">
-                    </label>
+                    <div class="transaction-modal__radio">
+                        <label>
+                            <p>Внесение</p>
+                            <input type="radio" name="radio" value="0" v-model.number="transactionType">
+                        </label>
+                        <label>
+                            <p>Изъятие</p>
+                            <input type="radio" name="radio" value="1" v-model.number="transactionType">
+                        </label>
+                    </div>
                     <label>
                         Кассир:
-                        <textarea class="transaction-modal__comment" v-model="transactionComment"></textarea>
+                        <textarea class="transaction-modal__comment" rows="3" placeholder="Комментарий..." v-model="transactionComment"></textarea>
                     </label>
                     <button class="transaction-modal__accept" @click="addTransaction">
                         Применить

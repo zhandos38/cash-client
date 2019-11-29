@@ -26,7 +26,7 @@ if (!Yii::$app->object->getShiftId())
 ?>
 <div class="order-create">
 
-    <a href="<?= Url::to(['company-objects/report']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
+    <a href="<?= Url::to(['site/index']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
     <div class="order-form__wrapper">
         <div class="order-form">
 

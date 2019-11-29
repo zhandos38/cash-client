@@ -1,12 +1,15 @@
 <?php
 
 use frontend\assets\TestOrderAsset;
+use yii\helpers\Url;
+
 TestOrderAsset::register($this);
 
 /** @var \yii\web\View $this */
 
 $this->title = 'Чеки';
 ?>
+<a href="<?= Url::to(['site/index']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div id="cash-draw-orders-app" class="cash-draw-orders">
     <div class="cash-draw-orders__container">
         <div class="cash-draw-orders__table">
