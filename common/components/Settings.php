@@ -52,4 +52,14 @@ class Settings extends BaseSettings
     {
         return $this->get('object.token');
     }
+
+    public function setSerialNumber($token)
+    {
+        $this->set('object.serial_number', $token);
+    }
+
+    public function getSerialNumber()
+    {
+        return $this->get('object.serial_number');
+    }
 }

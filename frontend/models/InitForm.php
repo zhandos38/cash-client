@@ -58,10 +58,6 @@ class InitForm extends Model
                 return false;
             }
 
-            $fp = fopen("c:/test.txt", "a+");
-            fwrite($fp, VarDumper::dumpAsString($response->content));
-            fclose($fp);
-
             $responseData = Json::decode($response->content);
             $responseUser = $responseData['user'];
             $responseSettings = $responseData['settings'];
@@ -84,6 +80,7 @@ class InitForm extends Model
             Yii::$app->settings->setAddress($responseSettings['address']);
             Yii::$app->settings->setPhone($responseSettings['phone']);
             Yii::$app->settings->setToken($this->token);
+            Yii::$app->settings->setSerialNumber($serialNumber);
 
             $transaction->commit();
 

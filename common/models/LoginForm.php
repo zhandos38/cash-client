@@ -4,6 +4,7 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\helpers\VarDumper;
+use yii\httpclient\Client;
 
 /**
  * Login form
@@ -69,7 +70,7 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
+        if ($this->validate() && $this->checkSerialNumberLocal() && $this->checkSerialNumber()) {
             $flag = Yii::$app->user->login($this->getUserByPassword(), $this->rememberMe ? 3600 * 24 * 30 : 0);
             Yii::$app->object->setShift();
             return $flag;
@@ -104,5 +105,49 @@ class LoginForm extends Model
         }
 
         return $this->_user;
+    }
+
+    public function checkSerialNumber()
+    {
+        $serialNumber = Yii::$app->settings->getSerialNumber();
+        $token = \Yii::$app->settings->getToken();
+
+        $client = new Client();
+        $response = $client->createRequest()
+            ->setMethod('GET')
+            ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/validate')
+            ->addHeaders(['Authorization' => 'Bearer ' . $token])
+            ->addHeaders(['content-type' => 'application/json'])
+            ->setData(['token' => $token, 'serialNumber' => $serialNumber])
+            ->send();
+
+        if ($response->statusCode == '403') {
+            Yii::$app->session->setFlash('error', 'Authorization error!');
+            return false;
+        }
+
+        return true;
+    }
+
+    public function checkSerialNumberLocal()
+    {
+        $serialNumber = shell_exec('wmic DISKDRIVE GET SerialNumber 2>&1');
+        $serialNumber = md5($serialNumber);
+
+        $localSerialNumber = Yii::$app->settings->getSerialNumber();
+
+        if ($serialNumber == $localSerialNumber)
+            return true;
+        else {
+            Yii::$app->session->setFlash('error', 'Authorization error!');
+            return false;
+        }
+    }
+
+    private function debug($var)
+    {
+        $fp = fopen("c:/test.txt", "w");
+        fwrite($fp, VarDumper::dumpAsString($var, 10));
+        fclose($fp);
     }
 }
