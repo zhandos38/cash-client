@@ -35,7 +35,7 @@ class Settings extends BaseSettings
 
     public function setAddress($address)
     {
-        $this->set('object.name', $address);
+        $this->set('object.address', $address);
     }
 
     public function setPhone($phone)

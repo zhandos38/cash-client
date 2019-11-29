@@ -91,7 +91,7 @@ class SiteController extends Controller
         }
 
 //        VarDumper::dump(Yii::$app->settings->getBalance()); die;
-        if (Yii::$app->settings->getBalance() === null || Yii::$app->settings->getBalance() === 0) {
+        if (!Yii::$app->settings->getToken()) {
             return $this->redirect(['site/activate']);
         }
 
