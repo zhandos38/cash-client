@@ -242,6 +242,7 @@ class CashDrawController extends Controller
         $printer -> text('Итого: ' . $orderTotalCost . ' тг.');
         $printer -> feed(2);
         $printer -> cut();
+        $printer -> pulse(0, 120, 240);
         $printer -> close();
     }
 }
