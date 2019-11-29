@@ -279,95 +279,98 @@ class OrderController extends Controller
      */
     public function actionTestCreate()
     {
+        if (!Yii::$app->object->getShiftId())
+            throw new \yii\base\UserException('Смена не назначена, пожалуйста начните смену');
+
         $this->layout = 'order';
 
         if (Yii::$app->request->isAjax) {
-                $orderData = Yii::$app->request->post('order');
-                $isPrint = Yii::$app->request->post('print');
-                $transaction = \Yii::$app->db->beginTransaction();
-                $productsToCheck = '';
-                try {
-                    /** @var Order $order */
-                    $order = new Order();
+            $orderData = Yii::$app->request->post('order');
+            $isPrint = Yii::$app->request->post('print');
+            $transaction = \Yii::$app->db->beginTransaction();
+            $productsToCheck = '';
+            try {
+                /** @var Order $order */
+                $order = new Order();
 
-                    $order->number = Order::generateNumber();
-                    $order->created_by = Yii::$app->user->identity->getId();
-                    $order->customer_id = $orderData['customerId'];
-                    $order->cost = $orderData['preTotalSum'];
-                    $order->discount_cost = $orderData['discountSum'];
-                    $order->total_cost = $orderData['totalSum'];
-                    $order->pay_id = $orderData['payMethod'];
-                    $order->shift_id = Yii::$app->object->getShiftId();
-                    $order->comment = $orderData['comment'];
-                    $order->taken_cash = $orderData['takenCash'];
+                $order->number = Order::generateNumber();
+                $order->created_by = Yii::$app->user->identity->getId();
+                $order->customer_id = $orderData['customerId'];
+                $order->cost = $orderData['preTotalSum'];
+                $order->discount_cost = $orderData['discountSum'];
+                $order->total_cost = $orderData['totalSum'];
+                $order->pay_id = $orderData['payMethod'];
+                $order->shift_id = Yii::$app->object->getShiftId();
+                $order->comment = $orderData['comment'];
+                $order->taken_cash = $orderData['takenCash'];
 
-                    if ($order->pay_id == Order::PAID_BY_DEBT && !$orderData['takenCash']) {
-                        $order->pay_status = Order::PAY_STATUS_NOT_PAID;
-                    } elseif ($order->pay_id == Order::PAID_BY_DEBT && $orderData['takenCash'] > 0) {
-                        $order->pay_status = Order::PAY_STATUS_PARTIALLY_PAID;
-                    } else {
-                        $order->pay_status = Order::PAY_STATUS_PAID;
-                    }
-
-                    $order->status = Order::STATUS_SUCCESS;
-
-                    if (!$order->save()) {
-                        throw new Exception('Order is not saved');
-                    }
-
-                    $order_debt = new OrderDebtHistory();
-                    $order_debt->order_id = $order->id;
-                    $order_debt->paid_amount = $orderData['takenCash'];
-                    if (!$order_debt->save()) {
-                        throw new ErrorException( 'Order Debt history is not saved!' );
-                    }
-                    /** @var OrderItems $order */
-                    foreach ($orderData['products'] as $k => $product) {
-                        $orderItem = new OrderItems();
-                        $orderItem->order_id = $order->id;
-                        $orderItem->name = $product['name'];
-                        $orderItem->barcode = $product['barcode'];
-                        $orderItem->product_id = $product['id'];
-                        $orderItem->quantity = $product['quantity'];
-                        $orderItem->real_price = $product['priceRetail'];
-                        $orderItem->status = OrderItems::STATUS_SUCCESS;
-
-                        $productStock = Product::findOne(['id' => $product['id']]);
-                        $productStock->quantity -= $orderItem->quantity;
-
-                        $productsToCheck .= $productStock->name . ' x ' . $product['quantity'] . ' = ' . $product['priceRetail'] * $product['quantity'] . "\n";
-
-                        if (!$productStock->save())
-                            throw new Exception("Order product is not updated");
-
-                        if (! ($flag = $orderItem->save(false))) {
-                            $transaction->rollBack();
-                            break;
-                        }
-                    }
-
-                    $productsToCheck .= "Итого: " . $order->total_cost . "\n";
-                    Yii::$app->settings->setBalance($order->total_cost);
-
-                    if ($flag) {
-                        if ($isPrint == '1' && $order->pay_id != 1) {
-                            CashDrawController::printCheck($order);
-                        }
-
-                        $transaction->commit();
-                        return true;
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    throw $e;
+                if ($order->pay_id == Order::PAID_BY_DEBT && !$orderData['takenCash']) {
+                    $order->pay_status = Order::PAY_STATUS_NOT_PAID;
+                } elseif ($order->pay_id == Order::PAID_BY_DEBT && $orderData['takenCash'] > 0) {
+                    $order->pay_status = Order::PAY_STATUS_PARTIALLY_PAID;
+                } else {
+                    $order->pay_status = Order::PAY_STATUS_PAID;
                 }
 
+                $order->status = Order::STATUS_SUCCESS;
+
+                if (!$order->save()) {
+                    throw new Exception('Order is not saved');
+                }
+
+                $order_debt = new OrderDebtHistory();
+                $order_debt->order_id = $order->id;
+                $order_debt->paid_amount = $orderData['takenCash'];
+                if (!$order_debt->save()) {
+                    throw new ErrorException( 'Order Debt history is not saved!' );
+                }
+                /** @var OrderItems $order */
+                foreach ($orderData['products'] as $k => $product) {
+                    $orderItem = new OrderItems();
+                    $orderItem->order_id = $order->id;
+                    $orderItem->name = $product['name'];
+                    $orderItem->barcode = $product['barcode'];
+                    $orderItem->product_id = $product['id'];
+                    $orderItem->quantity = $product['quantity'];
+                    $orderItem->real_price = $product['priceRetail'];
+                    $orderItem->status = OrderItems::STATUS_SUCCESS;
+
+                    $productStock = Product::findOne(['id' => $product['id']]);
+                    $productStock->quantity -= $orderItem->quantity;
+
+                    $productsToCheck .= $productStock->name . ' x ' . $product['quantity'] . ' = ' . $product['priceRetail'] * $product['quantity'] . "\n";
+
+                    if (!$productStock->save())
+                        throw new Exception("Order product is not updated");
+
+                    if (! ($flag = $orderItem->save(false))) {
+                        $transaction->rollBack();
+                        break;
+                    }
+                }
+
+                $productsToCheck .= "Итого: " . $order->total_cost . "\n";
+                Yii::$app->settings->setBalance($order->total_cost);
+
+                if ($flag) {
+                    if ($isPrint == '1' && $order->pay_id != 1) {
+                        CashDrawController::printCheck($order);
+                    }
+
+                    $transaction->commit();
+                    return true;
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                throw $e;
+            }
         }
 
         return $this->render('test_create');
     }
 
-    public function actionOpenCashDraw() {
+    public function actionOpenCashDraw()
+    {
         if (Yii::$app->request->isAjax) {
             $connector = new NetworkPrintConnector("192.168.1.87", 9100);
             $printer = new Printer($connector);

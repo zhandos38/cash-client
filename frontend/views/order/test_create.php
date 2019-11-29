@@ -20,9 +20,6 @@ OrderAsset::register($this);
 $this->title = 'Создать заказ';
 $this->params['breadcrumbs'][] = ['label' => 'Заказы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-
-if (!Yii::$app->object->getShiftId())
-    throw new \yii\base\UserException('Смена не назначена, пожалуйста начните смену');
 ?>
 <div id="checkout" class="order-create" xmlns:v-on="http://www.w3.org/1999/xhtml">
 
