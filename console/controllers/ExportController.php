@@ -399,12 +399,12 @@ class ExportController extends Controller
 
     private function send($data, $target)
     {
-        Yii::$app->settings->setToken('0gdvpk3i308ZljkbzpRQIxj1HWMEb--v');
+//        Yii::$app->settings->setToken('0gdvpk3i308ZljkbzpRQIxj1HWMEb--v');
         $token = \Yii::$app->settings->getToken();
 
-        $fp = fopen("c:/test.txt", "a+");
-        fwrite($fp, VarDumper::dumpAsString($data,10));
-        fclose($fp);
+//        $fp = fopen("c:/test.txt", "a+");
+//        fwrite($fp, VarDumper::dumpAsString($data,10));
+//        fclose($fp);
 
         $client = new Client();
         $response = $client->createRequest()
@@ -415,9 +415,9 @@ class ExportController extends Controller
             ->setData(['token' => $token, 'data' => $data])
             ->send();
 
-        $fp = fopen("c:/test.txt", "a+");
-        fwrite($fp, $response->content);
-        fclose($fp);
+//        $fp = fopen("c:/test.txt", "a+");
+//        fwrite($fp, VarDumper::dumpAsString($response->content, 10));
+//        fclose($fp);
 
         if (!$response->isOk) {
             return false;
