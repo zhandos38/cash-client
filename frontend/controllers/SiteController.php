@@ -107,7 +107,7 @@ class SiteController extends Controller
         }
     }
 
-    public function actionActivate()
+    public function actionInitForm()
     {
         $model = new InitForm();
 
@@ -116,7 +116,7 @@ class SiteController extends Controller
             return $this->redirect(['site/index']);
         }
 
-        return $this->render('activation', [
+        return $this->render('init-form', [
             'model' => $model
         ]);
     }
