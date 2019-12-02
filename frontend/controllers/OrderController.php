@@ -54,7 +54,21 @@ class OrderController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create', 'customer-list', 'add-customer', 'get-product-by-id', 'get-product-by-barcode', 'add-debt', 'test-create', 'pay-order', 'test-customer-list', 'open-cash-draw', 'search'],
+                        'actions' => [
+                            'create',
+                            'customer-list',
+                            'add-customer',
+                            'get-product-by-id',
+                            'get-product-by-barcode',
+                            'add-debt', 'test-create',
+                            'pay-order',
+                            'test-customer-list',
+                            'open-cash-draw',
+                            'search',
+                            'set-shift',
+                            'close-shift',
+                            'check-shift'
+                        ],
                         'roles' => ['createOrder']
                     ],
                     [
@@ -366,7 +380,7 @@ class OrderController extends Controller
             }
         }
 
-        return $this->render('test_create');
+        return $this->render('test-create');
     }
 
     public function actionOpenCashDraw()
@@ -503,5 +517,33 @@ class OrderController extends Controller
         }
 
         return $data;
+    }
+
+    public function actionSetShift()
+    {
+        if (Yii::$app->request->isAjax) {
+            return Yii::$app->object->createShift();
+        }
+
+        return false;
+    }
+
+    public function actionCloseShift()
+    {
+        if (Yii::$app->request->isAjax) {
+            $sum = Yii::$app->request->post('sum');
+            return Yii::$app->object->closeShift($sum);
+        }
+
+        return false;
+    }
+
+    public function actionCheckShift()
+    {
+        if (Yii::$app->request->isAjax) {
+            return Yii::$app->object->getShiftId();
+        }
+
+        return false;
     }
 }

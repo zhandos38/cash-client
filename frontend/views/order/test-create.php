@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div id="checkout" class="order-create" xmlns:v-on="http://www.w3.org/1999/xhtml">
 
-    <a href="<?= Url::to(['company-objects/report']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
+    <a href="<?= Url::to(['site/index']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
     <div class="order-form__wrapper">
         <div class="order-form">
 

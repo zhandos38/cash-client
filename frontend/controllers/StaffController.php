@@ -108,6 +108,7 @@ class StaffController extends Controller
      *
      * @return mixed
      * @throws \yii\base\Exception
+     * @throws \yii\base\ErrorException
      */
     public function actionCreate()
     {
@@ -140,18 +141,6 @@ class StaffController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
-    }
-
-    public function actionOpenShift()
-    {
-        Yii::$app->object->createShift();
-        return $this->redirect(['/']);
-    }
-
-    public function actionCloseShift()
-    {
-        Yii::$app->object->closeShift();
-        return $this->redirect(['/']);
     }
 
     /**
