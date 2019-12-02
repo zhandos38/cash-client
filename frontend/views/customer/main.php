@@ -4,7 +4,7 @@ $this->title = 'Клиненты';
 $this->params['breadcrumbs'][] = $this->title;
 use yii\helpers\Url; ?>
 
-<a href="<?= Url::to(['company-objects/report']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
+<a href="<?= Url::to(['site/index']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div class="row">
     <div class="col-xs-12 col-sm-6 col-md-4">
         <a class="admin-block" href="<?= Url::to('/customer/index') ?>">
