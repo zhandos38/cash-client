@@ -21,7 +21,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
-    <?= $form->field($model, 'token') ?>
+    <?= $form->field($model, 'username')->textInput(['value' => $model->username, 'placeholder' => 'Введите ИИН/БИН'])->label(false) ?>
+
+    <?= $form->field($model, 'password')->passwordInput(['placeholder' => 'Введите пароль'])->label(false) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Войти', ['class' => 'login-button', 'name' => 'login-button']) ?>

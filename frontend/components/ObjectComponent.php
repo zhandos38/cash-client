@@ -6,10 +6,14 @@ use common\models\ShiftHistory;
 use Exception;
 use yii\base\Component;
 use yii\base\ErrorException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
 
 class ObjectComponent extends Component
 {
+    const TYPE_SHOP = 0;
+    const TYPE_RESTAURANT = 1;
+
     public function setShift()
     {
         $lastShift = ShiftHistory::find()
@@ -59,5 +63,18 @@ class ObjectComponent extends Component
     public function getShiftId()
     {
         return \Yii::$app->session->get('shift_id');
+    }
+
+    public static function getTypeIcon()
+    {
+        return [
+            self::TYPE_SHOP => 'fad fa-shopping-cart',
+            self::TYPE_RESTAURANT => 'fas fa-cutlery'
+        ];
+    }
+
+    public static function getTypeIconLabelById($id)
+    {
+        return ArrayHelper::getValue(self::getTypeIcon(), $id);
     }
 }

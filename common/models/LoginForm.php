@@ -49,13 +49,11 @@ class LoginForm extends Model
             $user = $this->getUserByPassword();
             if (!$user){
                 $this->addError($attribute, 'Неверный ИИН/БИН или пароль!');
-            }else
-                if ($user && $user->status == User::STATUS_INACTIVE){
-                    $this->addError($attribute, 'Ваш аккаунт не активирован, для активации аккаунта сбросьте пароль!');
-                }else
-                    if ($user && !$user->validatePassword($this->password)) {
-                        $this->addError($attribute, 'Неверный ИИН/БИН или пароль!');
-                    }
+            }elseif ($user && $user->status == User::STATUS_INACTIVE) {
+                $this->addError($attribute, 'Ваш аккаунт не активирован, для активации аккаунта сбросьте пароль!');
+            }elseif ($user && !$user->validatePassword($this->password)) {
+                $this->addError($attribute, 'Неверный ИИН/БИН или пароль!');
+            }
         }
     }
 
