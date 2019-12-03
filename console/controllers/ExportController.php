@@ -3,6 +3,8 @@
 namespace console\controllers;
 
 
+use common\models\Barcode;
+use common\models\BarcodeTemp;
 use common\models\Customer;
 use common\models\Invoice;
 use common\models\Log;
@@ -31,7 +33,7 @@ class ExportController extends Controller
     const TARGET_SUPPLIERS = 'suppliers';
     const TARGET_PRODUCT = 'product';
     const TARGET_BARCODE = 'barcode';
-    const TARGET_BARCODE_TEMP = 'temp-barcode';
+    const TARGET_BARCODE_TEMP = 'barcode-temp';
     const TARGET_SHIFT = 'shifts';
     const TARGET_STAFF = 'staff';
 
@@ -397,6 +399,50 @@ class ExportController extends Controller
         return true;
     }
 
+    public function actionBarcodeTemp()
+    {
+        $started_at = time();
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            /** @var BarcodeTemp $barcodes */
+            $barcodes = BarcodeTemp::find()->where('is_sent = false')->all();
+
+            if (!$barcodes) {
+                throw new \Exception('All temp barcodes have been already updated!');
+            }
+
+            foreach ($barcodes as $barcode) {
+                if (!$barcode->is_sent) {
+                    $barcode->is_sent = true;
+                }
+                $barcode->save();
+
+                $data = ArrayHelper::toArray($barcodes, [
+                    'common\models\BarcodeTemp' => [
+                        'id',
+                        'number',
+                        'name',
+                        'is_partial'
+                    ]
+                ]);
+            }
+
+            if ($this->send($data, self::TARGET_BARCODE_TEMP)) {
+                $transaction->commit();
+                Log::createLog(Log::SOURCE_EXPORT_BARCODE_TEMP, 'Barcode temp is exported successfully!', Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+            } else {
+                throw new \Exception('Barcode temp is not sent');
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            Log::createLog(Log::SOURCE_EXPORT_BARCODE_TEMP, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            throw new Exception($exception->getMessage());
+        }
+
+        return true;
+    }
+
     private function send($data, $target)
     {
 //        Yii::$app->settings->setToken('0gdvpk3i308ZljkbzpRQIxj1HWMEb--v');
@@ -409,7 +455,7 @@ class ExportController extends Controller
         $client = new Client();
         $response = $client->createRequest()
             ->setMethod('POST')
-            ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/' . $target)
+            ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/' . $target)
             ->addHeaders(['Authorization' => 'Bearer ' . $token])
             ->addHeaders(['content-type' => 'application/json'])
             ->setData(['token' => $token, 'data' => $data])

@@ -42,15 +42,18 @@ class ObjectComponent extends Component
         }
     }
 
-    public function closeShift()
+    public function closeShift($balance)
     {
         $id = $this->getShiftId();
         $shift = ShiftHistory::findOne(['id' => $id]);
+        $shift->sum_at_close = $balance;
         $shift->status = ShiftHistory::STATUS_CLOSED;
         $shift->closed_at = time();
         \Yii::$app->session->set('shift_id', null);
         if (!$shift->save())
-            throw new ErrorException('Ошибка смена не закрыта!');
+            throw new ErrorException('Ошибка, смена не закрыта!');
+
+        return true;
     }
 
     public function getShiftId()

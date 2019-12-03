@@ -52,7 +52,7 @@ class InitForm extends Model
                 ->setData(['token' => $this->token, 'serialNumber' => $serialNumber])
                 ->send();
 
-            if (!$response->content) {
+            if ($response->content == 'false') {
                 Yii::$app->session->setFlash('error', 'Данный токен не найден или уже активирован');
                 $transaction->rollBack();
                 return false;
@@ -72,6 +72,7 @@ class InitForm extends Model
             $user->phone = $responseUser['phone'];
             $user->email = $responseUser['email'];
             $user->password_hash = $responseUser['password_hash'];
+            $user->status = $responseUser['status'];
             $user->generateAuthKey();
 
             if (!$user->validate() || !$user->save())

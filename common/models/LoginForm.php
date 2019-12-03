@@ -12,7 +12,6 @@ use yii\httpclient\Client;
 class LoginForm extends Model
 {
     public $password;
-    public $rememberMe = true;
 
     private $_user;
 
@@ -25,8 +24,6 @@ class LoginForm extends Model
         return [
             // username and password are both required
             [['password'], 'required', 'message' => 'Введите "{attribute}"'],
-            // rememberMe must be a boolean value
-            ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
         ];
@@ -35,7 +32,6 @@ class LoginForm extends Model
     public function attributeLabels()
     {
         return [
-            'rememberMe' => Yii::t('user', 'Remember Me'),
             'password' => Yii::t('user', 'Password'),
         ];
     }
@@ -71,7 +67,7 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate() && $this->checkSerialNumberLocal()) {
-            $flag = Yii::$app->user->login($this->getUserByPassword(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            $flag = Yii::$app->user->login($this->getUserByPassword(), 0);
             Yii::$app->object->setShift();
             return $flag;
         }

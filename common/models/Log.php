@@ -27,6 +27,8 @@ class Log extends \yii\db\ActiveRecord
     const SOURCE_EXPORT_SUPPLIER = 4;
     const SOURCE_EXPORT_SHIFT = 5;
     const SOURCE_EXPORT_STAFF = 6;
+    const SOURCE_EXPORT_BARCODE = 7;
+    const SOURCE_EXPORT_BARCODE_TEMP = 8;
 
     /**
      * {@inheritdoc}

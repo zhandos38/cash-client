@@ -16,6 +16,7 @@ use yii\helpers\VarDumper;
  *
  * @property User $user
  * @property bool $is_sent [tinyint(1)]
+ * @property float $sum_at_close [float]
  */
 class ShiftHistory extends \yii\db\ActiveRecord
 {
@@ -38,7 +39,8 @@ class ShiftHistory extends \yii\db\ActiveRecord
         return [
             [['user_id', 'status', 'started_at', 'closed_at'], 'integer'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            ['is_sent', 'boolean']
+            ['is_sent', 'boolean'],
+            ['sum_at_close', 'number']
         ];
     }
 

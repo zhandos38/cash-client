@@ -1,0 +1,28 @@
+.shift-modal__wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 80;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+}
+
+.shift-modal {
+    background: #efefef;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(1);
+    width: 80%;
+    height: 80%;
+    padding: 10px;
+}
+
+.shift-modal__cancel {
+    cursor: pointer;
+    position: absolute;
+    right: 2%;
+    top: 2%;
+    font-size: 15px;
+}

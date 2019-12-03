@@ -465,7 +465,7 @@ function getProducts(term = null) {
         message: 'Загрузка'
     });
     $.get({
-        url: '/product/search',
+        url: '/order/search',
         data: {term: term},
         success: function(result) {
         let products = '';
