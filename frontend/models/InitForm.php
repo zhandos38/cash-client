@@ -46,13 +46,13 @@ class InitForm extends Model
             $client = new Client();
             $response = $client->createRequest()
                 ->setMethod('GET')
-                ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/activate')
+                ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/activate')
                 ->addHeaders(['Authorization' => 'Bearer ' . $this->token])
                 ->addHeaders(['content-type' => 'application/json'])
                 ->setData(['token' => $this->token, 'serialNumber' => $serialNumber])
                 ->send();
 
-            if (!$response->content) {
+            if ($response->content == 'false') {
                 Yii::$app->session->setFlash('error', 'Данный токен не найден или уже активирован');
                 $transaction->rollBack();
                 return false;
@@ -68,6 +68,7 @@ class InitForm extends Model
             $user->phone = $responseUser['phone'];
             $user->email = $responseUser['email'];
             $user->password_hash = $responseUser['password_hash'];
+            $user->status = $responseUser['status'];
             $user->generateAuthKey();
 
             if (!$user->validate() || !$user->save())

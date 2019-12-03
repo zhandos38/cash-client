@@ -34,7 +34,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'except' => ['login', 'request-password-reset', 'reset-password', 'verify', 'error', 'activate'],
+                'except' => ['login', 'request-password-reset', 'reset-password', 'verify', 'error', 'init-form'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -90,9 +90,8 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-//        VarDumper::dump(Yii::$app->settings->getBalance()); die;
         if (!Yii::$app->settings->getToken()) {
-            return $this->redirect(['site/activate']);
+            return $this->redirect(['site/init-form']);
         }
 
         $model = new LoginForm();
