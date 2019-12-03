@@ -27,7 +27,7 @@ class CashDrawController extends Controller
 
     public function actionIndex()
     {
-        $this->layout = 'order';
+        $this->layout = 'cash-draw';
 
         $shift = ShiftHistory::findOne(['id' => Yii::$app->object->getShiftId()]);
         $transactions = ShiftTransactions::find()->all();
@@ -39,7 +39,7 @@ class CashDrawController extends Controller
 
     public function actionOrders()
     {
-        $this->layout = 'order';
+        $this->layout = 'cash-draw';
 
         $searchModel = new BillSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

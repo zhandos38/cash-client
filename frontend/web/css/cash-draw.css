@@ -1,11 +1,18 @@
 .cash-draw__container {
     display: flex;
+    min-height: 70vh;
 }
 .transactions-list {
     width: 75%;
+    box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+    margin-right: 10px;
 }
 .cash-draw__shift {
     width: 25%;
+    position: relative;
+    box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
 }
 
 /* Transaction */
@@ -24,14 +31,22 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%) scale(1);
-    width: 45%;
-    padding: 4px 8px;
+    width: 63%;
+    height: 45%;
+    padding: 15px 15px;
+}
+.transaction-modal__name h3{
+    margin: 10px;
 }
 .transaction-modal__container {
     padding: 0 20px 40px 20px;
+    display: flex;
 }
 .transaction-modal__close {
     cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 15px;
 }
 .numPad {
     display: flex;
@@ -39,13 +54,233 @@
 }
 .numpad__button {
     width: 110.6px;
-    height: 60px;
+    height: 80px;
+    margin: 1px;
+    font-size: 25px;
 }
 .numpad-extension {
-    /*display: flex;*/
-    margin-top: 5px;
+    width: 43%;
 }
 .numpad-extension__button {
     width: 108.4px;
-    height: 60px;
+    height: 80px;
+    margin: 1px;
+    font-size: 25px;
+}
+.cash-navigator{
+    margin-bottom: 40px;
+}
+.cash-navigator li{
+    display: inline-block;
+}
+.cash-navigator a{
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    margin-right: 5px;
+    color: #000;
+    font-size: 15px;
+}
+.cash-navigator a:hover{
+    background-color: #e8e8e8;
+    text-decoration: none;
+    transition: .5s;
+    color: #000;
+}
+.nav-active{
+    border-bottom: 3px solid #2e6da4;
+}
+.cash-draw th{
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 15px!important;
+}
+
+.cash-draw .table{
+    margin-bottom: 0;
+}
+.cash-draw__buttons{
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+.cash-draw__buttons button{
+    width: 44%;
+    height: 50px;
+    font-size: 15px;
+}
+.cash-draw__shift th{
+    padding: 10px!important;
+    font-weight: 500;
+}
+.cash-draw__shift table{
+    width: 100%;
+}
+.cash-draw-orders__container{
+    display: flex;
+    min-height: 70vh;
+}
+.cash-draw-orders__table {
+    width: 75%;
+    box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+    margin-right: 10px;
+}
+.cash-draw-orders__item-view {
+    width: 25%;
+    box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+}
+.cash-draw-orders th{
+    text-align: center;
+}
+.cash-draw-orders__button-group{
+    position: absolute;
+    bottom: 7%;
+    right: 40px;
+}
+.cash-draw-orders__button-group button{
+    width: 180px;
+    height: 50px;
+    margin-right: 5px;
+}
+.cash-draw-orders__return-btn{
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    background-color: #f0ad4e;
+    border-color: #eea236;
+    color: #fff;
+}
+.cash-draw-orders__return-btn:hover{
+    background-color: #ed9c28;
+    border-color: #d58512;
+}
+.cash-draw-orders__cancel-btn, .cash-draw__close-shift-button{
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    background-color: #d9534f;
+    border-color: #d9534f;
+    color: #fff;
+}
+.cash-draw-orders__cancel-btn:hover, .cash-draw__close-shift-button:hover{
+    background-color: #d2322d;
+    border-color: #ac2925;
+}
+.cash-draw-orders__print-copy, .cash-draw__introduction-button{
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    background-color: #428bca;
+    border-color: #428bca;
+    color: #fff;
+}
+.cash-draw-orders__print-copy:hover, .cash-draw__introduction-button:hover{
+    background-color: #3276b1;
+    border-color: #285e8e;
+}
+.transaction-modal__calculator {
+    display: flex;
+    width: 92%;
+}
+.numpad{
+    width: 63%;
+}
+.transaction-modal__form label{
+    display: block;
+}
+.transaction-modal__form{
+    width: 62%;
+}
+.transaction-modal__form textarea, input[type="text"]{
+    display: block;
+    width: 90%;
+    padding: 5px 10px;
+    margin: 5px 0 15px;
+}
+.transaction-modal__radio label{
+    display: inline-block;
+}
+.transaction-modal__radio p{
+    float: left;
+    margin-right: 5px;
+}
+.transaction-modal__radio input{
+    margin-right: 10px!important;
+}
+.transaction-modal__accept{
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    color: #fff;
+}
+.transaction-modal__accept:hover{
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439;
 }

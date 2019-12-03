@@ -13,6 +13,7 @@ class TestOrderAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        'css/cash-draw.css',
         'css/test-order.css',
         'css/loading.css'
     ];

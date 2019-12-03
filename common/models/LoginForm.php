@@ -109,7 +109,7 @@ class LoginForm extends Model
         $client = new Client();
         $response = $client->createRequest()
             ->setMethod('GET')
-            ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/validate')
+            ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/validate')
             ->addHeaders(['Authorization' => 'Bearer ' . $token])
             ->addHeaders(['content-type' => 'application/json'])
             ->setData(['token' => $token, 'serialNumber' => $serialNumber])
