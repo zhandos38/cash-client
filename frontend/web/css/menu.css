@@ -14,15 +14,130 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%) scale(1);
-    width: 80%;
-    height: 80%;
-    padding: 10px;
+    width: 30%;
+    height: 35%;
+    padding: 30px;
 }
-
 .shift-modal__cancel {
     cursor: pointer;
     position: absolute;
     right: 2%;
     top: 2%;
     font-size: 15px;
+}
+.shift-modal h2{
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+.shift-modal p{
+    font-size: 16px;
+    font-weight: 700;
+}
+.shift-modal span{
+    font-weight: 300;
+}
+.shift-modal__warning {
+    text-align: center;
+    margin: 20px 0 40px;
+}
+.shift-modal__btn {
+    text-align: center;
+}
+.shift-modal__btn a{
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+    padding: 13px 20px;
+    border-radius: 4px;
+    font-size: 15px;
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,.2);
+    color: #000;
+}
+.shift-modal__btn a:hover{
+    background-color: #e8e8e8;
+    text-decoration: none;
+    transition: .5s;
+    color: #000;
+}
+.shift-close-modal{
+    background: #efefef;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(1);
+    width: 80%;
+    height: 57%;
+    padding: 30px;
+}
+.shift-close-modal h2{
+    margin-top: 0;
+}
+.shift-close__modal-content {
+    display: flex;
+    padding-top: 30px;
+}
+.shift-modal__balance {
+    height: 40px;
+    width: 90%;
+    background: #fff;
+    color: #000;
+    padding: 9px 15px;
+    font-size: 20px;
+    margin-bottom: 30px;
+    border-radius: 3px;
+}
+.shift-close__modal-content p{
+    font-size: 16px;
+    font-weight: 700;
+}
+.shift-close__modal-content span{
+    font-weight: 300;
+}
+.shift-close__modal-content .shift-modal__info{
+    width: 38%;
+}
+.numpad-wrapper {
+    width: 60%;
+    display: flex;
+    margin-bottom: 20px;
+}
+.numpad{
+    width: 60%;
+}
+.numpad-extension{
+    width: 40%;
+}
+.numpad-extension__button {
+    width: 46%;
+    height: 80px;
+    margin: 1px;
+    font-size: 25px;
+}
+.numpad__button {
+    width: 31%;
+    height: 80px;
+    margin: 1px;
+    font-size: 25px;
+}
+.shift-modal-close__btn {
+    text-align: center;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+    padding: 13px 20px;
+    border-radius: 4px;
+    font-size: 15px;
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,.2);
+    color: #000;
+    width: 56%;
+    position: absolute;
+    right: 5.5%;
+}
+.shift-modal-close__btn:hover{
+    background-color: #e8e8e8;
+    text-decoration: none;
+    transition: .5s;
+    color: #000;
+    cursor: pointer;
+}
+.comment-modal__close:hover{
+    cursor: pointer;
 }
