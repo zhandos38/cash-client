@@ -29,7 +29,7 @@ class InitForm extends Model
     public function attributeLabels()
     {
         return [
-            'token' => Yii::t('user', 'Token')
+            'token' => 'Активационный ключ'
         ];
     }
 

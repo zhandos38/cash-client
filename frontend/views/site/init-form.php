@@ -15,22 +15,19 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-login">
     <img src="/img/ims.png" style="height: 110px; margin-bottom: 30px">
 
-    <p class="login-text">
-        Платформа IMS приветствует Вас!
-    </p>
+    <p class="login-text" style="margin-bottom: 10px">Платформа IMS приветствует Вас!</p>
+
+    <div class="init-text">
+        <p>Это первый запуск сервера IMS.<br/> Вам необходимо осуществить привязку сервера к платформе IMS. Для этого Вам необходимо ввести активационный ключ в соответствующее поле и нажать на кнопку "Привязать".</p>
+    </div>
 
     <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
-    <?= $form->field($model, 'token') ?>
+    <?= $form->field($model, 'token')->label(false)->textInput(['placeholder' => 'Введите активационный ключ']) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Войти', ['class' => 'login-button', 'name' => 'login-button']) ?>
+        <?= Html::submitButton('Привязать', ['class' => 'login-button', 'name' => 'login-button']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
-    <div class="support-info">
-        <p>
-            При возникновении вопросов по работе с платформой, обратитесь в техническую поддержку: +7(777)777-77-77
-        </p>
-    </div>
 </div>

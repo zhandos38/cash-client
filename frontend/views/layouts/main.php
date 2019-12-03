@@ -41,39 +41,15 @@ AppAsset::register($this);
 
 <div class="wrap">
 
-<!--    --><?php
-//    NavBar::begin([
-//        'brandLabel' => Html::encode(Yii::$app->name),
-//        'brandUrl' => Yii::$app->homeUrl,
-//        'options' => [
-//            'class' => 'navbar-inverse navbar-fixed-top',
-//        ],
-//    ]);
-//
-//    if (Yii::$app->user->isGuest) {
-//        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-//        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-//    } else {
-//        $menuItems[] = '<li>'
-//            . Html::beginForm(['/site/logout'], 'post')
-//            . Html::submitButton(
-//                'Logout (' . Yii::$app->user->identity->username . ')',
-//                ['class' => 'btn btn-link logout']
-//            )
-//            . Html::endForm()
-//            . '</li>';
-//    }
-//    echo Nav::widget([
-//        'options' => ['class' => 'navbar-nav navbar-right'],
-//        'items' => $menuItems,
-//    ]);
-//    NavBar::end();
-//    ?>
-
     <div class="container">
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
+    <footer>
+        <div class="support-block">
+            <p>При возникновении вопросов по работе с платформой,обратитесь в техническую поддержку: <a href="tel:+77777777777">+7(777)777-77-77</a></p>
+        </div>
+    </footer>
 </div>
 
 
