@@ -12,9 +12,9 @@ use yii\widgets\MaskedInput;
 $this->title = 'Регистрация работников';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<a href="<?= Yii::$app->request->referrer ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div class="site-signup">
     <h1><?= Html::encode($this->title) ?></h1>
-    <a href="<?= Yii::$app->request->referrer ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
     <p>Заполните все поля чтобы зарегистрировать работника:</p>
 
         <?php $form = ActiveForm::begin([
