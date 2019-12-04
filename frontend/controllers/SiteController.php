@@ -144,7 +144,7 @@ class SiteController extends Controller
                 $client = new Client();
                 $response = $client->createRequest()
                     ->setMethod('GET')
-                    ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/activate')
+                    ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/activate')
                     ->setData(['id' => $id, 'serialNumber' => $serialNumber])
                     ->send();
 

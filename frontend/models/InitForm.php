@@ -47,7 +47,7 @@ class InitForm extends Model
             $client = new Client();
             $response = $client->createRequest()
                 ->setMethod('GET')
-                ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/init')
+                ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/init')
                 ->setData(['username' => $this->username, 'password' => $this->password])
                 ->send();
 
