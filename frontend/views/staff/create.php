@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'role')->dropDownList(User::getRoles(), ['prompt' => 'Указать роль']) ?>
 
             <div class="form-group">
-                <?= Html::submitButton('Зарегистрировать', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                <?= Html::submitButton('Зарегистрировать', ['class' => 'login-button', 'name' => 'signup-button']) ?>
             </div>
 
         <?php ActiveForm::end(); ?>

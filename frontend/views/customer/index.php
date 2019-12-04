@@ -13,9 +13,8 @@ use yii\helpers\Url;
 $this->title = 'Клиенты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<a href="<?= Url::to(['customer/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div class="customer-index">
-
-    <a href="<?= Url::to(['customer/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 
     <h1><?= Html::encode($this->title) ?></h1>
 

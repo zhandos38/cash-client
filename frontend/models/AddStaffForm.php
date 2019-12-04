@@ -43,7 +43,9 @@ class AddStaffForm extends Model
             ['password', 'string', 'min' => 4],
 
             [['full_name', 'address', 'role', 'phone'], 'string'],
-            [['status'], 'integer']
+            [['status'], 'integer'],
+            [['role', 'full_name', 'phone'], 'required'],
+            [['role', 'full_name', ], 'required']
         ];
     }
 

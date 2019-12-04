@@ -16,11 +16,10 @@ use yii\widgets\Pjax;
 $this->title = 'Заказы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<a href="<?= Url::to(['/site/index']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div class="order-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <a href="<?= Url::to(['order/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 
     <?php Pjax::begin([
         'id' => 'order-list'

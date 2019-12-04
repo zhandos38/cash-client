@@ -8,16 +8,16 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 
-$this->title = 'Авторизация';
+$this->title = 'Активация сервера';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="site-login">
     <img src="/img/ims.png" style="height: 110px; margin-bottom: 30px">
 
-    <p class="login-text">
-        Платформа IMS приветствует Вас!
-    </p>
+    <p class="login-text">Вас приветствует платформа IMS!</p>
+    <p class="init-text">Это первый запуск сервера IMS.</p>
+    <p class="init-text">Вам необходимо осуществить активацию сервера. Для этого Вам необходимо авторизоваться, введя логин и пароль, затем выбрать объект, который Вы хотите активировать.</p><br/>
 
     <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
@@ -30,9 +30,4 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <?php ActiveForm::end(); ?>
-    <div class="support-info">
-        <p>
-            При возникновении вопросов по работе с платформой, обратитесь в техническую поддержку: +7(777)777-77-77
-        </p>
-    </div>
 </div>
