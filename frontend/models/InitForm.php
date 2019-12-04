@@ -14,7 +14,10 @@ use yii\httpclient\Client;
  */
 class InitForm extends Model
 {
-    public $token;
+    public $username;
+    public $password;
+
+    private $_user;
 
     /**
      * {@inheritdoc}
@@ -22,49 +25,45 @@ class InitForm extends Model
     public function rules()
     {
         return [
-            [['token'], 'required', 'message' => 'Введите "{attribute}"'],
+            [['username', 'password'], 'string'],
+            [['username', 'password'], 'required', 'message' => 'Введите "{attribute}"']
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'token' => 'Активационный ключ'
+            'username' => Yii::t('user', 'Введите ИИН/БИН'),
+            'password' => Yii::t('user', 'Пароль')
         ];
     }
 
-    public function activate()
+    public function initialization()
     {
         $authManager = Yii::$app->authManager;
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            /* Getting serial number */
-            $serialNumber = shell_exec('wmic DISKDRIVE GET SerialNumber 2>&1');
-            $serialNumber = md5($serialNumber);
-
             $client = new Client();
             $response = $client->createRequest()
                 ->setMethod('GET')
-                ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/activate')
-                ->addHeaders(['Authorization' => 'Bearer ' . $this->token])
-                ->addHeaders(['content-type' => 'application/json'])
-                ->setData(['token' => $this->token, 'serialNumber' => $serialNumber])
+                ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/init')
+                ->setData(['username' => $this->username, 'password' => $this->password])
                 ->send();
 
-            if ($response->content == 'false') {
-                Yii::$app->session->setFlash('error', 'Данный токен не найден или уже активирован');
-                $transaction->rollBack();
+            if (!$response->isOk) {
+                Yii::$app->session->setFlash('error', 'Неверный пароль или логин');
                 return false;
             }
 
-            $fp = fopen("c:/test.txt", "a+");
-            fwrite($fp, VarDumper::dumpAsString($response->content,10));
-            fclose($fp);
-
             $responseData = Json::decode($response->content);
             $responseUser = $responseData['user'];
-            $responseSettings = $responseData['settings'];
+            $responseObjects = $responseData['objects'];
+
+            if (!$responseObjects) {
+                Yii::$app->session->setFlash('success', 'Никаких обьектов не найдено!');
+                return false;
+            }
 
             $user = new User();
             $user->username = $responseUser['username'];
@@ -80,21 +79,44 @@ class InitForm extends Model
 
             $authManager->assign($authManager->getRole(User::ROLE_DIRECTOR), $user->id);
 
-            Yii::$app->settings->setName($responseSettings['name']);
-            Yii::$app->settings->setBalance($responseSettings['balance']);
-            Yii::$app->settings->setAddress($responseSettings['address']);
-            Yii::$app->settings->setPhone($responseSettings['phone']);
-            Yii::$app->settings->setToken($this->token);
-            Yii::$app->settings->setSerialNumber($serialNumber);
-
+            $this->login();
             $transaction->commit();
+
+            return $responseObjects;
 
         } catch (Exception $exception) {
             $transaction->rollBack();
 
             throw new Exception($exception->getMessage());
         }
+    }
 
-        return true;
+    /**
+     * Logs in a user using the provided username and password.
+     *
+     * @return bool whether the user is logged in successfully
+     */
+    public function login()
+    {
+        if ($this->validate()) {
+            Yii::$app->user->login($this->getUser(), 3600 * 24);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Finds user by [[username]]
+     *
+     * @return User|null
+     */
+    protected function getUser()
+    {
+        if ($this->_user === null) {
+            $this->_user = User::findByUsername($this->username);
+        }
+
+        return $this->_user;
     }
 }

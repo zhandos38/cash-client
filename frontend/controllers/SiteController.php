@@ -11,7 +11,11 @@ use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidParamException;
+use yii\db\Exception;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\helpers\VarDumper;
+use yii\httpclient\Client;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -20,6 +24,7 @@ use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\ContactForm;
+use yii\web\ForbiddenHttpException;
 
 /**
  * Site controller
@@ -34,7 +39,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'except' => ['login', 'request-password-reset', 'reset-password', 'verify', 'error', 'init-form'],
+                'except' => ['login', 'request-password-reset', 'reset-password', 'verify', 'error', 'init'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -91,7 +96,7 @@ class SiteController extends Controller
         }
 
         if (!Yii::$app->settings->getToken()) {
-            return $this->redirect(['site/init-form']);
+            return $this->redirect(['site/init']);
         }
 
         $model = new LoginForm();
@@ -106,17 +111,73 @@ class SiteController extends Controller
         }
     }
 
-    public function actionInitForm()
+    public function actionInit()
     {
         $model = new InitForm();
+        if ($model->load(Yii::$app->request->post())) {
+            $objects = $model->initialization();
+            Yii::$app->session->set('objects', $objects);
+            return $this->redirect(['site/activate']);
+        }
 
-        if ($model->load(Yii::$app->request->post()) && $model->activate()) {
-            Yii::$app->settings->setBalance(0);
+        return $this->render('init', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionActivate($id = null)
+    {
+        $objects = Yii::$app->session->get('objects');
+
+        if (!$objects)
+            throw new ForbiddenHttpException();
+
+        if ($id) {
+            $authManager = Yii::$app->authManager;
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                /* Getting serial number */
+                $serialNumber = shell_exec('wmic DISKDRIVE GET SerialNumber 2>&1');
+                $serialNumber = md5($serialNumber);
+
+                $client = new Client();
+                $response = $client->createRequest()
+                    ->setMethod('GET')
+                    ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/activate')
+                    ->setData(['id' => $id, 'serialNumber' => $serialNumber])
+                    ->send();
+
+                if ($response->content == 'false') {
+                    Yii::$app->session->setFlash('error', 'Данный токен не найден или уже активирован');
+                    $transaction->rollBack();
+                    return false;
+                }
+
+                $responseData = Json::decode($response->content);
+                $responseSettings = $responseData['settings'];
+
+                Yii::$app->settings->setName($responseSettings['name']);
+                Yii::$app->settings->setBalance($responseSettings['balance']);
+                Yii::$app->settings->setAddress($responseSettings['address']);
+                Yii::$app->settings->setPhone($responseSettings['phone']);
+                Yii::$app->settings->setToken($responseSettings['token']);
+                Yii::$app->settings->setSerialNumber($serialNumber);
+
+                Yii::$app->session->remove('objects');
+                $transaction->commit();
+
+            } catch (Exception $exception) {
+                $transaction->rollBack();
+
+                throw new Exception($exception->getMessage());
+            }
+
             return $this->redirect(['site/index']);
         }
 
-        return $this->render('init-form', [
-            'model' => $model
+        return $this->render('activation', [
+            'objects' => $objects
         ]);
     }
 
