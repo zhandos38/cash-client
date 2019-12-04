@@ -148,8 +148,6 @@ class SiteController extends Controller
                     ->setData(['id' => $id, 'serialNumber' => $serialNumber])
                     ->send();
 
-                VarDumper::dump($response,10,1); die;
-
                 if ($response->content == 'false') {
                     Yii::$app->session->setFlash('error', 'Данный токен не найден или уже активирован');
                     $transaction->rollBack();
@@ -166,6 +164,7 @@ class SiteController extends Controller
                 Yii::$app->settings->setToken($responseSettings['token']);
                 Yii::$app->settings->setSerialNumber($serialNumber);
 
+                Yii::$app->session->remove('objects');
                 $transaction->commit();
 
             } catch (Exception $exception) {
