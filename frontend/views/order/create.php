@@ -24,9 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
 if (!Yii::$app->object->getShiftId())
     throw new \yii\base\UserException('Смена не назначена, пожалуйста начните смену');
 ?>
+<a href="<?= Url::to(['site/index']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div class="order-create">
 
-    <a href="<?= Url::to(['site/index']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
     <div class="order-form__wrapper">
         <div class="order-form">
 

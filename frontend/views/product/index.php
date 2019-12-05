@@ -14,11 +14,10 @@ use yii\helpers\Url;
 $this->title = 'Склад';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<a href="<?= Url::to(['product/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div class="product-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <a href="<?= Url::to(['product/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 

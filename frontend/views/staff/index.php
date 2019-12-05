@@ -14,8 +14,8 @@ use yii\helpers\Url;
 $this->title = 'Список сотрудников';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<a href="<?= Url::to('/staff/main') ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div class="user-index">
-    <a href="<?= Url::to('/staff/main') ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
     <h1>Список сотрудников</h1>
 
     <?= GridView::widget([

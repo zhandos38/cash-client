@@ -20,8 +20,6 @@ InvoiceAsset::register($this);
 
 <div class="invoice-form">
 
-    <a href="<?= Url::to(['invoice/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
-
     <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
 
     <div class="row">

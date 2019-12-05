@@ -40,17 +40,16 @@ AppAsset::register($this);
 </header>
 
 <div class="wrap">
-
     <div class="container">
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
-    <footer>
-        <div class="support-block">
-            <p>При возникновении вопросов по работе с платформой,обратитесь в техническую поддержку: <a href="tel:+77777777777">+7(777)777-77-77</a></p>
-        </div>
-    </footer>
 </div>
+<footer>
+    <div class="support-block">
+        <p>При возникновении вопросов по работе с платформой, обратитесь в техническую поддержку: <a href="tel:+77777777777">+7(777)777-77-77</a></p>
+    </div>
+</footer>
 
 
 <?php $this->endBody() ?>

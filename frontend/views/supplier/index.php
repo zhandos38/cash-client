@@ -13,11 +13,10 @@ use yii\helpers\Url;
 $this->title = 'Поставщики';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<a href="<?= Url::to(['supplier/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div class="supplier-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <a href="<?= Url::to(['supplier/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

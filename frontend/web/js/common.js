@@ -20,16 +20,16 @@ $('.form-password-repeat__input_btn').on('click', function(){
     }
 });
 
-
-$("#username_input").keyup(function(e){
-    this.value = this.value.replace(/[^0-9\.]/g, '');
-});
-
-$("#password_input").keyup(function(e){
-    this.value = this.value.replace(/[а-яА-ЯёЁ]/g, '');
-});
-
-$("#password_repeat_input").keyup(function(e){
-    this.value = this.value.replace(/[а-яА-ЯёЁ]/g, '');
-});
-
+//
+// $("#username_input").keyup(function(e){
+//     this.value = this.value.replace(/[^0-9\.]/g, '');
+// });
+//
+// $("#password_input").keyup(function(e){
+//     this.value = this.value.replace(/[а-яА-ЯёЁ]/g, '');
+// });
+//
+// $("#password_repeat_input").keyup(function(e){
+//     this.value = this.value.replace(/[а-яА-ЯёЁ]/g, '');
+// });
+//

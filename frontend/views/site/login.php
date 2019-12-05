@@ -25,9 +25,4 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::submitButton('Войти', ['class' => 'login-button', 'name' => 'login-button']) ?>
     </div>
     <?php ActiveForm::end(); ?>
-    <div class="support-info">
-        <p>
-            При возникновении вопросов по работе с платформой, обратитесь в техническую поддержку: +7(777)777-77-77
-        </p>
-    </div>
 </div>

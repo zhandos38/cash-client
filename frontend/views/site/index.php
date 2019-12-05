@@ -159,7 +159,7 @@ MenuAsset::register($this);
                 <h2>Закрыть смену</h2>
                 <div class="shift-close__modal-content">
                     <div class="shift-modal__info">
-                        <div class="shift-modal__balance">{{ cashBoxBalance }}0.00</div>
+                        <div class="shift-modal__balance">{{ cashBoxBalance }}</div>
                         <div class="shift-modal__cashier">
                             <p><span>Кассир:</span> <?= Yii::$app->user->identity->full_name ?></p>
                         </div>

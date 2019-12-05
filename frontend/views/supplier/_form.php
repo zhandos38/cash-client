@@ -11,8 +11,6 @@ use yii\widgets\ActiveForm;
 
 <div class="supplier-form">
 
-    <a href="<?= Url::to(['supplier/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
-
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
