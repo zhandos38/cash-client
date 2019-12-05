@@ -52,7 +52,7 @@ class InitForm extends Model
                 ->send();
 
             if (!$response->isOk) {
-                Yii::$app->session->setFlash('error', 'Неверный ИИН/БИН или пароль!');
+                Yii::$app->session->setFlash('error', 'Неверный ИИН/БИН или пароль или логин');
                 return false;
             }
 

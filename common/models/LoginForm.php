@@ -48,11 +48,11 @@ class LoginForm extends Model
         if (!$this->hasErrors()) {
             $user = $this->getUserByPassword();
             if (!$user){
-                $this->addError($attribute, 'Неверный ИИН/БИН или пароль!');
+                $this->addError($attribute, 'Вы ввели неккоректный пароль!');
             }elseif ($user && $user->status == User::STATUS_INACTIVE) {
-                $this->addError($attribute, 'Ваш аккаунт не активирован, для активации аккаунта сбросьте пароль!');
+                $this->addError($attribute, 'Ваша учетная запись заблокирована, обратитесь к руководству!');
             }elseif ($user && !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Неверный ИИН/БИН или пароль!');
+                $this->addError($attribute, 'Неверный пароль!');
             }
         }
     }
