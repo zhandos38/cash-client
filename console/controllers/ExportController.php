@@ -32,7 +32,7 @@ class ExportController extends Controller
     const TARGET_CUSTOMERS = 'customers';
     const TARGET_SUPPLIERS = 'suppliers';
     const TARGET_PRODUCT = 'product';
-    const TARGET_BARCODE = 'barcode';
+//    const TARGET_BARCODE = 'barcode';
     const TARGET_BARCODE_TEMP = 'barcode-temp';
     const TARGET_SHIFT = 'shifts';
     const TARGET_STAFF = 'staff';
@@ -448,9 +448,9 @@ class ExportController extends Controller
 //        Yii::$app->settings->setToken('0gdvpk3i308ZljkbzpRQIxj1HWMEb--v');
         $token = \Yii::$app->settings->getToken();
 
-//        $fp = fopen("c:/test.txt", "a+");
-//        fwrite($fp, VarDumper::dumpAsString($data,10));
-//        fclose($fp);
+        $fp = fopen("c:/test.txt", "a+");
+        fwrite($fp, VarDumper::dumpAsString($data,10));
+        fclose($fp);
 
         $client = new Client();
         $response = $client->createRequest()
@@ -461,9 +461,9 @@ class ExportController extends Controller
             ->setData(['token' => $token, 'data' => $data])
             ->send();
 
-//        $fp = fopen("c:/test.txt", "a+");
-//        fwrite($fp, VarDumper::dumpAsString($response->content, 10));
-//        fclose($fp);
+        $fp = fopen("c:/test.txt", "a+");
+        fwrite($fp, VarDumper::dumpAsString($response->content, 10));
+        fclose($fp);
 
         if (!$response->isOk) {
             return false;
