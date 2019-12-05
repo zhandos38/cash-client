@@ -245,4 +245,14 @@ class CashDrawController extends Controller
         $printer -> pulse(0, 120, 240);
         $printer -> close();
     }
+
+    public function beforeAction($action)
+    {
+        if (!Yii::$app->object->getShiftId()) {
+            Yii::$app->session->setFlash('error', 'Смена на назначена! Пожалуйста назначьте смену');
+            $this->redirect(['site/index']);
+            return false;
+        }
+        return parent::beforeAction($action);
+    }
 }

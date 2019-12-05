@@ -293,8 +293,10 @@ class OrderController extends Controller
      */
     public function actionTestCreate()
     {
-        if (!Yii::$app->object->getShiftId())
-            throw new \yii\base\UserException('Смена не назначена, пожалуйста начните смену');
+        if (!Yii::$app->object->getShiftId()) {
+            Yii::$app->session->setFlash('error', 'Смена на назначена! Пожалуйста назначьте смену');
+            return $this->redirect(['site/index']);
+        }
 
         $this->layout = 'order';
 
