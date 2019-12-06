@@ -13,7 +13,7 @@ $this->title = 'Активация сервера';
         <p class="activation-text">Выберите объект которую хотите активировать</p>
         <?php foreach ($objects as $object): ?>
             <div class="col-xs-12 col-sm-4 col-md-4">
-                <a class="admin-block" href="<?= Url::to(['site/activate', 'id' => $object['id']]) ?>" onclick="return confirm('Are you sure?')">
+                <a class="admin-block" href="<?= Url::to(['site/activate', 'id' => $object['id']]) ?>" onclick="return confirm('Вы дейвствительно хотите активировать данный объект?')">
                     <div class="admin-block__item">
                         <div class="admin-block__icon">
                             <i class="<?= Yii::$app->object->getTypeIconLabelById($object['type_id']) ?>" aria-hidden="true"></i>
