@@ -13,7 +13,6 @@ use yii\helpers\VarDumper;
  */
 class AddStaffForm extends Model
 {
-    public $username;
     public $full_name;
     public $address;
     public $email;
@@ -29,11 +28,6 @@ class AddStaffForm extends Model
     public function rules()
     {
         return [
-            ['username', 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
@@ -42,6 +36,7 @@ class AddStaffForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 4],
+            ['password', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This password has already been taken.'],
 
             [['full_name', 'address', 'role', 'phone'], 'string'],
             [['status'], 'integer'],
@@ -53,7 +48,6 @@ class AddStaffForm extends Model
     public function attributeLabels()
     {
         return [
-            'username' => 'Логин',
             'full_name' => 'Ф.И.О',
             'password' => 'Пароль',
             'phone' => 'Телефон',
@@ -82,7 +76,6 @@ class AddStaffForm extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $user = new User();
-            $user->username = $this->username;
             $user->email = $this->email;
             $user->setPassword($this->password);
             $user->generateAuthKey();
