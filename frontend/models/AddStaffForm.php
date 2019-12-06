@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models;
 
+use Exception;
 use Yii;
 use yii\base\ErrorException;
 use yii\base\Model;
@@ -76,22 +77,31 @@ class AddStaffForm extends Model
             return null;
         }
 
-        $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
-        $user->full_name = $this->full_name;
-        $user->address = $this->address;
-        $user->phone = $this->phone;
-        $user->role = $this->role;
-        $user->status = User::STATUS_ACTIVE;
+        Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $user = new User();
+            $user->username = $this->username;
+            $user->email = $this->email;
+            $user->setPassword($this->password);
+            $user->generateAuthKey();
+            $user->generateEmailVerificationToken();
+            $user->full_name = $this->full_name;
+            $user->address = $this->address;
+            $user->phone = $this->phone;
+            $user->role = $this->role;
+            $user->status = User::STATUS_ACTIVE;
 
-        if ($user->save()) {
-            $authManager->assign($authManager->getRole($this->role), $user->id);
-        } else {
-            throw new ErrorException('Staff is not created!');
+            if ($user->save()) {
+                $authManager->assign($authManager->getRole($this->role), $user->id);
+            } else {
+                throw new Exception('Staff is not created!');
+            }
+
+            $transaction->commit();
+        } catch (Exception $exception) {
+            $transaction->rollBack();
+            throw new Exception($exception->getMessage());
         }
 
         return true;
