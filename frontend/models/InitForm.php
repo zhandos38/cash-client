@@ -52,7 +52,7 @@ class InitForm extends Model
                 ->send();
 
             if (!$response->isOk) {
-                Yii::$app->session->setFlash('error', 'Неверный ИИН/БИН или пароль или логин');
+                Yii::$app->session->setFlash('error', 'Неверный ИИН/БИН или пароль!');
                 return false;
             }
 
@@ -61,7 +61,7 @@ class InitForm extends Model
             $responseObjects = $responseData['objects'];
 
             if (!$responseObjects) {
-                Yii::$app->session->setFlash('error', 'У Вас отсутствуют свободные объекты, привязка объекта не возможна! Вам необходимо создать объект в личном кабинете, затем осуществить привязку объекта.');
+                Yii::$app->session->setFlash('error', 'У Вас отсутствуют свободные объекты, активация объекта не возможна! Вам необходимо создать объект в личном кабинете, затем осуществить активацию объекта.');
                 return false;
             }
 
