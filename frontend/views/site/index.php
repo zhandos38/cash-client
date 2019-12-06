@@ -15,38 +15,26 @@ MenuAsset::register($this);
 <a href="<?= Url::to('/site/logout') ?>" data-method="post" class="back-button"><i class="fa fa-reply-all" aria-hidden="true"></i> Выйти (<?php  if (!Yii::$app->user->isGuest) echo Yii::$app->user->identity->username;?>)</a>
 <div id="menu-app" class="site-index">
     <div class="row">
-        <div class="col-xs-12 col-sm-6 col-md-3">
-            <a class="admin-block" href="<?= Url::to('/site/edit-profile') ?>">
-                <div class="admin-block__item">
-                    <div class="admin-block__icon">
-                        <i class="fa fa-address-card" aria-hidden="true"></i>
-                    </div>
-                    <div class="admin-block__title">
-                        Профиль
-                    </div>
-                </div>
-            </a>
-        </div>
         <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageStaff') ? '' : 'display: none' ?>">
-            <a class="admin-block" href="<?= Url::to('/staff/main') ?>">
+            <a class="admin-block" href="<?= Url::to('#') ?>">
                 <div class="admin-block__item">
                     <div class="admin-block__icon">
-                        <i class="fas fa-address-card" aria-hidden="true"></i>
+                        <i class="fas fa-chart-pie"></i>
                     </div>
                     <div class="admin-block__title">
-                        Сотрудники
+                        Отчеты
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageCustomer') ? '' : 'display: none' ?>">
-            <a class="admin-block" href="<?= Url::to('/customer/main') ?>">
+        <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageOrder') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/order/index') ?>">
                 <div class="admin-block__item">
                     <div class="admin-block__icon">
-                        <i class="fas fa-users" aria-hidden="true"></i>
+                        <i class="fas fa-clipboard" aria-hidden="true"></i>
                     </div>
                     <div class="admin-block__title">
-                        Клиенты
+                        Заказы / Чеки
                     </div>
                 </div>
             </a>
@@ -63,18 +51,6 @@ MenuAsset::register($this);
                 </div>
             </a>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageOrder') ? '' : 'display: none' ?>">
-            <a class="admin-block" href="<?= Url::to('/order/index') ?>">
-                <div class="admin-block__item">
-                    <div class="admin-block__icon">
-                        <i class="fas fa-clipboard" aria-hidden="true"></i>
-                    </div>
-                    <div class="admin-block__title">
-                        Заказы
-                    </div>
-                </div>
-            </a>
-        </div>
         <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageInvoice') ? '' : 'display: none' ?>">
             <a class="admin-block" href="<?= Url::to('/invoice/main') ?>">
                 <div class="admin-block__item">
@@ -83,6 +59,31 @@ MenuAsset::register($this);
                     </div>
                     <div class="admin-block__title">
                         Накладные
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageStaff') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/staff/main') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-address-card" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Сотрудники
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageCustomer') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/customer/main') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-users" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Клиенты
                     </div>
                 </div>
             </a>
@@ -99,14 +100,14 @@ MenuAsset::register($this);
                 </div>
             </a>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('createOrder') ? '' : 'display: none' ?>">
-            <a class="admin-block" href="<?= Url::to('/order/test-create') ?>">
+        <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageSupplier') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('#') ?>">
                 <div class="admin-block__item">
                     <div class="admin-block__icon">
-                        <i class="fas fa-store" aria-hidden="true"></i>
+                        <i class="fas fa-cogs"></i>
                     </div>
                     <div class="admin-block__title">
-                        Режим магазина
+                        Настройки объекта
                     </div>
                 </div>
             </a>
@@ -137,6 +138,18 @@ MenuAsset::register($this);
                 </a>
             </div>
         <?php endif; ?>
+        <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('createOrder') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to('/order/test-create') ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-store" aria-hidden="true"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Режим магазина
+                    </div>
+                </div>
+            </a>
+        </div>
         <div class="col-xs-6 col-sm-6 col-md-3">
             <a class="admin-block" href="<?= Url::to('/cash-draw/index') ?>">
                 <div class="admin-block__item">
