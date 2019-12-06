@@ -13,7 +13,7 @@ class m191206_103904_add_password_column_to_user_table extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn($this->tableName, 'password', $this->string()->after('auth_key'));
+        $this->addColumn($this->tableName, 'password', $this->string()->notNull()->unique()->after('auth_key'));
     }
 
     /**
