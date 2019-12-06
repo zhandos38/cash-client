@@ -15,14 +15,10 @@ use yii\web\IdentityInterface;
  * User model
  *
  * @property integer $id
- * @property string $username
- * @property string $password_hash
  * @property string $password_reset_token
  * @property string $verification_token
- * @property string $email
  * @property string $auth_key
  * @property string $full_name
- * @property string $address
  * @property string $phone
  * @property integer $status
  * @property integer $role
@@ -71,16 +67,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['username', 'trim'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
-            ['email', 'trim'],
-            ['email', 'email'],
-            ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
-
-            [['full_name', 'address', 'role', 'code_number', 'phone', 'password'], 'string'],
+            [['full_name', 'role', 'code_number', 'phone', 'password'], 'string'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
 
@@ -92,13 +79,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'username' => 'Логин',
             'full_name' => 'Ф.И.О',
             'phone' => 'Телефон',
             'code_number' => 'Номер карты',
             'role' => 'Роль',
             'status' => 'Статус',
-            'address' => 'Адрес',
             'created_at' => 'Дата добавление'
         ];
     }
@@ -121,17 +106,6 @@ class User extends ActiveRecord implements IdentityInterface
             ->andWhere(['t.token' => $token])
             ->andWhere(['>', 't.expired_at', time()])
             ->one();
-    }
-
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
     public static function findByPassword($password)
@@ -238,21 +212,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePinPassword($password)
     {
-        if($password == $this->password)
+        if ($password == $this->password)
             return true;
         else
             return false;
-    }
-
-    /**
-     * Generates password hash from password and sets it to the model
-     *
-     * @param string $password
-     * @throws \yii\base\Exception
-     */
-    public function setPassword($password)
-    {
-        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**

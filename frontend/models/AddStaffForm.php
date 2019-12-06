@@ -14,8 +14,6 @@ use yii\helpers\VarDumper;
 class AddStaffForm extends Model
 {
     public $full_name;
-    public $address;
-    public $email;
     public $password;
     public $role;
     public $status;
@@ -28,20 +26,13 @@ class AddStaffForm extends Model
     public function rules()
     {
         return [
-            ['email', 'trim'],
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
-
             ['password', 'required'],
             ['password', 'string', 'min' => 4],
             ['password', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This password has already been taken.'],
 
-            [['full_name', 'address', 'role', 'phone'], 'string'],
+            [['full_name', 'role', 'phone'], 'string'],
             [['status'], 'integer'],
-            [['role', 'full_name', 'phone'], 'required'],
-            [['role', 'full_name', ], 'required']
+            [['role', 'full_name', 'phone'], 'required']
         ];
     }
 
@@ -51,7 +42,6 @@ class AddStaffForm extends Model
             'full_name' => 'Ф.И.О',
             'password' => 'Пароль',
             'phone' => 'Телефон',
-            'address' => 'Адрес',
             'role' => 'Роль'
         ];
     }
@@ -72,22 +62,19 @@ class AddStaffForm extends Model
             return null;
         }
 
-        Yii::$app->db->beginTransaction();
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $user = new User();
-            $user->email = $this->email;
-            $user->setPassword($this->password);
+            $user->password = $this->password;
             $user->generateAuthKey();
             $user->generateEmailVerificationToken();
             $user->full_name = $this->full_name;
-            $user->address = $this->address;
             $user->phone = $this->phone;
             $user->role = $this->role;
             $user->status = User::STATUS_ACTIVE;
 
             if ($user->save()) {
-                $authManager->assign($authManager->getRole($user->getRoleLabel()), $user->id);
+                $authManager->assign($authManager->getRole($user->role), $user->id);
             } else {
                 throw new Exception('Staff is not created!');
             }
