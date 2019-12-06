@@ -63,6 +63,7 @@ class ExportController extends Controller
                 $data = ArrayHelper::toArray($staff, [
                     'common\models\User' => [
                         'id',
+                        'username',
                         'full_name',
                         'email',
                         'phone',
