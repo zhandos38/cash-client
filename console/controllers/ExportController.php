@@ -69,6 +69,7 @@ class ExportController extends Controller
                         'phone',
                         'address',
                         'code_number',
+                        'role',
                         'status',
                         'created_at'
                     ]
