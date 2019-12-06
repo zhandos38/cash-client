@@ -68,7 +68,8 @@ class ExportController extends Controller
                         'phone',
                         'address',
                         'code_number',
-                        'status'
+                        'status',
+                        'created_at'
                     ]
                 ]);
             }
