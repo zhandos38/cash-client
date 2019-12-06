@@ -68,6 +68,7 @@ class AddStaffForm extends Model
      * @return bool whether the creating new account was successful and email was sent
      * @throws ErrorException
      * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function signup()
     {

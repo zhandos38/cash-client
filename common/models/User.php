@@ -28,7 +28,7 @@ use yii\web\IdentityInterface;
  * @property integer $role
  * @property integer $created_at
  * @property integer $updated_at
- * @property string $password write-only password
+ * @property string $password
  * @property int $code_number [int(11)]
  * @property bool $is_sent [tinyint(1)]
  * @property int $exported_at [int(11)]
@@ -78,7 +78,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
 
-            [['full_name', 'address', 'role', 'code_number', 'phone'], 'string'],
+            [['full_name', 'address', 'role', 'code_number', 'phone', 'password'], 'string'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
 
@@ -137,7 +137,7 @@ class User extends ActiveRecord implements IdentityInterface
         $foundUser = null;
         $users = static::find()->all();
         foreach ($users as $user) {
-            if (Yii::$app->security->validatePassword($password, $user->password_hash)) {
+            if ($password == $user->password) {
                 $foundUser = $user;
             }
         }
@@ -226,6 +226,20 @@ class User extends ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    /**
+     * Validates password
+     *
+     * @param string $password password to validate
+     * @return bool if password provided is valid for current user
+     */
+    public function validatePinPassword($password)
+    {
+        if($password == $this->password)
+            return true;
+        else
+            return false;
     }
 
     /**
