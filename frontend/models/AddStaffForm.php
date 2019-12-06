@@ -89,7 +89,7 @@ class AddStaffForm extends Model
         $user->status = User::STATUS_ACTIVE;
 
         if ($user->save()) {
-            $authManager->assign($authManager->getRole(User::ROLE_DIRECTOR), $user->id);
+            $authManager->assign($authManager->getRole($this->role), $user->id);
         } else {
             throw new ErrorException('Staff is not created!');
         }
