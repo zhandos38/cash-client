@@ -45,6 +45,8 @@ class User extends ActiveRecord implements IdentityInterface
     const ROLE_ADMINISTRATOR = 'administrator';
     const ROLE_CASHIER = 'cashier';
 
+    const DEFAULT_PASSWORD = '0000';
+
     /**
      * {@inheritdoc}
      */
@@ -324,5 +326,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function getRoleLabel()
     {
         return ArrayHelper::getValue(static::getRoles(), $this->status);
+    }
+
+    public function setDefaultPassword()
+    {
+        $this->password = self::DEFAULT_PASSWORD;
     }
 }

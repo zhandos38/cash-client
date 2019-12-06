@@ -70,7 +70,7 @@ class InitForm extends Model
             $user->full_name = $responseUser['full_name'];
             $user->phone = $responseUser['phone'];
             $user->email = $responseUser['email'];
-            $user->password_hash = $responseUser['password_hash'];
+            $user->setDefaultPassword();
             $user->status = $responseUser['status'];
             $user->generateAuthKey();
 
