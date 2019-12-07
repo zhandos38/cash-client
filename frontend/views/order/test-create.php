@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="panel panel-default">
                 <div class="order-tabs">
-                    <div class="order-tabs__item" v-for="(order, index) in orders" @click="setCurrentOrder(index)">Заказ {{ index + 1 }} <i class="order-tabs__icon fas fa-times" @click="deleteOrder(index)"></i></div>
+                    <div class="order-tabs__item" v-for="(order, index) in orders" @click="setCurrentOrder(index)">Заказ {{ index + 1 }}</div>
                 </div>
                 <div class="panel-heading">
                     <h4>
@@ -56,8 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </tr>
                         </thead>
                         <tbody class="container-items">
-
-                            <tr class="order-item" v-for="(product, i) in orders[this.currentOrder].products"><!-- widgetItem -->
+                            <tr class="order-item" v-for="(product, i) in orders[currentOrder].products"><!-- widgetItem -->
                                 <th>
                                     <button type="button" class="remove-item btn btn-danger btn-xs" @click="deleteProduct(i)"><i class="glyphicon glyphicon-minus"></i></button>
                                     <div class="clearfix"></div>
@@ -88,6 +87,9 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="checkout__footer">
+        <div v-if="currentOrder != 0" type="button" class="checkout__clean" @click="deleteOrder">
+            Удалить
+        </div>
         <div type="button" class="checkout__clean" @click="cleanProducts">
             Очистить
         </div>

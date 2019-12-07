@@ -228,13 +228,13 @@
 
 .order-tabs {
     position: absolute;
-    left: 5px;
+    left: 14px;
     top: 204px;
     width: fit-content;
     float: left;
 }
 .order-tabs__item {
-    padding: 6px 16px 6px 16px;
+    padding: 4px 20px 4px 20px;
     transform: rotate(-90deg);
     margin-top: 72px;
     border: 1px #0003 solid;

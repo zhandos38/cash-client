@@ -76,6 +76,7 @@ let orderListApp = new Vue({
         },
     },
     updated() {
+        console.log('updated');
         if (this.orders[this.currentOrder].products.length > 0) {
             let lastQuantityInput = this.orders[this.currentOrder].products[this.orders[this.currentOrder].products.length - 1];
 
@@ -103,9 +104,9 @@ let orderListApp = new Vue({
         setCurrentOrder(index) {
             this.currentOrder = index;
         },
-        deleteOrder(index) {
-            this.currentOrder = index - 1;
-            this.orders.splice(index, 1);
+        deleteOrder() {
+            this.orders.splice(this.currentOrder, 1);
+            this.currentOrder = this.currentOrder - 1;
         },
         addProduct(id) {
             $.get({
