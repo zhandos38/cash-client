@@ -71,7 +71,6 @@ class AddStaffForm extends Model
             $user->full_name = $this->full_name;
             $user->phone = $this->phone;
             $user->role = $this->role;
-            $user->status = User::STATUS_ACTIVE;
 
             if ($user->save()) {
                 $authManager->assign($authManager->getRole($user->role), $user->id);

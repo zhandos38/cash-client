@@ -43,8 +43,7 @@ class StaffSearch extends User
     {
         $user = Yii::$app->user->identity;
         $session = Yii::$app->session;
-        $query = User::find()
-            ->andWhere(['!=', 'id', $user->getId()]);
+        $query = User::find();
 
         // add conditions that should always apply here
 

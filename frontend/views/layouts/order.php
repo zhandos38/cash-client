@@ -33,7 +33,7 @@ AppAsset::register($this);
             <?php if (Yii::$app->user->isGuest):?>
                 <a class="ims-title" href="<?= Url::to('/site/login') ?>"></a>
             <?php else:?>
-                <a class="user-info-btn" href="<?= Url::to('/site/edit-profile') ?>">Вы вошли как: (<?php  if (!Yii::$app->user->isGuest) echo Yii::$app->user->identity->username;?>)</a>
+                <a class="user-info-btn" href="<?= Url::to('/site/edit-profile') ?>">Вы вошли как: (<?php  if (!Yii::$app->user->isGuest) echo Yii::$app->user->identity->full_name;?>)</a>
             <?php endif;?>
         </div>
     </div>

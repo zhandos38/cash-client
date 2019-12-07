@@ -31,8 +31,8 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_INACTIVE = 9;
+    const STATUS_FIRED = 0;
+    const STATUS_BLOCKED = 9;
     const STATUS_ACTIVE = 10;
 
     const ROLE_ADMIN = 'admin';
@@ -68,8 +68,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['full_name', 'role', 'code_number', 'phone', 'password'], 'string'],
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_FIRED, self::STATUS_BLOCKED]],
 
             ['is_sent', 'boolean'],
             ['exported_at', 'integer']
@@ -84,7 +84,8 @@ class User extends ActiveRecord implements IdentityInterface
             'code_number' => 'Номер карты',
             'role' => 'Роль',
             'status' => 'Статус',
-            'created_at' => 'Дата добавление'
+            'password' => 'Пароль',
+            'created_at' => 'Дата добавление',
         ];
     }
 
@@ -247,23 +248,6 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    public static function getStatuses()
-    {
-        return [
-            self::STATUS_DELETED => 'Удален',
-            self::STATUS_INACTIVE => 'Отключен',
-            self::STATUS_ACTIVE => 'Включен'
-        ];
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatusLabel()
-    {
-        return ArrayHelper::getValue(static::getStatuses(), $this->status);
-    }
-
     public static function getRolesForBackend()
     {
         return [
@@ -294,5 +278,39 @@ class User extends ActiveRecord implements IdentityInterface
     public function setDefaultPassword()
     {
         $this->password = self::DEFAULT_PASSWORD;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShifts()
+    {
+        return $this->hasMany(ShiftHistory::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastShift()
+    {
+        return $this->hasOne(ShiftHistory::class, ['user_id' => 'id'])
+            ->onCondition(['status' => ShiftHistory::STATUS_OPENED]);
+    }
+
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_FIRED => 'Уволен',
+            self::STATUS_BLOCKED => 'Заблокирован',
+            self::STATUS_ACTIVE => 'Включен'
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusLabel()
+    {
+        return ArrayHelper::getValue(static::getStatuses(), $this->status);
     }
 }

@@ -66,12 +66,11 @@ class InitForm extends Model
             }
 
             $user = new User();
-            $user->username = $responseUser['username'];
             $user->full_name = $responseUser['full_name'];
             $user->phone = $responseUser['phone'];
-            $user->email = $responseUser['email'];
             $user->setDefaultPassword();
             $user->status = $responseUser['status'];
+            $user->role = $responseUser['role'];
             $user->generateAuthKey();
 
             if (!$user->validate() || !$user->save())
