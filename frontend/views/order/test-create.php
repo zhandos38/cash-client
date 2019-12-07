@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="panel panel-default">
                 <div class="order-tabs">
-                    <div class="order-tabs__item" v-for="(order, index) in orders" @click="setCurrentOrder(index)">Заказ {{ index + 1 }}</div>
+                    <div class="order-tabs__item" v-for="(order, index) in orders" @click="setCurrentOrder(index)">Заказ {{ index + 1 }} <i class="order-tabs__icon fas fa-times" @click="deleteOrder(index)"></i></div>
                 </div>
                 <div class="panel-heading">
                     <h4>

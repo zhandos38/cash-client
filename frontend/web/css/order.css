@@ -228,16 +228,15 @@
 
 .order-tabs {
     position: absolute;
-    left: 19px;
-    top: 22.5%;
+    left: 5px;
+    top: 204px;
     width: fit-content;
     float: left;
 }
 .order-tabs__item {
-    cursor: pointer;
-    padding: 3px 20px;
+    padding: 6px 16px 6px 16px;
     transform: rotate(-90deg);
-    margin-top: 57px;
+    margin-top: 72px;
     border: 1px #0003 solid;
     background-image: -webkit-linear-gradient(top,#f5f5f5 0,#e8e8e8 100%);
     background-image: -o-linear-gradient(top,#f5f5f5 0,#e8e8e8 100%);
@@ -246,6 +245,11 @@
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff5f5f5', endColorstr='#ffe8e8e8', GradientType=0);
     background-repeat: repeat-x;
 }
+.order-tabs__icon {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
 .checkout__footer {
     display: flex;
 }
