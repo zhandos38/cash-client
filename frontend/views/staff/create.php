@@ -21,13 +21,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'id' => 'form-signup',
         ]); ?>
 
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-
-            <?= $form->field($model, 'email') ?>
+            <?= $form->field($model, 'full_name') ?>
 
             <?= $form->field($model, 'password')->passwordInput() ?>
-
-            <?= $form->field($model, 'full_name') ?>
 
             <?= $form->field($model, 'phone')->widget(MaskedInput::className(), [
                 'mask' => '+7(999)999-99-99',

@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models;
 
+use Exception;
 use Yii;
 use yii\base\ErrorException;
 use yii\base\Model;
@@ -12,10 +13,7 @@ use yii\helpers\VarDumper;
  */
 class AddStaffForm extends Model
 {
-    public $username;
     public $full_name;
-    public $address;
-    public $email;
     public $password;
     public $role;
     public $status;
@@ -28,35 +26,22 @@ class AddStaffForm extends Model
     public function rules()
     {
         return [
-            ['username', 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
-            ['email', 'trim'],
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
-
             ['password', 'required'],
             ['password', 'string', 'min' => 4],
+            ['password', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This password has already been taken.'],
 
-            [['full_name', 'address', 'role', 'phone'], 'string'],
+            [['full_name', 'role', 'phone'], 'string'],
             [['status'], 'integer'],
-            [['role', 'full_name', 'phone'], 'required'],
-            [['role', 'full_name', ], 'required']
+            [['role', 'full_name', 'phone'], 'required']
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'username' => 'Логин',
             'full_name' => 'Ф.И.О',
             'password' => 'Пароль',
             'phone' => 'Телефон',
-            'address' => 'Адрес',
             'role' => 'Роль'
         ];
     }
@@ -67,6 +52,7 @@ class AddStaffForm extends Model
      * @return bool whether the creating new account was successful and email was sent
      * @throws ErrorException
      * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function signup()
     {
@@ -76,22 +62,26 @@ class AddStaffForm extends Model
             return null;
         }
 
-        $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
-        $user->full_name = $this->full_name;
-        $user->address = $this->address;
-        $user->phone = $this->phone;
-        $user->role = $this->role;
-        $user->status = User::STATUS_ACTIVE;
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $user = new User();
+            $user->password = $this->password;
+            $user->generateAuthKey();
+            $user->generateEmailVerificationToken();
+            $user->full_name = $this->full_name;
+            $user->phone = $this->phone;
+            $user->role = $this->role;
 
-        if ($user->save()) {
-            $authManager->assign($authManager->getRole(User::ROLE_DIRECTOR), $user->id);
-        } else {
-            throw new ErrorException('Staff is not created!');
+            if ($user->save()) {
+                $authManager->assign($authManager->getRole($user->role), $user->id);
+            } else {
+                throw new Exception('Staff is not created!');
+            }
+
+            $transaction->commit();
+        } catch (Exception $exception) {
+            $transaction->rollBack();
+            throw new Exception($exception->getMessage());
         }
 
         return true;

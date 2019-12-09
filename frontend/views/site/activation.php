@@ -7,10 +7,10 @@ use yii\helpers\Url;
 $this->title = 'Активация сервера';
 ?>
 
-<a href="<?= Url::to('/site/logout') ?>" data-method="post" class="back-button"><i class="fa fa-reply-all" aria-hidden="true"></i> Выйти (<?php  if (!Yii::$app->user->isGuest) echo Yii::$app->user->identity->username;?>)</a>
+<a href="<?= Url::to('/site/logout') ?>" data-method="post" class="back-button"><i class="fa fa-reply-all" aria-hidden="true"></i> Выйти (<?php  if (!Yii::$app->user->isGuest) echo Yii::$app->user->identity->full_name;?>)</a>
 <div class="activation">
     <div class="row">
-        <p class="activation-text">Выберите объект которую хотите активировать</p>
+        <p class="activation-text">Выберите объект который хотите активировать</p>
         <?php foreach ($objects as $object): ?>
             <div class="col-xs-12 col-sm-4 col-md-4">
                 <a class="admin-block" href="<?= Url::to(['site/activate', 'id' => $object['id']]) ?>" onclick="return confirm('Вы дейвствительно хотите активировать данный объект?')">

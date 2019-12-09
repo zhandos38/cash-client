@@ -390,5 +390,7 @@ class RbacController extends Controller {
         $auth->addChild($director, $viewSupplier);
         $auth->addChild($director, $updateSupplier);
         $auth->addChild($director, $deleteSupplier);
+
+        $auth->addChild($cashier, $createOrder);
     }
 }

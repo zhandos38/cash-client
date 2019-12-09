@@ -25,7 +25,7 @@ class LoginForm extends Model
             // username and password are both required
             [['password'], 'required', 'message' => 'Введите "{attribute}"'],
             // password is validated by validatePassword()
-            ['password', 'validatePassword'],
+            ['password', 'validatePinPassword'],
         ];
     }
 
@@ -43,15 +43,15 @@ class LoginForm extends Model
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
      */
-    public function validatePassword($attribute, $params)
+    public function validatePinPassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
             $user = $this->getUserByPassword();
-            if (!$user){
+            if (!$user) {
                 $this->addError($attribute, 'Вы ввели неккоректный пароль!');
-            }elseif ($user && $user->status == User::STATUS_INACTIVE) {
+            } elseif ($user && ($user->status == User::STATUS_BLOCKED || $user->status == User::STATUS_FIRED)) {
                 $this->addError($attribute, 'Ваша учетная запись заблокирована, обратитесь к руководству!');
-            }elseif ($user && !$user->validatePassword($this->password)) {
+            } elseif ($user && !$user->validatePinPassword($this->password)) {
                 $this->addError($attribute, 'Неверный пароль!');
             }
         }

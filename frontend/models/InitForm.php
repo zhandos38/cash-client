@@ -66,12 +66,11 @@ class InitForm extends Model
             }
 
             $user = new User();
-            $user->username = $responseUser['username'];
             $user->full_name = $responseUser['full_name'];
             $user->phone = $responseUser['phone'];
-            $user->email = $responseUser['email'];
-            $user->password_hash = $responseUser['password_hash'];
+            $user->setDefaultPassword();
             $user->status = $responseUser['status'];
+            $user->role = $responseUser['role'];
             $user->generateAuthKey();
 
             if (!$user->validate() || !$user->save())
@@ -79,7 +78,7 @@ class InitForm extends Model
 
             $authManager->assign($authManager->getRole(User::ROLE_DIRECTOR), $user->id);
 
-            $this->login();
+            $this->login($user);
             $transaction->commit();
 
             return $responseObjects;
@@ -96,27 +95,13 @@ class InitForm extends Model
      *
      * @return bool whether the user is logged in successfully
      */
-    public function login()
+    public function login($user)
     {
         if ($this->validate()) {
-            Yii::$app->user->login($this->getUser(), 3600 * 24);
+            Yii::$app->user->login($user, 3600 * 24);
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * Finds user by [[username]]
-     *
-     * @return User|null
-     */
-    protected function getUser()
-    {
-        if ($this->_user === null) {
-            $this->_user = User::findByUsername($this->username);
-        }
-
-        return $this->_user;
     }
 }

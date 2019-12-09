@@ -19,7 +19,7 @@ class StaffSearch extends User
     {
         return [
             [['id', 'code_number', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'full_name', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'phone', 'address', 'role', 'verification_token'], 'safe'],
+            [['full_name', 'auth_key', 'phone', 'role', 'verification_token'], 'safe'],
         ];
     }
 
@@ -43,8 +43,7 @@ class StaffSearch extends User
     {
         $user = Yii::$app->user->identity;
         $session = Yii::$app->session;
-        $query = User::find()
-            ->andWhere(['!=', 'id', $user->getId()]);
+        $query = User::find();
 
         // add conditions that should always apply here
 
@@ -69,14 +68,9 @@ class StaffSearch extends User
             'updated_at' => $this->updated_at
         ]);
 
-        $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'full_name', $this->full_name])
+        $query->andFilterWhere(['like', 'full_name', $this->full_name])
             ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'role', $this->role])
             ->andFilterWhere(['like', 'verification_token', $this->verification_token]);
 

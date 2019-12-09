@@ -76,11 +76,12 @@ let orderListApp = new Vue({
         },
     },
     updated() {
+        console.log('updated');
         if (this.orders[this.currentOrder].products.length > 0) {
             let lastQuantityInput = this.orders[this.currentOrder].products[this.orders[this.currentOrder].products.length - 1];
 
             if (lastQuantityInput)
-                $(document).find('.order-item__quantity:last').TouchSpin(lastQuantityInput['isPartial'] === "0" ? input_quantity_settings : input_quantity_partial_settings);
+                $(document).find('.order-item__quantity').TouchSpin(lastQuantityInput['isPartial'] === "0" ? input_quantity_settings : input_quantity_partial_settings);
         }
     },
     methods: {
@@ -102,6 +103,10 @@ let orderListApp = new Vue({
         },
         setCurrentOrder(index) {
             this.currentOrder = index;
+        },
+        deleteOrder() {
+            this.orders.splice(this.currentOrder, 1);
+            this.currentOrder = this.currentOrder - 1;
         },
         addProduct(id) {
             $.get({

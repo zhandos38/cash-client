@@ -14,11 +14,7 @@ use yii\widgets\MaskedInput;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'full_name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'phone')->widget(MaskedInput::className(), [
         'mask' => '+7(999)999-99-99',
@@ -27,7 +23,7 @@ use yii\widgets\MaskedInput;
         ]
     ]) ?>
 
-    <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'password')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'role')->dropDownList(User::getRoles(), ['prompt' => 'Указать роль']) ?>
 

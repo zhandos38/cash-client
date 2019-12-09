@@ -56,8 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </tr>
                         </thead>
                         <tbody class="container-items">
-
-                            <tr class="order-item" v-for="(product, i) in orders[this.currentOrder].products"><!-- widgetItem -->
+                            <tr class="order-item" v-for="(product, i) in orders[currentOrder].products"><!-- widgetItem -->
                                 <th>
                                     <button type="button" class="remove-item btn btn-danger btn-xs" @click="deleteProduct(i)"><i class="glyphicon glyphicon-minus"></i></button>
                                     <div class="clearfix"></div>
@@ -90,6 +89,9 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="checkout__footer">
+        <div v-if="currentOrder != 0" type="button" class="checkout__clean" @click="deleteOrder">
+            Удалить
+        </div>
         <div type="button" class="checkout__clean" @click="cleanProducts">
             Очистить
         </div>
