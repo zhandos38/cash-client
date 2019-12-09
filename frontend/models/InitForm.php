@@ -113,7 +113,7 @@ class InitForm extends Model
     protected function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = User::findByPassword($this->username);
+            $this->_user = User::findByPassword($this->password);
         }
 
         return $this->_user;
