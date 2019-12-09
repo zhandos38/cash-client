@@ -78,7 +78,7 @@ class InitForm extends Model
 
             $authManager->assign($authManager->getRole(User::ROLE_DIRECTOR), $user->id);
 
-            $this->login();
+            $this->login($user);
             $transaction->commit();
 
             return $responseObjects;
@@ -95,27 +95,13 @@ class InitForm extends Model
      *
      * @return bool whether the user is logged in successfully
      */
-    public function login()
+    public function login($user)
     {
         if ($this->validate()) {
-            Yii::$app->user->login($this->getUser(), 3600 * 24);
+            Yii::$app->user->login($user, 3600 * 24);
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * Finds user by [[username]]
-     *
-     * @return User|null
-     */
-    protected function getUser()
-    {
-        if ($this->_user === null) {
-            $this->_user = User::findByPassword($this->password);
-        }
-
-        return $this->_user;
     }
 }
