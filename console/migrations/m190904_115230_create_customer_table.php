@@ -15,7 +15,7 @@ class m190904_115230_create_customer_table extends Migration
     {
         $this->createTable($this->tableName, [
             'id' => $this->primaryKey(),
-            'full_name' => $this->integer(),
+            'full_name' => $this->string(),
             'phone' => $this->string(11),
             'address' => $this->string(),
             'birthday_date' => $this->integer(),
