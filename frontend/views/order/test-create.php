@@ -75,7 +75,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="row">
                 <div class="col-md-12">
-                    Итого: <div class="order-total pull-right">{{ preTotal | number }}</div>
+                    <div class="order-total-block">
+                        Итого: <div class="order-total pull-right">{{ preTotal | number }}</div>
+                    </div>
                 </div>
             </div>
         </div>
