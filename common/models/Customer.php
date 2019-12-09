@@ -28,6 +28,7 @@ use yii\helpers\VarDumper;
  * @property DiscountHistory[] $discountHistories
  * @property bool $is_sent [tinyint(1)]
  * @property int $exported_at [int(11)]
+ * @property string $description
  */
 class Customer extends \yii\db\ActiveRecord
 {
@@ -56,10 +57,12 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at', 'exported_at', 'birthday_date'], 'integer'],
+            [['card_number', 'discount_id', 'is_discount_limited', 'discount_value', 'discount_quantity', 'status', 'created_at', 'updated_at', 'exported_at'], 'integer'],
             [['address', 'full_name', 'phone'], 'string', 'max' => 255],
+            ['description', 'string'],
             [['discount_id'], 'exist', 'skipOnError' => true, 'targetClass' => Discount::class, 'targetAttribute' => ['discount_id' => 'id']],
-            ['is_sent', 'boolean']
+            ['is_sent', 'boolean'],
+            ['birthday_date', 'safe']
         ];
     }
 
@@ -76,6 +79,7 @@ class Customer extends \yii\db\ActiveRecord
             'card_number' => 'Номер карты',
             'status' => 'Статус',
             'created_at' => 'Дата добавления',
+            'description' => 'Комментарий'
         ];
     }
 
