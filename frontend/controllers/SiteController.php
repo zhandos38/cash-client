@@ -164,6 +164,7 @@ class SiteController extends Controller
                 Yii::$app->settings->setToken($responseSettings['token']);
                 Yii::$app->settings->setSerialNumber($serialNumber);
 
+                Yii::$app->session->setFlash('warning', 'У Вас установлен пароль по умолчанию, с целью безопасности измените пароль!');
                 Yii::$app->session->remove('objects');
                 $transaction->commit();
 
