@@ -394,7 +394,14 @@ a.desc:after {
     border-radius: 10px;
     background-color: #fff;
 }
-.order-index, .order-create, .order-update{
+.order-index, .order-update{
+    padding: 30px;
+    box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    background-color: #fff;
+}
+.order-create{
+    height: 88vh;
     padding: 30px;
     box-shadow: 0 2px 10px 1px rgba(0, 0, 0, 0.15);
     border-radius: 10px;

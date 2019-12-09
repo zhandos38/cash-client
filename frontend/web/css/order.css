@@ -51,6 +51,7 @@
 .products__suggest {
     display: flex;
     margin-left: 20px;
+    margin-bottom: 20px;
     width: 100%;
     overflow-y: scroll;
 }
@@ -72,7 +73,11 @@
 }
 
 .panel {
-    height: 70vh;
+    height: 65vh;
+}
+
+.order-total-block{
+    margin-bottom: 20px;
 }
 
 .simple-keyboard.hg-theme-default {
@@ -229,7 +234,7 @@
 .order-tabs {
     position: absolute;
     left: 14px;
-    top: 204px;
+    top: 22.5%;
     width: fit-content;
     float: left;
 }
