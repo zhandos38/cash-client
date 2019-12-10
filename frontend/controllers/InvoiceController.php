@@ -312,9 +312,10 @@ class InvoiceController extends Controller
                 ];
             } else {
                 $product = Barcode::findOne(['number' => $barcode]);
-                $product_name = $product->name;
 
-                if (!$product) {
+                if ($product) {
+                    $product_name = $product->name;
+                } else {
                     $product_name = null;
                 }
 
