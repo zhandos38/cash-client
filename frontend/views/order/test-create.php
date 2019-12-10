@@ -239,7 +239,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h2>Оставить комментарий</h2>
                 <textarea class="comment-modal__textarea" cols="30" rows="10" ref="commentModalTextArea"></textarea>
                 <div class="comment-modal__footer">
-                    <div class="comment-modal__cancel">Отмена</div>
+                    <div class="comment-modal__cancel" @click="closeCommentModal">Отмена</div>
                     <div class="comment-modal__accept" @click="setComment">Принять</div>
                 </div>
             </div>
@@ -300,5 +300,4 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
     <!-- Customer modal end -->
-
 </div>

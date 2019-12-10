@@ -28,7 +28,7 @@ class AddStaffForm extends Model
         return [
             ['password', 'required'],
             ['password', 'string', 'min' => 4],
-            ['password', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This password has already been taken.'],
+            ['password', 'unique', 'targetClass' => '\common\models\User', 'message' => 'Данный пароль уже используется.'],
 
             [['full_name', 'role', 'phone'], 'string'],
             [['status'], 'integer'],

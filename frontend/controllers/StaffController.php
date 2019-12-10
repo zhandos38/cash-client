@@ -114,7 +114,7 @@ class StaffController extends Controller
     {
         $model = new AddStaffForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            Yii::$app->session->setFlash('success', 'Вы успешно добавили сотрудника!');
             return $this->render('main');
         }
 
