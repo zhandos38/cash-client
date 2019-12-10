@@ -36,6 +36,8 @@ use yii\widgets\MaskedInput;
         ]
     ]) ?>
 
+    <?= $form->field($model, 'description')->textarea() ?>
+
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>

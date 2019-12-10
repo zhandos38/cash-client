@@ -521,6 +521,10 @@ footer{
     margin-bottom: 30px;
 }
 
+.info__wrapper {
+    text-align: center;
+}
+
 /* ------------------------ MEDIA --------------------------- */
 
 @media screen and (max-width: 768px) {

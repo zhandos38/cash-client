@@ -304,17 +304,18 @@ class InvoiceController extends Controller
             $barcode = Yii::$app->request->post('barcode');
             $product = Product::findOne(['barcode' => $barcode]);
 
-            /** @var Product $product */
-            $product_array = [
-                'name' => $product->name,
-                'barcode' => $barcode
-            ];
-
-            if (!$product) {
+            if ($product) {
+                /** @var Product $product */
+                $product_array = [
+                    'name' => $product->name,
+                    'barcode' => $barcode
+                ];
+            } else {
                 $product = Barcode::findOne(['number' => $barcode]);
-                $product_name = $product->name;
 
-                if (!$product) {
+                if ($product) {
+                    $product_name = $product->name;
+                } else {
                     $product_name = null;
                 }
 

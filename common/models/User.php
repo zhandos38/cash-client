@@ -272,7 +272,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getRoleLabel()
     {
-        return ArrayHelper::getValue(static::getRoles(), $this->status);
+        if ($this->role == User::ROLE_DIRECTOR) {
+            return 'Директор';
+        } else {
+            return ArrayHelper::getValue(static::getRoles(), $this->role);
+        }
     }
 
     public function setDefaultPassword()
