@@ -29,6 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
             //'code_number',
             [
                 'attribute' => 'role',
+                'value' => function(User $model) {
+                    return $model->getRoleLabel();
+                },
                 'filter' => User::getRoles()
             ],
             [

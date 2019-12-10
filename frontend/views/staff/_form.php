@@ -25,7 +25,7 @@ use yii\widgets\MaskedInput;
 
     <?= $form->field($model, 'password')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'role')->dropDownList(User::getRoles(), ['prompt' => 'Указать роль']) ?>
+    <?= $form->field($model, 'role')->dropDownList(User::getRoles(), ['prompt' => 'Указать роль', 'disabled' => $model->role == User::ROLE_DIRECTOR ? true : false]) ?>
 
     <?= $form->field($model, 'status')->dropDownList(User::getStatuses(), ['prompt' => 'Указать статус']) ?>
 
