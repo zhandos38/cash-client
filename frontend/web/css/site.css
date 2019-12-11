@@ -17,7 +17,7 @@ body {
 /*}*/
 
 header{
-    padding: 20px 0;
+    padding: 10px 0;
 }
 
 h1{
@@ -204,12 +204,13 @@ a.desc:after {
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
     padding: 10px 20px;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 700;
     background-color: #ffffff;
     border: 1px solid rgba(0,0,0,.2);
-    color: #000;
+    color: #49555b;
     position: absolute;
-    top: 6px;
+    top: 10px;
 
 }
 .back-button:hover{
@@ -520,10 +521,23 @@ footer{
     font-size: 18px;
     margin-bottom: 30px;
 }
-
 .info__wrapper {
-    text-align: center;
+    float: right;
+    display: flex;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,.2);
+    color: #49555b;
 }
+.info__date{
+    margin-right: 5px;
+}
+
+
 
 /* ------------------------ MEDIA --------------------------- */
 
