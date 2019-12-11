@@ -46,7 +46,7 @@ class InvoiceForm extends Model
     public function attributeLabels()
     {
         return [
-            'number_in' => 'Номер',
+            'number_in' => 'Входящий номер накладной',
             'is_debt' => 'В долг',
             'status' => 'Статус',
             'created_at' => 'Дата добавления',

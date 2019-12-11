@@ -99,16 +99,16 @@ InvoiceAsset::register($this);
                                 <?= $form->field($item, "[{$i}]is_new")->hiddenInput(['class' => 'form-control input_is_new'])->label(false) ?>
                                 <div class="external-form">
                                     <div class="col-sm-3">
-                                        <?= $form->field($item, "[{$i}]percentage_rate")->textInput(['maxlength' => true, 'class' => 'form-control input_percentage-rate', 'type' => 'number', 'step' => 0.1]) ?>
+                                        <?= $form->field($item, "[{$i}]percentage_rate")->textInput(['maxlength' => true, 'class' => 'form-control input_percentage-rate', 'type' => 'number', 'step' => 0.01]) ?>
                                     </div>
                                     <div class="col-sm-3">
-                                        <?= $form->field($item, "[{$i}]price_retail")->textInput(['maxlength' => true, 'class' => 'form-control input_price-retail', 'type' => 'number', 'step' => 0.1]) ?>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <?= $form->field($item, "[{$i}]wholesale_value") ?>
+                                        <?= $form->field($item, "[{$i}]price_retail")->textInput(['maxlength' => true, 'class' => 'form-control input_price-retail', 'type' => 'number', 'step' => 0.01]) ?>
                                     </div>
                                     <div class="col-sm-3">
                                         <?= $form->field($item, "[{$i}]wholesale_price") ?>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <?= $form->field($item, "[{$i}]wholesale_value") ?>
                                     </div>
                                     <div class="col-sm-12">
                                         <?= $form->field($item, "[{$i}]is_partial")->checkbox(['class' => 'input_is_partial', 'value' => 1]) ?>
@@ -116,7 +116,7 @@ InvoiceAsset::register($this);
                                 </div>
                                 <div class="col-sm-6">
                                     <a class="barcode-download" href="#">
-                                        Print
+                                        Распечатать штрих-код
                                         <div class="barcode-img"></div>
                                     </a>
                                 </div>
