@@ -267,7 +267,6 @@ class ExportController extends Controller
                 }
                 $customer->detachBehavior('timestamp');
                 $customer->exported_at = time();
-
                 $customer->save();
 
                 $data = ArrayHelper::toArray($customers, [

@@ -45,9 +45,9 @@ class OrderDebtHistoryForm extends Model
             }
 
             if ($order->itemsCost == ($order->debtHistorySum + $this->paid_amount)) {
-                $order->status = Order::STATUS_PAID;
+                $order->status = Order::PAY_STATUS_PAID;
             } elseif ($order->itemsCost > ($order->debtHistorySum + $this->paid_amount)) {
-                $order->status = Order::STATUS_PARTIALLY_PAID;
+                $order->status = Order::PAY_STATUS_PARTIALLY_PAID;
             };
 
             $order->save();

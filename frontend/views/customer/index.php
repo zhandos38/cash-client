@@ -30,6 +30,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'phone',
             'address',
             [
+                'value' => function(Customer $model) {
+                    $sum = 0;
+                    $paidSum = 0;
+                    foreach ($model->debts as $debt) {
+                        $sum += $debt->cost;
+                        foreach ($debt->debtHistories as $history) {
+                            $paidSum += $history->paid_amount;
+                        }
+                    }
+                    $total = $sum - $paidSum;
+                    return $total;
+                },
+                'label' => 'Сумма долга'
+            ],
+            [
                 'attribute' => 'birthday_date',
                 'value' => function(Customer $model) {
                     return date('d/m/Y', $model->created_at);

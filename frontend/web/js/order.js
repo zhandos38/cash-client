@@ -318,6 +318,8 @@ let orderListApp = new Vue({
         },
         setCustomer(id) {
             this.orders[this.currentOrder].customerId = id;
+            this.orders[this.currentOrder].isDebt = 1;
+            this.customerModalActive = false;
         },
         openCashDraw() {
             $.get({

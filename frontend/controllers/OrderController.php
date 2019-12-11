@@ -316,6 +316,7 @@ class OrderController extends Controller
                 $order->discount_cost = $orderData['discountSum'];
                 $order->total_cost = $orderData['totalSum'];
                 $order->pay_id = $orderData['payMethod'];
+                $order->is_debt = $orderData['isDebt'];
                 $order->shift_id = Yii::$app->object->getShiftId();
                 $order->comment = $orderData['comment'];
                 $order->taken_cash = $orderData['takenCash'];

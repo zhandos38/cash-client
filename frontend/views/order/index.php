@@ -49,9 +49,9 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'value' => function(Order $model) {
-                    if ($model->is_debt && $model->status == Order::STATUS_NOT_PAID) {
+                    if ($model->is_debt && $model->status == Order::PAY_STATUS_NOT_PAID) {
                         return '<div class="order__debt-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-remove"></i> Не оплачен</div>';
-                    } elseif ($model->is_debt && $model->status == Order::STATUS_PARTIALLY_PAID) {
+                    } elseif ($model->is_debt && $model->status == Order::PAY_STATUS_PARTIALLY_PAID) {
                         return '<div class="order__debt-btn btn btn-primary btn-xs btn-block" data-id="'. $model->id .'"><i  class="glyphicon glyphicon-remove"></i> Частично оплачен</div>';
                     } else {
                         return '<i class="glyphicon glyphicon-ok"></i> Оплачен';

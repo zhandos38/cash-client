@@ -43,7 +43,7 @@ $totalPaid = $order->debtHistorySum;
     </div>
     <div class="row">
         <div class="col-md-12">
-            <?php if (!empty($order->debtHistory)): ?>
+            <?php if (!empty($order->debtHistories)): ?>
             <table class="table">
                 <thead>
                 <tr>
@@ -52,7 +52,7 @@ $totalPaid = $order->debtHistorySum;
                 </tr>
                 </thead>
                 <tbody>
-            <?php foreach ($order->debtHistory as $item): ?>
+            <?php foreach ($order->debtHistories as $item): ?>
                 <tr>
                     <th><?= $item->paid_amount ?></th>
                     <th><?= date('d-m-Y H:i', $item->created_at) ?></th>
