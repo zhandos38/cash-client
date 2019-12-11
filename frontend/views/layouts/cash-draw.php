@@ -3,6 +3,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use frontend\widgets\DateTimeWidget;
 use frontend\widgets\NavWidget;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
@@ -28,13 +29,14 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<header>
-    <div class="container">
+<header style="padding-right: 30px">
+    <div class="container-fluid">
         <div class="user-info">
             <?php if (Yii::$app->user->isGuest):?>
                 <a class="ims-title" href="<?= Url::to('/site/login') ?>"></a>
             <?php endif;?>
         </div>
+        <?= DateTimeWidget::widget()?>
     </div>
 </header>
 

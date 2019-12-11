@@ -41,7 +41,7 @@ function display_time() {
         let year = new Date().getFullYear();    
         let dayName = gsDayNames[day];
         let monthName = gsMonthNames[month];
-        $('.info__date').html(dayName + ', ' + day + ' ' + monthName + ', ' + year + ' / ');
+        $('.info__date').html(dayName + ', ' + day + ' ' + monthName + ', ' + year + ' | ');
          display_time();
     }, refresh);
 }

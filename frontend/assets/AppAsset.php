@@ -13,6 +13,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'https://fonts.googleapis.com/css?family=Comfortaa:300,400&display=swap',
+        'https://fonts.googleapis.com/css?family=Underdog&display=swap',
         'css/site.css',
         'css/font-awesome.min.css',
         'css/bootstrap.min.css',
