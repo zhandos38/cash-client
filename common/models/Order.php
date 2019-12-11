@@ -142,7 +142,7 @@ class Order extends \yii\db\ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getDebtHistory()
+    public function getDebtHistories()
     {
         return $this->hasMany(OrderDebtHistory::className(), ['order_id' => 'id']);
     }
@@ -180,11 +180,11 @@ class Order extends \yii\db\ActiveRecord
     {
         $sum = 0;
 
-        if (!$this->debtHistory) {
+        if (!$this->debtHistories) {
             return $sum;
         }
 
-        foreach ($this->debtHistory as $item) {
+        foreach ($this->debtHistories as $item) {
             $sum += $item->paid_amount;
         }
 

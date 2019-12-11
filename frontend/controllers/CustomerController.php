@@ -100,11 +100,10 @@ class CustomerController extends Controller
      * Creates a new Customer model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
-     * @throws \yii\db\Exception
      */
     public function actionCreate()
     {
-        $model = new CustomerForm();
+        $model = new Customer();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);

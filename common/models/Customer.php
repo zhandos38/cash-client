@@ -99,6 +99,23 @@ class Customer extends \yii\db\ActiveRecord
         return $this->hasMany(DiscountHistory::className(), ['customer_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['id' => 'customer_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDebts()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+                ->andOnCondition(['is_debt' => true]);
+    }
+
     public static function getStatuses()
     {
         return [

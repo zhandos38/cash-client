@@ -37,6 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     return date('m.d.Y H:i', $model->created_at);
                 }
             ],
+
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update}'
+            ]
         ],
     ]); ?>
 
