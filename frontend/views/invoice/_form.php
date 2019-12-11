@@ -116,7 +116,7 @@ InvoiceAsset::register($this);
                                 </div>
                                 <div class="col-sm-6">
                                     <a class="barcode-download" href="#">
-                                        Print
+                                        Распечатать штрих-код
                                         <div class="barcode-img"></div>
                                     </a>
                                 </div>

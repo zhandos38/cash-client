@@ -48,7 +48,9 @@ class Invoice extends \yii\db\ActiveRecord
         return [
             [['is_debt', 'status', 'created_by', 'created_at', 'supplier_id'], 'integer'],
             ['number_in', 'string'],
+            [['number_in', 'supplier_id'], 'required'],
             ['cost', 'number'],
+
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Supplier::className(), 'targetAttribute' => ['supplier_id' => 'id']],
         ];
@@ -61,7 +63,7 @@ class Invoice extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'number_in' => 'Номер',
+            'number_in' => 'Входящий номер накладной',
             'is_debt' => 'В долг',
             'status' => 'Статус',
             'created_at' => 'Дата добавление',
