@@ -112,6 +112,18 @@ MenuAsset::register($this);
                 </div>
             </a>
         </div>
+        <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageShift') ? '' : 'display: none' ?>">
+            <a class="admin-block" href="<?= Url::to(['shift/index']) ?>">
+                <div class="admin-block__item">
+                    <div class="admin-block__icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="admin-block__title">
+                        Смены
+                    </div>
+                </div>
+            </a>
+        </div>
         <?php if (Yii::$app->user->can('createOrder')): ?>
             <div class="col-xs-6 col-sm-6 col-md-3" @click="openShiftOpenModal" v-show="openShiftActive">
                 <a class="admin-block" href="javascript:void(0)">

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
 
 /**
@@ -51,10 +52,10 @@ class ShiftHistory extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'status' => 'Status',
-            'started_at' => 'Started At',
-            'closed_at' => 'Closed At',
+            'user_id' => 'Работник',
+            'status' => 'Статус',
+            'started_at' => 'Время открытия',
+            'closed_at' => 'Время закрытия',
         ];
     }
 
@@ -69,6 +70,19 @@ class ShiftHistory extends \yii\db\ActiveRecord
     public function getTransactions()
     {
         return $this->hasMany(ShiftTransactions::className(), ['shift_id' => 'id']);
+    }
+
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_CLOSED => 'Закрыта',
+            self::STATUS_OPENED => 'Открыта',
+        ];
+    }
+
+    public function getStatusLabel()
+    {
+        return ArrayHelper::getValue(self::getStatuses(), $this->status);
     }
 
     public function beforeSave($insert)

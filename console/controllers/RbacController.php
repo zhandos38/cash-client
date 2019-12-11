@@ -209,6 +209,10 @@ class RbacController extends Controller {
         $viewSupplier = $auth->createPermission('viewSupplier');
         $viewSupplier->description = 'Просмотр поставщиков';
 
+        // Смены
+        $manageShift = $auth->createPermission('manageShift');
+        $manageShift->description = 'Просмотр списка смен';
+
         // Создадим еще новое разрешение «Редактирование собственной новости» и ассоциируем его с правилом AuthorRule
 //        $updateOwnNews = $auth->createPermission('updateOwnNews');
 //        $updateOwnNews->description = 'Редактирование собственной новости';
@@ -280,6 +284,8 @@ class RbacController extends Controller {
         $auth->add($viewSupplier);
         $auth->add($updateSupplier);
         $auth->add($deleteSupplier);
+
+        $auth->add($manageShift);
 
 //        $auth->add($updateOwnNews);
 
@@ -354,6 +360,8 @@ class RbacController extends Controller {
         $auth->addChild($admin, $updateSupplier);
         $auth->addChild($admin, $deleteSupplier);
 
+        $auth->addChild($admin, $manageShift);
+
         // Director child permissions default
         $auth->addChild($director, $manageStaff);
         $auth->addChild($director, $createStaff);
@@ -390,6 +398,8 @@ class RbacController extends Controller {
         $auth->addChild($director, $viewSupplier);
         $auth->addChild($director, $updateSupplier);
         $auth->addChild($director, $deleteSupplier);
+
+        $auth->addChild($director, $manageShift);
 
         $auth->addChild($cashier, $createOrder);
     }
