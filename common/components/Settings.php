@@ -75,21 +75,21 @@ class Settings extends BaseSettings
 
     public function setWhatsapp($whatsapp)
     {
-        $this->set('object.latitude', $whatsapp);
+        $this->set('object.whatsapp', $whatsapp);
     }
 
     public function setFacebook($facebook)
     {
-        $this->set('object.latitude', $facebook);
+        $this->set('object.facebook', $facebook);
     }
 
     public function setInstagram($instagram)
     {
-        $this->set('object.latitude', $instagram);
+        $this->set('object.instagram', $instagram);
     }
 
     public function setYoutube($youtube)
     {
-        $this->set('object.latitude', $youtube);
+        $this->set('object.youtube', $youtube);
     }
 }
