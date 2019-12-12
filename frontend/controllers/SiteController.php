@@ -113,6 +113,8 @@ class SiteController extends Controller
 
     public function actionInit()
     {
+        $this->layout = '@app/views/layouts/login';
+
         $model = new InitForm();
         if ($model->load(Yii::$app->request->post())) {
             $objects = $model->initialization();
