@@ -162,6 +162,16 @@ class SiteController extends Controller
                 Yii::$app->settings->setAddress($responseSettings['address']);
                 Yii::$app->settings->setPhone($responseSettings['phone']);
                 Yii::$app->settings->setToken($responseSettings['token']);
+                Yii::$app->settings->setToken($responseSettings['longitude']);
+                Yii::$app->settings->setToken($responseSettings['latitude']);
+                if (!empty($responseSettings['whatsapp']))
+                    Yii::$app->settings->setToken($responseSettings['whatsapp']);
+                if (!empty($responseSettings['facebook']))
+                    Yii::$app->settings->setToken($responseSettings['facebook']);
+                if (!empty($responseSettings['instagram']))
+                    Yii::$app->settings->setToken($responseSettings['instagram']);
+                if (!empty($responseSettings['youtube']))
+                    Yii::$app->settings->setToken($responseSettings['youtube']);
                 Yii::$app->settings->setSerialNumber($serialNumber);
 
                 Yii::$app->session->setFlash('warning', 'У Вас установлен пароль по умолчанию, с целью безопасности измените пароль!');
