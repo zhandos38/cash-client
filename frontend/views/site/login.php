@@ -33,8 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="info__time"></div>
 </div>
 
-
-
 <?php
 $js =<<<JS
 let gsDayNames = [
