@@ -62,4 +62,34 @@ class Settings extends BaseSettings
     {
         return $this->get('object.serial_number');
     }
+
+    public function setLongitude($longitude)
+    {
+        $this->set('object.longitude', $longitude);
+    }
+
+    public function setLatitude($latitude)
+    {
+        $this->set('object.latitude', $latitude);
+    }
+
+    public function setWhatsapp($whatsapp)
+    {
+        $this->set('object.latitude', $whatsapp);
+    }
+
+    public function setFacebook($facebook)
+    {
+        $this->set('object.latitude', $facebook);
+    }
+
+    public function setInstagram($instagram)
+    {
+        $this->set('object.latitude', $instagram);
+    }
+
+    public function setYoutube($youtube)
+    {
+        $this->set('object.latitude', $youtube);
+    }
 }
