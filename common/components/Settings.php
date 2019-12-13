@@ -68,9 +68,19 @@ class Settings extends BaseSettings
         $this->set('object.longitude', $longitude);
     }
 
+    public function getLongitude()
+    {
+        $this->get('object.longitude');
+    }
+
     public function setLatitude($latitude)
     {
         $this->set('object.latitude', $latitude);
+    }
+
+    public function getLatitude()
+    {
+        $this->get('object.latitude');
     }
 
     public function setWhatsapp($whatsapp)
@@ -78,9 +88,19 @@ class Settings extends BaseSettings
         $this->set('object.whatsapp', $whatsapp);
     }
 
+    public function getWhatsapp($whatsapp)
+    {
+        $this->get('object.whatsapp');
+    }
+
     public function setFacebook($facebook)
     {
         $this->set('object.facebook', $facebook);
+    }
+
+    public function getFacebook($facebook)
+    {
+        $this->get('object.facebook');
     }
 
     public function setInstagram($instagram)
@@ -88,8 +108,18 @@ class Settings extends BaseSettings
         $this->set('object.instagram', $instagram);
     }
 
+    public function getInstagram($instagram)
+    {
+        $this->get('object.instagram');
+    }
+
     public function setYoutube($youtube)
     {
         $this->set('object.youtube', $youtube);
+    }
+
+    public function getYoutube($youtube)
+    {
+        $this->get('object.youtube');
     }
 }
