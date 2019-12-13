@@ -13,6 +13,7 @@ use common\models\Product;
 use common\models\ShiftHistory;
 use common\models\Supplier;
 use common\models\User;
+use pheme\settings\models\Setting;
 use Yii;
 use yii\console\Controller;
 use yii\db\Exception;
@@ -36,6 +37,7 @@ class ExportController extends Controller
     const TARGET_BARCODE_TEMP = 'barcode-temp';
     const TARGET_SHIFT = 'shifts';
     const TARGET_STAFF = 'staff';
+    const TARGET_SETTINGS = 'settings';
 
     public function actionStaff()
     {
@@ -442,6 +444,33 @@ class ExportController extends Controller
         return true;
     }
 
+    public function actionSettings()
+    {
+        $settings = Setting::findAll(['is_updated' => false]);
+
+        if (!$settings)
+            throw new \Exception('All settings have been already updated!');
+
+        $started_at = time();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $data = [];
+            foreach ($settings as $setting) {
+                $data[$setting->key] = $setting->value;
+            }
+
+            if ($this->send($data, self::TARGET_SETTINGS)) {
+                $transaction->commit();
+                Log::createLog(Log::SOURCE_EXPORT_SETTINGS, 'Settings is exported successfully!', Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+            } else {
+                throw new \Exception('Settings is not sent');
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+        }
+    }
+
     private function send($data, $target)
     {
 //        Yii::$app->settings->setToken('0gdvpk3i308ZljkbzpRQIxj1HWMEb--v');
@@ -454,7 +483,7 @@ class ExportController extends Controller
         $client = new Client();
         $response = $client->createRequest()
             ->setMethod('POST')
-            ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/' . $target)
+            ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/' . $target)
             ->addHeaders(['Authorization' => 'Bearer ' . $token])
             ->addHeaders(['content-type' => 'application/json'])
             ->setData(['token' => $token, 'data' => $data])
