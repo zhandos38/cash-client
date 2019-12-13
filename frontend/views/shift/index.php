@@ -15,7 +15,7 @@ use yii\helpers\Url;
 $this->title = 'Смены';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<a href="<?= Url::to(['supplier/main']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
+<a href="<?= Url::to(['/site/index']) ?>" class="back-button"><i class="fa fa-undo" aria-hidden="true"></i>  Назад</a>
 <div class="supplier-index">
 
     <h1><?= Html::encode($this->title) ?></h1>

@@ -101,7 +101,7 @@ MenuAsset::register($this);
             </a>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageSupplier') ? '' : 'display: none' ?>">
-            <a class="admin-block" href="<?= Url::to('#') ?>">
+            <a class="admin-block" href="<?= Url::to('/site/object-settings') ?>">
                 <div class="admin-block__item">
                     <div class="admin-block__icon">
                         <i class="fas fa-cogs"></i>
@@ -116,7 +116,7 @@ MenuAsset::register($this);
             <a class="admin-block" href="<?= Url::to(['shift/index']) ?>">
                 <div class="admin-block__item">
                     <div class="admin-block__icon">
-                        <i class="fas fa-cogs"></i>
+                        <i class="fas fa-user-clock"></i>
                     </div>
                     <div class="admin-block__title">
                         Смены

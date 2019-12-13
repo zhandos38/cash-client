@@ -364,4 +364,11 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+    public function actionObjectSettings()
+    {
+        return $this->render('object-settings', [
+
+            ]);
+    }
 }
