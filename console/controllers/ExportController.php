@@ -483,7 +483,7 @@ class ExportController extends Controller
         $client = new Client();
         $response = $client->createRequest()
             ->setMethod('POST')
-            ->setUrl(\Yii::$app->params['apiUrlDev'] . 'v1/' . $target)
+            ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/' . $target)
             ->addHeaders(['Authorization' => 'Bearer ' . $token])
             ->addHeaders(['content-type' => 'application/json'])
             ->setData(['token' => $token, 'data' => $data])
