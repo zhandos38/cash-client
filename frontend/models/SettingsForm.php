@@ -24,7 +24,7 @@ class SettingsForm extends Model
     public function rules()
     {
         return [
-            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude'], 'string'],
+            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude', 'whatsapp'], 'string'],
             [['name', 'address', 'phone','latitude', 'longitude'], 'required'],
         ];
     }
