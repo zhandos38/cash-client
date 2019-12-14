@@ -25,7 +25,8 @@ class SettingsForm extends Model
     {
         return [
             [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude', 'whatsapp'], 'string'],
-            [['name', 'address', 'phone','latitude', 'longitude'], 'required'],
+            [['type_id', 'created_at'], 'integer'],
+            [['name', 'address', 'phone'], 'required'],
         ];
     }
 

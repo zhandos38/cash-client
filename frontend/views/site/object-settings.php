@@ -25,6 +25,17 @@ $this->title = 'Настройки объекта';
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label>Тип объекта</label>
+                            <input type="text" class="form-control" readonly value="1">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?= $form->field($settingForm, 'address')->textInput() ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
                             <?= $form->field($settingForm, 'phone')->widget(MaskedInput::className(), [
                             'mask' => '+7(999)999-99-99',
                             'clientOptions' => [
@@ -35,17 +46,38 @@ $this->title = 'Настройки объекта';
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?= $form->field($settingForm, 'address')->textInput() ?>
+                            <label>Статус объекта</label>
+                            <select class="form-control">
+                                <option>Активный</option>
+                                <option>Неактивный</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?= $form->field($settingForm, 'whatsapp')->widget(MaskedInput::className(), [
-                                'mask' => 'https://w\a.me/7(799)9999999',
-                                'clientOptions' => [
-                                    'removeMaskOnSubmit' => true
-                                ]
-                            ]) ?>
+                            <label>Дата создания объекта</label>
+                            <input type="text" class="form-control" readonly value="Дата">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Дата окончания лицензии</label>
+                            <input type="text" class="form-control" readonly value="Дата">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Данные отправляются в ООФД</label>
+                            <select class="form-control">
+                                <option class="text-center">Да</option>
+                                <option>Нет</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Ключ к ООФД</label>
+                            <input type="text" class="form-control" readonly value="Ключ">
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -76,6 +108,16 @@ $this->title = 'Настройки объекта';
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?= $form->field($settingForm, 'whatsapp')->widget(MaskedInput::className(), [
+                                'mask' => 'https://w\a.me/7(799)9999999',
+                                'clientOptions' => [
+                                    'removeMaskOnSubmit' => true
+                                ]
+                            ]) ?>
                         </div>
                     </div>
                     <div class="col-md-6">
