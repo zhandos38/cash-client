@@ -4,6 +4,7 @@
 namespace frontend\models;
 
 
+use pheme\settings\models\Setting;
 use yii\base\Model;
 use yii\helpers\VarDumper;
 
@@ -24,8 +25,8 @@ class SettingsForm extends Model
     public function rules()
     {
         return [
-            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude', 'whatsapp'], 'string'],
-            [['name', 'address', 'phone','latitude', 'longitude'], 'required'],
+            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude'], 'string'],
+            [['name', 'address', 'phone'], 'required'],
         ];
     }
 
@@ -67,33 +68,50 @@ class SettingsForm extends Model
         $settings = \Yii::$app->settings;
         if ($this->_oldAttributes['name'] != $this->name) {
             $settings->setName($this->name);
+            $this->setIsUpdate('name');
         }
         if ($this->_oldAttributes['phone'] != $this->phone) {
             $settings->setPhone($this->phone);
+            $this->setIsUpdate('phone');
         }
         if ($this->_oldAttributes['address'] != $this->address) {
             $settings->setAddress($this->address);
+            $this->setIsUpdate('address');
         }
         if ($this->_oldAttributes['latitude'] != $this->latitude) {
             $settings->setLatitude($this->latitude);
+            $this->setIsUpdate('latitude');
         }
         if ($this->_oldAttributes['longitude'] != $this->longitude) {
             $settings->setLongitude($this->longitude);
+            $this->setIsUpdate('longitude');
         }
         if ($this->_oldAttributes['facebook'] != $this->facebook) {
             $settings->setFacebook($this->facebook);
+            $this->setIsUpdate('facebook');
         }
-        if ($this->_oldAttributes['facebook'] != $this->facebook) {
+        if ($this->_oldAttributes['phone'] != $this->facebook) {
             $settings->setFacebook($this->facebook);
+            $this->setIsUpdate('phone');
         }
         if ($this->_oldAttributes['instagram'] != $this->instagram) {
             $settings->setInstagram($this->instagram);
+            $this->setIsUpdate('instagram');
         }
         if ($this->_oldAttributes['whatsapp'] != $this->whatsapp) {
             $settings->setWhatsapp($this->whatsapp);
+            $this->setIsUpdate('whatsapp');
         }
          if ($this->_oldAttributes['youtube'] != $this->youtube) {
             $settings->setYoutube($this->youtube);
+             $this->setIsUpdate('youtube');
         }
+    }
+
+    private function setIsUpdate($key)
+    {
+        $setting = Setting::findOne(['key' => $key]);
+        $setting->is_updated = false;
+        return $setting->save();
     }
 }
