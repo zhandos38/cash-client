@@ -92,10 +92,6 @@ class SettingsForm extends Model
             $settings->setFacebook($this->facebook);
             $this->setIsUpdate('facebook');
         }
-        if ($this->_oldAttributes['phone'] != $this->facebook) {
-            $settings->setFacebook($this->facebook);
-            $this->setIsUpdate('phone');
-        }
         if ($this->_oldAttributes['instagram'] != $this->instagram) {
             $settings->setInstagram($this->instagram);
             $this->setIsUpdate('instagram');
