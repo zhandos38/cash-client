@@ -455,7 +455,13 @@ class ExportController extends Controller
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $data = [];
+            /** @var Setting $setting */
             foreach ($settings as $setting) {
+                if (!$setting->is_updated) {
+                    $setting->is_updated = true;
+                }
+                $setting->save();
+
                 $data[$setting->key] = $setting->value;
             }
 
