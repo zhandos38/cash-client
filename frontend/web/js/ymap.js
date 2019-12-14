@@ -29,7 +29,7 @@ function init () {
                 coords[0].toPrecision(6),
                 coords[1].toPrecision(6)
             ].join(', ') + '</p>',
-            contentFooter:'<sup>Gul Market</sup>'
+            contentFooter:'<sup>IMS</sup>'
         });
     });
 

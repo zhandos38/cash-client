@@ -33,14 +33,29 @@ class Settings extends BaseSettings
         $this->set('object.name', $name);
     }
 
+    public function getName()
+    {
+        return $this->get('object.name');
+    }
+
     public function setAddress($address)
     {
         $this->set('object.address', $address);
     }
 
+    public function getAddress()
+    {
+        return $this->get('object.address');
+    }
+
     public function setPhone($phone)
     {
         $this->set('object.phone', $phone);
+    }
+
+    public function getPhone()
+    {
+        return $this->get('object.phone');
     }
 
     public function setToken($token)
@@ -70,7 +85,7 @@ class Settings extends BaseSettings
 
     public function getLongitude()
     {
-        $this->get('object.longitude');
+        return $this->get('object.longitude');
     }
 
     public function setLatitude($latitude)
@@ -80,7 +95,7 @@ class Settings extends BaseSettings
 
     public function getLatitude()
     {
-        $this->get('object.latitude');
+        return $this->get('object.latitude');
     }
 
     public function setWhatsapp($whatsapp)
@@ -88,9 +103,9 @@ class Settings extends BaseSettings
         $this->set('object.whatsapp', $whatsapp);
     }
 
-    public function getWhatsapp($whatsapp)
+    public function getWhatsapp()
     {
-        $this->get('object.whatsapp');
+        return $this->get('object.whatsapp');
     }
 
     public function setFacebook($facebook)
@@ -98,9 +113,9 @@ class Settings extends BaseSettings
         $this->set('object.facebook', $facebook);
     }
 
-    public function getFacebook($facebook)
+    public function getFacebook()
     {
-        $this->get('object.facebook');
+        return $this->get('object.facebook');
     }
 
     public function setInstagram($instagram)
@@ -108,9 +123,9 @@ class Settings extends BaseSettings
         $this->set('object.instagram', $instagram);
     }
 
-    public function getInstagram($instagram)
+    public function getInstagram()
     {
-        $this->get('object.instagram');
+        return $this->get('object.instagram');
     }
 
     public function setYoutube($youtube)
@@ -118,8 +133,8 @@ class Settings extends BaseSettings
         $this->set('object.youtube', $youtube);
     }
 
-    public function getYoutube($youtube)
+    public function getYoutube()
     {
-        $this->get('object.youtube');
+        return $this->get('object.youtube');
     }
 }

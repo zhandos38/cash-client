@@ -7,6 +7,7 @@ use frontend\models\AddStaffForm;
 use frontend\models\ChangePasswordForm;
 use frontend\models\EditProfile;
 use frontend\models\ResendVerificationEmailForm;
+use frontend\models\SettingsForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -367,8 +368,18 @@ class SiteController extends Controller
 
     public function actionObjectSettings()
     {
-        return $this->render('object-settings', [
+        $settingForm = new SettingsForm();
 
+        if ($settingForm->load(Yii::$app->request->post())) {
+            $settingForm->save();
+            Yii::$app->session->setFlash('success','Данные объекта успешно изменены!');
+            return $this->redirect('/site/index');
+        } else {
+            $settingForm->init();
+        }
+
+        return $this->render('object-settings', [
+            'settingForm' => $settingForm,
             ]);
     }
 }
