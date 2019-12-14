@@ -30,7 +30,7 @@ class Settings extends BaseSettings
 
     public function setName($name)
     {
-        $this->set('object.name', $name);
+        $this->set('object.name', $name, null, 'string');
     }
 
     public function getName()
@@ -40,7 +40,7 @@ class Settings extends BaseSettings
 
     public function setAddress($address)
     {
-        $this->set('object.address', $address);
+        $this->set('object.address', $address, null, 'string');
     }
 
     public function getAddress()
@@ -50,7 +50,7 @@ class Settings extends BaseSettings
 
     public function setPhone($phone)
     {
-        $this->set('object.phone', $phone);
+        $this->set('object.phone', $phone, null, 'string');
     }
 
     public function getPhone()
@@ -60,7 +60,7 @@ class Settings extends BaseSettings
 
     public function setToken($token)
     {
-        $this->set('object.token', $token);
+        $this->set('object.token', $token, null, 'string');
     }
 
     public function getToken()
@@ -70,7 +70,7 @@ class Settings extends BaseSettings
 
     public function setSerialNumber($token)
     {
-        $this->set('object.serial_number', $token);
+        $this->set('object.serial_number', $token, null, 'string');
     }
 
     public function getSerialNumber()
@@ -80,7 +80,7 @@ class Settings extends BaseSettings
 
     public function setLongitude($longitude)
     {
-        $this->set('object.longitude', $longitude);
+        $this->set('object.longitude', $longitude, null, 'string');
     }
 
     public function getLongitude()
@@ -90,7 +90,7 @@ class Settings extends BaseSettings
 
     public function setLatitude($latitude)
     {
-        $this->set('object.latitude', $latitude);
+        $this->set('object.latitude', $latitude, null, 'string');
     }
 
     public function getLatitude()
@@ -100,7 +100,7 @@ class Settings extends BaseSettings
 
     public function setWhatsapp($whatsapp)
     {
-        $this->set('object.whatsapp', $whatsapp);
+        $this->set('object.whatsapp', $whatsapp, null, 'string');
     }
 
     public function getWhatsapp()
@@ -110,7 +110,7 @@ class Settings extends BaseSettings
 
     public function setFacebook($facebook)
     {
-        $this->set('object.facebook', $facebook);
+        $this->set('object.facebook', $facebook, null, 'string');
     }
 
     public function getFacebook()
@@ -120,7 +120,7 @@ class Settings extends BaseSettings
 
     public function setInstagram($instagram)
     {
-        $this->set('object.instagram', $instagram);
+        $this->set('object.instagram', $instagram, null, 'string');
     }
 
     public function getInstagram()
@@ -130,7 +130,7 @@ class Settings extends BaseSettings
 
     public function setYoutube($youtube)
     {
-        $this->set('object.youtube', $youtube);
+        $this->set('object.youtube', $youtube, null, 'string');
     }
 
     public function getYoutube()
