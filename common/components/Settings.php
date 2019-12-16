@@ -137,4 +137,14 @@ class Settings extends BaseSettings
     {
         return $this->get('object.youtube');
     }
+
+    public function getTypeId()
+    {
+        return $this->get('object.type_id');
+    }
+
+    public function getCreatedAt()
+    {
+        return $this->get('object.created_at');
+    }
 }

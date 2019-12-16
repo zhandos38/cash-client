@@ -25,8 +25,10 @@ class SettingsForm extends Model
     public function rules()
     {
         return [
-            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude'], 'string'],
+            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude', 'whatsapp'], 'string'],
+            [['type_id', 'created_at'], 'integer'],
             [['name', 'address', 'phone'], 'required'],
+            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude'], 'string'],
         ];
     }
 
@@ -89,10 +91,6 @@ class SettingsForm extends Model
         if ($this->_oldAttributes['facebook'] != $this->facebook) {
             $settings->setFacebook($this->facebook);
             $this->setIsUpdate('facebook');
-        }
-        if ($this->_oldAttributes['phone'] != $this->facebook) {
-            $settings->setFacebook($this->facebook);
-            $this->setIsUpdate('phone');
         }
         if ($this->_oldAttributes['instagram'] != $this->instagram) {
             $settings->setInstagram($this->instagram);
