@@ -52,10 +52,11 @@ function display_time() {
     setTimeout(() => {
         let currentDate = new Date();
         $('.info__time').html(hours_with_leading_zeros(currentDate) + ':' + minutes_with_leading_zeros(currentDate) + ':' + seconds_with_leading_zeros(currentDate));
-        let day = new Date().getDay();    
+        let day = new Date().getDate();
+        let dayOfWeek = new Date().getDay();
         let month = new Date().getMonth();    
         let year = new Date().getFullYear();    
-        let dayName = gsDayNames[day];
+        let dayName = gsDayNames[dayOfWeek];
         let monthName = gsMonthNames[month];
         $('.info__date').html(dayName + ', ' + day + ' ' + monthName + ', ' + year + ' | ');
          display_time();

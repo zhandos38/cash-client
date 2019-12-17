@@ -63,10 +63,11 @@ function display_time() {
     setTimeout(() => {
         let currentDate = new Date();
         $('.info__time').html(currentDate.getHours() + ':' + currentDate.getMinutes() + ':' + currentDate.getUTCSeconds());
-        let day = new Date().getDay();    
+        let day = new Date().getDate();
+        let dayOfWeek = new Date().getDay();
         let month = new Date().getMonth();    
         let year = new Date().getFullYear();    
-        let dayName = gsDayNames[day];
+        let dayName = gsDayNames[dayOfWeek];
         let monthName = gsMonthNames[month];
         $('.info__date').html(dayName + ', ' + day + ' ' + monthName + ', ' + year);
          display_time();
