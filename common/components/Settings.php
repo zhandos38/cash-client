@@ -68,6 +68,16 @@ class Settings extends BaseSettings
         return $this->get('object.token');
     }
 
+    public function setExpiredAt($expiredAt)
+    {
+        $this->set('object.expired_at', $expiredAt, null, 'string');
+    }
+
+    public function getExpiredAt()
+    {
+        return $this->get('object.expired_at');
+    }
+
     public function setSerialNumber($token)
     {
         $this->set('object.serial_number', $token, null, 'string');
@@ -143,8 +153,18 @@ class Settings extends BaseSettings
         return $this->get('object.type_id');
     }
 
+    public function setTypeId($typeId)
+    {
+        $this->set('object.type_id', $typeId, null, 'string');
+    }
+
     public function getCreatedAt()
     {
         return $this->get('object.created_at');
+    }
+
+    public function setCreatedAt($createdAt)
+    {
+        $this->set('object.created_at', $createdAt, null, 'string');
     }
 }

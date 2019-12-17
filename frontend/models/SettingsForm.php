@@ -6,10 +6,15 @@ namespace frontend\models;
 
 use pheme\settings\models\Setting;
 use yii\base\Model;
+use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
 
 class SettingsForm extends Model
 {
+    const TYPE_SHOP = 0;
+    const TYPE_RESTAURANT = 1;
+
     public $name;
     public $address;
     public $phone;
@@ -19,16 +24,24 @@ class SettingsForm extends Model
     public $facebook;
     public $instagram;
     public $youtube;
+    public $created_at;
+    public $type_id;
+    public $expired_at;
 
     private $_oldAttributes;
 
     public function rules()
     {
         return [
-            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude', 'whatsapp'], 'string'],
-            [['type_id', 'created_at'], 'integer'],
+            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude', 'whatsapp', 'type_id', 'created_at', 'expired_at'], 'string'],
             [['name', 'address', 'phone'], 'required'],
-            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude'], 'string'],
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
         ];
     }
 
@@ -45,7 +58,9 @@ class SettingsForm extends Model
             'instagram' => 'Instagram аккаунт',
             'facebook' => 'Facebook аккаунт',
             'youtube' => 'Youtube канал',
-            'created_at' => 'Дата создания'
+            'created_at' => 'Дата создания объекта',
+            'type_id' => 'Тип объекта',
+            'expired_at' => 'Дата окончания лицензии',
         ];
     }
 
@@ -61,6 +76,9 @@ class SettingsForm extends Model
         $this->instagram = $settings->getInstagram();
         $this->whatsapp = $settings->getWhatsapp();
         $this->youtube = $settings->getYoutube();
+        $this->created_at = $settings->getCreatedAt();
+        $this->type_id = $settings->getTypeId();
+        $this->expired_at = $settings->getExpiredAt();
 
         $this->_oldAttributes = $this->attributes;
     }
@@ -104,6 +122,15 @@ class SettingsForm extends Model
             $settings->setYoutube($this->youtube);
              $this->setIsUpdate('youtube');
         }
+         if ($this->_oldAttributes['type_id'] != $this->type_id) {
+            $settings->setTypeId($this->type_id);
+        }
+         if ($this->_oldAttributes['created_at'] != $this->created_at) {
+            $settings->setCreatedAt($this->created_at);
+        }
+         if ($this->_oldAttributes['expired_at'] != $this->expired_at) {
+            $settings->setExpiredAt($this->expired_at);
+        }
     }
 
     private function setIsUpdate($key)
@@ -111,5 +138,18 @@ class SettingsForm extends Model
         $setting = Setting::findOne(['key' => $key]);
         $setting->is_updated = false;
         return $setting->save();
+    }
+
+    public static function getTypes()
+    {
+        return [
+            self::TYPE_SHOP => 'Магазин',
+            self::TYPE_RESTAURANT => 'Ресторан'
+        ];
+    }
+
+    public function getTypeLabel()
+    {
+        return ArrayHelper::getValue(self::getTypes(), $this->type_id);
     }
 }

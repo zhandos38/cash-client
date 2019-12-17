@@ -1,5 +1,7 @@
 <?php
 
+use kartik\date\DatePicker;
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -20,13 +22,13 @@ $this->title = 'Настройки объекта';
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?= $form->field($settingForm, 'name')->textInput() ?>
+                            <?= $form->field($settingForm, 'name')->textInput(['readonly'=> true]) ?>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Тип объекта</label>
-                            <input type="text" class="form-control" readonly value="1">
+                            <input type="text" class="form-control" readonly value="<?= $settingForm->getTypeLabel() ?>">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -47,30 +49,27 @@ $this->title = 'Настройки объекта';
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Статус объекта</label>
-                            <select class="form-control">
-                                <option>Активный</option>
-                                <option>Неактивный</option>
-                            </select>
+                            <input class="form-control" readonly value="Активный/Неактивный">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Дата создания объекта</label>
-                            <input type="text" class="form-control" readonly value="Дата">
+                            <input type="text" class="form-control" readonly value="<?= Yii::$app->formatter->asDate($settingForm->created_at, 'php:d.m.Y') ?>">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Дата окончания лицензии</label>
-                            <input type="text" class="form-control" readonly value="Дата">
+                            <label>Дата создания объекта</label>
+                            <input type="text" class="form-control" readonly value="<?= Yii::$app->formatter->asDate($settingForm->expired_at, 'php:d.m.Y') ?>">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Данные отправляются в ООФД</label>
                             <select class="form-control">
-                                <option class="text-center">Да</option>
                                 <option>Нет</option>
+                                <option>Да</option>
                             </select>
                         </div>
                     </div>
@@ -113,7 +112,7 @@ $this->title = 'Настройки объекта';
                     <div class="col-md-6">
                         <div class="form-group">
                             <?= $form->field($settingForm, 'whatsapp')->widget(MaskedInput::className(), [
-                                'mask' => 'https://w\a.me/7(799)9999999',
+                                'mask' => 'https://w\a.me/7(999)9999999',
                                 'clientOptions' => [
                                     'removeMaskOnSubmit' => true
                                 ]
