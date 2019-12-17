@@ -38,6 +38,7 @@ class ExportController extends Controller
     const TARGET_SHIFT = 'shifts';
     const TARGET_STAFF = 'staff';
     const TARGET_SETTINGS = 'settings';
+    const TARGET_EXPIRE_DATE = 'check-expire-date';
 
     public function actionStaff()
     {
@@ -474,6 +475,47 @@ class ExportController extends Controller
             }
         } catch (\Exception $exception) {
             $transaction->rollBack();
+            Log::createLog(Log::SOURCE_EXPORT_SETTINGS, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            throw new Exception($exception->getMessage());
+        }
+
+        return true;
+    }
+
+    public function actionCheckExpireDate()
+    {
+        $started_at = time();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $token = \Yii::$app->settings->getToken();
+            $expirationDate = Yii::$app->settings->getExpiredAt();
+
+            $client = new Client();
+            $response = $client->createRequest()
+                ->setMethod('GET')
+                ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/' . self::TARGET_EXPIRE_DATE)
+                ->addHeaders(['Authorization' => 'Bearer ' . $token])
+                ->addHeaders(['content-type' => 'application/json'])
+                ->setData(['token' => $token])
+                ->send();
+
+            if ($response->content != $expirationDate) {
+
+                $fp = fopen("c:/ProgramData/test.txt", "a+");
+                fwrite($fp, VarDumper::dumpAsString($response->content, 10));
+                fclose($fp);
+
+                Yii::$app->settings->setExpiredAt(111);
+            }
+
+            $transaction->commit();
+            Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, 'Check expire date is checked successfully!', Log::STATUS_SUCCESS, $started_at);
+            $this->log(true);
+
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+            throw new Exception($exception->getMessage());
         }
     }
 
