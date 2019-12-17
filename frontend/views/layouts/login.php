@@ -4,6 +4,7 @@
 /* @var $content string */
 
 use frontend\widgets\DateTimeWidget;
+use frontend\widgets\LoginDateTimeWidget;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -36,6 +37,7 @@ AppAsset::register($this);
     <div class="container">
         <?= Alert::widget() ?>
         <?= $content ?>
+        <?= LoginDateTimeWidget::widget()?>
     </div>
 </div>
 <footer>
