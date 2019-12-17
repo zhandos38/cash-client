@@ -49,7 +49,7 @@ $this->title = 'Настройки объекта';
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Статус объекта</label>
-                            <input class="form-control" readonly value="Активный/Неактивный">
+                            <input class="form-control" readonly value="<?= $settingForm->getActivateLabel() ?>">
                         </div>
                     </div>
                     <div class="col-md-6">

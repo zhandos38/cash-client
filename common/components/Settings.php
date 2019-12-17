@@ -78,6 +78,16 @@ class Settings extends BaseSettings
         return $this->get('object.expired_at');
     }
 
+    public function setIsActivated($isActivated)
+    {
+        $this->set('object.is_activated', $isActivated, null, 'string');
+    }
+
+    public function getIsActivated()
+    {
+        return $this->get('object.is_activated');
+    }
+
     public function setSerialNumber($token)
     {
         $this->set('object.serial_number', $token, null, 'string');

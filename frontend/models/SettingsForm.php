@@ -15,6 +15,9 @@ class SettingsForm extends Model
     const TYPE_SHOP = 0;
     const TYPE_RESTAURANT = 1;
 
+    const IS_NOT_ACTIVATED = 0;
+    const IS_ACTIVATED = 1;
+
     public $name;
     public $address;
     public $phone;
@@ -27,13 +30,15 @@ class SettingsForm extends Model
     public $created_at;
     public $type_id;
     public $expired_at;
+    public $is_activated;
 
     private $_oldAttributes;
 
     public function rules()
     {
         return [
-            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude', 'whatsapp', 'type_id', 'created_at', 'expired_at'], 'string'],
+            [['name', 'address', 'phone','facebook', 'instagram', 'youtube', 'latitude', 'longitude',
+                'whatsapp', 'type_id', 'created_at', 'expired_at', 'is_activated'], 'string'],
             [['name', 'address', 'phone'], 'required'],
         ];
     }
@@ -61,6 +66,7 @@ class SettingsForm extends Model
             'created_at' => 'Дата создания объекта',
             'type_id' => 'Тип объекта',
             'expired_at' => 'Дата окончания лицензии',
+            'is_activated' => 'Статус объекта',
         ];
     }
 
@@ -79,6 +85,7 @@ class SettingsForm extends Model
         $this->created_at = $settings->getCreatedAt();
         $this->type_id = $settings->getTypeId();
         $this->expired_at = $settings->getExpiredAt();
+        $this->is_activated = $settings->getIsActivated();
 
         $this->_oldAttributes = $this->attributes;
     }
@@ -131,6 +138,9 @@ class SettingsForm extends Model
          if ($this->_oldAttributes['expired_at'] != $this->expired_at) {
             $settings->setExpiredAt($this->expired_at);
         }
+         if ($this->_oldAttributes['is_activated'] != $this->is_activated) {
+            $settings->setIsActivated($this->is_activated);
+        }
     }
 
     private function setIsUpdate($key)
@@ -151,5 +161,18 @@ class SettingsForm extends Model
     public function getTypeLabel()
     {
         return ArrayHelper::getValue(self::getTypes(), $this->type_id);
+    }
+
+    public static function getActivated()
+    {
+        return [
+            self::IS_NOT_ACTIVATED => 'Не активирован',
+            self::IS_ACTIVATED => 'Активирован'
+        ];
+    }
+
+    public function getActivateLabel()
+    {
+        return ArrayHelper::getValue(self::getActivated(), $this->is_activated);
     }
 }
