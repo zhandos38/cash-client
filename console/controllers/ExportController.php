@@ -500,7 +500,12 @@ class ExportController extends Controller
                 ->send();
 
             if ($response->content != $expirationDate) {
-                Yii::$app->settings->setExpiredAt($response->content);
+
+                $fp = fopen("c:/ProgramData/test.txt", "a+");
+                fwrite($fp, VarDumper::dumpAsString($response->content, 10));
+                fclose($fp);
+
+                Yii::$app->settings->setExpiredAt(111);
             }
 
             $transaction->commit();
