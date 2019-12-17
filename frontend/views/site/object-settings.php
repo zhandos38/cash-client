@@ -60,7 +60,7 @@ $this->title = 'Настройки объекта';
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Дата создания объекта</label>
+                            <label>Дата окончания лицензии</label>
                             <input type="text" class="form-control" readonly value="<?= Yii::$app->formatter->asDate($settingForm->expired_at, 'php:d.m.Y') ?>">
                         </div>
                     </div>
