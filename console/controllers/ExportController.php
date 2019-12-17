@@ -500,7 +500,7 @@ class ExportController extends Controller
                 ->send();
 
             if ($response->content != $expirationDate) {
-                Yii::$app->settings->setExpiredAt($expirationDate);
+                Yii::$app->settings->setExpiredAt($response->content);
             }
 
             $transaction->commit();
