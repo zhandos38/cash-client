@@ -501,10 +501,13 @@ class ExportController extends Controller
 
             if ($response->content != $expirationDate) {
                 Yii::$app->settings->setExpiredAt($response->content);
+                $message = 'Expire date is checked successfully!';
+            } else {
+                $message = 'Expired date is up-to-date!';
             }
 
             $transaction->commit();
-            Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, 'Check expire date is checked successfully!', Log::STATUS_SUCCESS, $started_at);
+            Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, $message, Log::STATUS_SUCCESS, $started_at);
             $this->log(true);
 
         } catch (\Exception $exception) {
