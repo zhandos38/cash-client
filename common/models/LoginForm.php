@@ -138,16 +138,6 @@ class LoginForm extends Model
         }
     }
 
-    public function checkExpireDate()
-    {
-        if (Yii::$app->settings->getExpiredAt() == time())
-            return true;
-        else {
-            Yii::$app->session->setFlash('error', 'Истек срок подписки');
-            return false;
-        }
-    }
-
     private function debug($var)
     {
         $fp = fopen("c:/test.txt", "w");
