@@ -87,6 +87,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]),
             ],
+
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update}'
+            ]
         ],
     ]); ?>
     <?php Pjax::end(); ?>
