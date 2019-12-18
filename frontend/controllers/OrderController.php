@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Category;
 use common\models\Customer;
 use common\models\Invoice;
 use common\models\OrderDebtHistory;
@@ -67,7 +68,8 @@ class OrderController extends Controller
                             'search',
                             'set-shift',
                             'close-shift',
-                            'check-shift'
+                            'check-shift',
+                            'get-categories'
                         ],
                         'roles' => ['createOrder']
                     ],
@@ -294,7 +296,7 @@ class OrderController extends Controller
     public function actionTestCreate()
     {
         if (!Yii::$app->object->getShiftId()) {
-            Yii::$app->session->setFlash('error', 'Смена на назначена! Пожалуйста назначьте смену');
+            Yii::$app->session->setFlash('error', 'Смена не назначена! Пожалуйста назначьте смену');
             return $this->redirect(['site/index']);
         }
 
@@ -520,6 +522,44 @@ class OrderController extends Controller
         }
 
         return $data;
+    }
+
+    public function actionGetCategories()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $categoriesTree = [];
+
+//        $categoriesModel = Category::findAll(['parent_id' => null]);
+        $categories = Category::find()->all();
+
+        $childIds = $this->getCategoryIds($categories, 1);
+
+        VarDumper::dump($childIds,10); die;
+
+//        foreach ($categoriesModel as $categoryModel) {
+
+
+
+//            $categoriesTree[] = [
+//                'name' => $category->name,
+//                'children' => $subCategories
+//            ];
+//        }
+
+        return $childIds;
+    }
+
+    private function getCategoryIds($categories, $category_id,  &$categoriesId = [])
+    {
+        foreach ($categories as $category) {
+            if ($category_id == $category->parent_id) {
+                $categoryIds[] = $category->id;
+            } elseif ($category_id == $category->id) {
+                $this->getCategoryIds($categories, $category->id, $categoriesId);
+            }
+        }
+
+        return $categoryIds;
     }
 
     public function actionSetShift()
