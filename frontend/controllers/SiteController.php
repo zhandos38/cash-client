@@ -166,6 +166,7 @@ class SiteController extends Controller
                 Yii::$app->settings->setPhone($responseSettings['phone']);
                 Yii::$app->settings->setToken($responseSettings['token']);
                 Yii::$app->settings->setExpiredAt($responseSettings['expired_at']);
+                Yii::$app->settings->setIsActivated($responseSettings['is_activated']);
                 Yii::$app->settings->setLongitude($responseSettings['longitude']);
                 Yii::$app->settings->setLatitude($responseSettings['latitude']);
                 Yii::$app->settings->setTypeId($responseSettings['type_id']);
