@@ -181,7 +181,7 @@ class Settings extends BaseSettings
 
     public function checkExpireDate()
     {
-        if (Yii::$app->settings->getExpiredAt() > time())
+        if (Yii::$app->settings->getExpiredAt() >= time())
             return true;
         else {
             Yii::$app->session->setFlash('error', 'У Вас истекла лицензия. Функциональность платформы ограничена. Пожалуйста, продлите лицензию!');
