@@ -38,7 +38,7 @@ class ExportController extends Controller
     const TARGET_SHIFT = 'shifts';
     const TARGET_STAFF = 'staff';
     const TARGET_SETTINGS = 'settings';
-    const TARGET_EXPIRE_DATE = 'check-expire-date';
+    const TARGET_EXPIRE_DATE = 'get-expire-date';
 
     public function actionStaff()
     {
@@ -500,12 +500,7 @@ class ExportController extends Controller
                 ->send();
 
             if ($response->content != $expirationDate) {
-
-                $fp = fopen("c:/ProgramData/test.txt", "a+");
-                fwrite($fp, VarDumper::dumpAsString($response->content, 10));
-                fclose($fp);
-
-                Yii::$app->settings->setExpiredAt(111);
+                Yii::$app->settings->setExpiredAt($response->content);
             }
 
             $transaction->commit();
