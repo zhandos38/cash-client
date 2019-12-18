@@ -179,13 +179,16 @@ class Settings extends BaseSettings
         $this->set('object.created_at', $createdAt, null, 'string');
     }
 
-    public function checkExpireDate()
+    public function checkExpireDate($showMessage = true)
     {
         if (Yii::$app->settings->getExpiredAt() >= time())
             return true;
         else {
-            Yii::$app->session->setFlash('error', 'У Вас истекла лицензия. Функциональность платформы ограничена. Пожалуйста, продлите лицензию!');
-            return false;
+            if ($showMessage) {
+                Yii::$app->session->setFlash('error', 'У Вас истекла лицензия. Функциональность платформы ограничена. Пожалуйста, продлите лицензию!');
+            }
         }
+
+        return false;
     }
 }

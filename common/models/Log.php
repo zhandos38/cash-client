@@ -31,6 +31,7 @@ class Log extends \yii\db\ActiveRecord
     const SOURCE_EXPORT_BARCODE_TEMP = 8;
     const SOURCE_EXPORT_SETTINGS = 9;
     const SOURCE_CHECK_EXPIRE_DATE = 10;
+    const SOURCE_INVALID_EXPIRE_DATE = 11;
 
     /**
      * {@inheritdoc}

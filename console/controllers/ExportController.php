@@ -40,6 +40,18 @@ class ExportController extends Controller
     const TARGET_SETTINGS = 'settings';
     const TARGET_EXPIRE_DATE = 'get-expire-date';
 
+
+    public function beforeAction($action)
+    {
+        Yii::$app->settings->clearCache();
+        if (!Yii::$app->settings->checkExpireDate(false)) {
+            Log::createLog(Log::SOURCE_INVALID_EXPIRE_DATE, 'Exported date is not valid', Log::STATUS_VALIDATE_ERROR, time());
+            $this->log(false, 'Exported date is not valid');
+            return false;
+        }
+        return parent::beforeAction($action);
+    }
+
     public function actionStaff()
     {
         $started_at = time();
