@@ -60,17 +60,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     return date('d-m-Y H:i', $model->created_at);
                 },
                 'filter' => DateRangePicker::widget([
-                        'model' => $searchModel,
-                        'attribute' => 'createTimeRange',
-                        'convertFormat' => true,
-                        'pluginOptions' => [
-                            'locale' => [
-                                'format'=>'Y-m-d'
-                            ],
-                            'convertFormat'=>true,
-                        ]
-                    ]),
+                    'model' => $searchModel,
+                    'attribute' => 'createTimeRange',
+                    'convertFormat' => true,
+                    'pluginOptions' => [
+                        'locale' => [
+                            'format'=>'Y-m-d'
+                        ],
+                        'convertFormat'=>true,
+                    ]
+                ]),
             ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view}'
+            ]
         ],
     ]); ?>
     <?php Pjax::end();?>
