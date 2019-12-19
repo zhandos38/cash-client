@@ -211,9 +211,25 @@ a.desc:after {
     color: #49555b;
     position: absolute;
     top: 10px;
-
 }
 .back-button:hover{
+    text-decoration: none;
+    background-color: #e8e8e8;
+    color: #000;
+}
+.logout-button{
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,.2);
+    color: #49555b;
+    float: right;
+    margin-top: -42px;
+}
+.logout-button:hover{
     text-decoration: none;
     background-color: #e8e8e8;
     color: #000;
@@ -522,8 +538,9 @@ footer{
     margin-bottom: 30px;
 }
 .info__wrapper {
-    float: right;
+    margin: 0 auto;
     display: flex;
+    width: fit-content;
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
     padding: 10px 20px;
     border-radius: 4px;

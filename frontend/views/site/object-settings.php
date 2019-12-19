@@ -42,8 +42,8 @@ $this->title = 'Настройки объекта';
                             'mask' => '+7(999)999-99-99',
                             'clientOptions' => [
                                 'removeMaskOnSubmit' => true
-                            ]
-                        ]) ?>
+                                ]
+                            ]) ?>
                         </div>
                     </div>
                     <div class="col-md-6">

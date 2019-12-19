@@ -30,12 +30,8 @@ AppAsset::register($this);
 
 <header>
     <div class="container">
-        <div class="user-info">
-            <?php if (Yii::$app->user->isGuest):?>
-                <a class="ims-title" href="<?= Url::to('/site/login') ?>"></a>
-            <?php endif;?>
-        </div>
         <?= DateTimeWidget::widget()?>
+        <a href="<?= Url::to('/site/logout') ?>" data-method="post" class="logout-button"><i class="fa fa-reply-all" aria-hidden="true"></i> Выйти</a>
     </div>
 </header>
 

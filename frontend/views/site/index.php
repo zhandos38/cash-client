@@ -11,8 +11,6 @@ use yii\widgets\Pjax;
 
 MenuAsset::register($this);
 ?>
-
-<a href="<?= Url::to('/site/logout') ?>" data-method="post" class="back-button"><i class="fa fa-reply-all" aria-hidden="true"></i> Выйти</a>
 <div id="menu-app" class="site-index">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-3" style="<?= Yii::$app->user->can('manageStaff') ? '' : 'display: none' ?>">

@@ -257,6 +257,7 @@
 
 .checkout__footer {
     display: flex;
+    margin-top: -10px;
 }
 .checkout__clean {
     padding: 15px 20px;
