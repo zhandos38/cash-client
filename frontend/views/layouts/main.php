@@ -13,6 +13,8 @@ use frontend\assets\AppAsset;
 use common\widgets\Alert;
 
 AppAsset::register($this);
+
+Yii::$app->settings->checkExpireDate();
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

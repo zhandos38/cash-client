@@ -133,7 +133,7 @@ class LoginForm extends Model
         if ($serialNumber == $localSerialNumber)
             return true;
         else {
-            Yii::$app->session->setFlash('error', 'Authorization error!');
+            Yii::$app->session->setFlash('error', '001');
             return false;
         }
     }

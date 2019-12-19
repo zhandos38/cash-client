@@ -10,6 +10,7 @@ namespace common\components;
 
 use Exception;
 use pheme\settings\components\Settings as BaseSettings;
+use Yii;
 
 class Settings extends BaseSettings
 {
@@ -176,5 +177,20 @@ class Settings extends BaseSettings
     public function setCreatedAt($createdAt)
     {
         $this->set('object.created_at', $createdAt, null, 'string');
+    }
+
+    public function checkExpireDate($showMessage = true)
+    {
+        if (Yii::$app->settings->getExpiredAt() != null) {
+            if (Yii::$app->settings->getExpiredAt() >= time())
+                return true;
+            else {
+                if ($showMessage) {
+                    Yii::$app->session->setFlash('error', 'У Вас истекла лицензия. Функциональность платформы ограничена. Пожалуйста, продлите лицензию!');
+                }
+            }
+        }
+
+        return false;
     }
 }

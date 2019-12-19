@@ -38,7 +38,19 @@ class ExportController extends Controller
     const TARGET_SHIFT = 'shifts';
     const TARGET_STAFF = 'staff';
     const TARGET_SETTINGS = 'settings';
-    const TARGET_EXPIRE_DATE = 'check-expire-date';
+    const TARGET_EXPIRE_DATE = 'get-expire-date';
+
+
+    public function beforeAction($action)
+    {
+        Yii::$app->settings->clearCache();
+        if (!Yii::$app->settings->checkExpireDate(false)) {
+            Log::createLog(Log::SOURCE_INVALID_EXPIRE_DATE, 'Exported date is not valid', Log::STATUS_VALIDATE_ERROR, time());
+            $this->log(false, 'Exported date is not valid');
+            return false;
+        }
+        return parent::beforeAction($action);
+    }
 
     public function actionStaff()
     {
@@ -500,16 +512,14 @@ class ExportController extends Controller
                 ->send();
 
             if ($response->content != $expirationDate) {
-
-                $fp = fopen("c:/ProgramData/test.txt", "a+");
-                fwrite($fp, VarDumper::dumpAsString($response->content, 10));
-                fclose($fp);
-
-                Yii::$app->settings->setExpiredAt(111);
+                Yii::$app->settings->setExpiredAt($response->content);
+                $message = 'Expire date is checked successfully!';
+            } else {
+                $message = 'Expired date is up-to-date!';
             }
 
             $transaction->commit();
-            Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, 'Check expire date is checked successfully!', Log::STATUS_SUCCESS, $started_at);
+            Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, $message, Log::STATUS_SUCCESS, $started_at);
             $this->log(true);
 
         } catch (\Exception $exception) {
