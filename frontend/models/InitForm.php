@@ -10,7 +10,7 @@ use yii\helpers\VarDumper;
 use yii\httpclient\Client;
 
 /**
- * Login form
+ * Init form
  */
 class InitForm extends Model
 {
@@ -57,7 +57,6 @@ class InitForm extends Model
             }
 
             $responseData = Json::decode($response->content);
-            $responseUser = $responseData['user'];
             $responseObjects = $responseData['objects'];
 
             if (!$responseObjects) {
@@ -65,20 +64,6 @@ class InitForm extends Model
                 return false;
             }
 
-            $user = new User();
-            $user->full_name = $responseUser['full_name'];
-            $user->phone = $responseUser['phone'];
-            $user->setDefaultPassword();
-            $user->status = $responseUser['status'];
-            $user->role = $responseUser['role'];
-            $user->generateAuthKey();
-
-            if (!$user->validate() || !$user->save())
-                throw new Exception('User is not saved!');
-
-            $authManager->assign($authManager->getRole(User::ROLE_DIRECTOR), $user->id);
-
-            $this->login($user);
             $transaction->commit();
 
             return $responseObjects;
@@ -88,20 +73,5 @@ class InitForm extends Model
 
             throw new Exception($exception->getMessage());
         }
-    }
-
-    /**
-     * Logs in a user using the provided username and password.
-     *
-     * @return bool whether the user is logged in successfully
-     */
-    public function login($user)
-    {
-        if ($this->validate()) {
-            Yii::$app->user->login($user, 3600 * 24);
-            return true;
-        }
-
-        return false;
     }
 }

@@ -40,7 +40,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'except' => ['login', 'request-password-reset', 'reset-password', 'verify', 'error', 'init'],
+                'except' => ['login', 'request-password-reset', 'reset-password', 'verify', 'error', 'init', 'activate'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -119,6 +119,8 @@ class SiteController extends Controller
         $model = new InitForm();
         if ($model->load(Yii::$app->request->post())) {
             $objects = $model->initialization();
+            if (!$objects)
+                return $this->redirect(['site/init']);
             Yii::$app->session->set('objects', $objects);
             return $this->redirect(['site/activate']);
         }
@@ -158,6 +160,7 @@ class SiteController extends Controller
                 }
 
                 $responseData = Json::decode($response->content);
+                $responseUser = $responseData['user'];
                 $responseSettings = $responseData['settings'];
 
                 Yii::$app->settings->setName($responseSettings['name']);
@@ -182,7 +185,24 @@ class SiteController extends Controller
                 Yii::$app->settings->setSerialNumber($serialNumber);
 
                 Yii::$app->session->setFlash('warning', 'У Вас установлен пароль по умолчанию, с целью безопасности измените пароль!');
+
+                $user = new User();
+                $user->full_name = $responseUser['full_name'];
+                $user->phone = $responseUser['phone'];
+                $user->setDefaultPassword();
+                $user->status = $responseUser['status'];
+                $user->role = $responseUser['role'];
+                $user->generateAuthKey();
+
+                if (!$user->validate() || !$user->save())
+                    throw new Exception('User is not saved!');
+
+                $authManager->assign($authManager->getRole(User::ROLE_DIRECTOR), $user->id);
+
+                Yii::$app->user->login($user, 3600 * 24);
+
                 Yii::$app->session->remove('objects');
+
                 $transaction->commit();
 
             } catch (Exception $exception) {
