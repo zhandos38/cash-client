@@ -44,7 +44,7 @@ class ExportController extends Controller
     public function beforeAction($action)
     {
         Yii::$app->settings->clearCache();
-        if (!Yii::$app->settings->checkExpireDate(false)) {
+        if (!Yii::$app->settings->checkExpireDate(false) && $action->id != 'check-expire-date') {
             Log::createLog(Log::SOURCE_INVALID_EXPIRE_DATE, 'Exported date is not valid', Log::STATUS_VALIDATE_ERROR, time());
             $this->log(false, 'Exported date is not valid');
             return false;
