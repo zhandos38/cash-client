@@ -87,6 +87,8 @@ class SettingsForm extends Model
         $this->expired_at = $settings->getExpiredAt();
         $this->is_activated = $settings->getIsActivated();
 
+        $settings->clearCache();
+
         $this->_oldAttributes = $this->attributes;
     }
 

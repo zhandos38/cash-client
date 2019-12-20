@@ -25,6 +25,12 @@
     top: 2%;
     font-size: 15px;
 }
+.shift-modal__close{
+    position: absolute;
+    right: 3%;
+    top: 3%;
+    cursor: pointer;
+}
 .shift-modal h2{
     margin-top: 10px;
     margin-bottom: 30px;
@@ -67,6 +73,11 @@
     width: 80%;
     height: 57%;
     padding: 30px;
+}
+.comment-modal__close {
+    position: absolute;
+    right: 2%;
+    top: 4%;
 }
 .shift-close-modal h2{
     margin-top: 0;
