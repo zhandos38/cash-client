@@ -56,16 +56,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         </tr>
                         </thead>
                         <tbody class="container-items">
-                            <tr class="order-item" v-for="(product, i) in orders[currentOrder].products"><!-- widgetItem -->
-                                <th>
-                                    <button type="button" class="remove-item btn btn-danger btn-xs" @click="deleteProduct(i)"><i class="glyphicon glyphicon-minus"></i></button>
-                                    <div class="clearfix"></div>
-                                </th>
-                                <th>{{ product.name }}</th>
-                                <th>{{ product.priceRetail }}</th>
-                                <th><input type="text" :id="'order-item__quantity-'+product.id" class="order-item__quantity" v-model="product.quantity"></th>
-                                <th>{{ (product.quantity * product.priceRetail) | number }}</th>
-                            </tr>
+                        <tr class="order-item" v-for="(product, i) in orders[currentOrder].products"><!-- widgetItem -->
+                            <th>
+                                <button type="button" class="remove-item btn btn-danger btn-xs" @click="deleteProduct(i)"><i class="glyphicon glyphicon-minus"></i></button>
+                                <div class="clearfix"></div>
+                            </th>
+                            <th>{{ product.name }}</th>
+                            <th>{{ product.priceRetail }}</th>
+                            <th><input type="text" :id="'order-item__quantity-'+product.id" class="order-item__quantity" v-model="product.quantity"></th>
+                            <th>{{ (product.quantity * product.priceRetail) | number }}</th>
+                        </tr>
 
                         </tbody>
                     </table>
@@ -80,9 +80,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <div id="products-list" class="products__suggest grid">
-            <div class="product-card grid-item grid-sizer" v-for="productCard in productCards" @click="addProduct(productCard.id)">
-                <div class="product-card__name">{{ productCard.name }}</div>
+        <div id="category-grid" class="products__suggest grid">
+            <div v-if="currentCategoryParentId != null" class="category-card grid-item grid-sizer" @click="showCategories(currentCategoryParentId)">
+                <div class="category-card__name">Назад</div>
+                <div class="category-card__price"></div>
+            </div>
+            <div class="category-card grid-item grid-sizer" v-for="category in currentCategories" @click="showCategories(category.id)">
+                <div class="category-card__name">{{ category.name }}</div>
+                <div class="category-card__price"></div>
+            </div>
+            <div class="product-card grid-item grid-sizer" v-for="product in productCards" @click="addProduct(product.id)">
+                <div class="product-card__name">{{ product.name }}</div>
                 <div class="product-card__price"></div>
             </div>
         </div>
@@ -149,20 +157,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="pay-modal__products">
                         <table class="table">
                             <thead>
-                                <tr>
-                                    <th>Товар</th>
-                                    <th>Цена</th>
-                                    <th>Кол.</th>
-                                    <th>Всего</th>
-                                </tr>
+                            <tr>
+                                <th>Товар</th>
+                                <th>Цена</th>
+                                <th>Кол.</th>
+                                <th>Всего</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="product in orders[this.currentOrder].products">
-                                    <td>{{ product.name }}</td>
-                                    <td>{{ product.priceRetail }}</td>
-                                    <td>{{ product.quantity }}</td>
-                                    <td>{{ (product.priceRetail * product.quantity) | number }}</td>
-                                </tr>
+                            <tr v-for="product in orders[this.currentOrder].products">
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.priceRetail }}</td>
+                                <td>{{ product.quantity }}</td>
+                                <td>{{ (product.priceRetail * product.quantity) | number }}</td>
+                            </tr>
                             </tbody>
                         </table>
                         <div class="pay-modal__total-wrapper">

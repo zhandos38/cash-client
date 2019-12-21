@@ -12,6 +12,7 @@ use yii\elasticsearch\ActiveRecord;
  * @property integer $id
  * @property string $name
  * @property string $barcode
+ * @property string $category_id
  *
  * @package common\models\es
  * @property Product $product
@@ -33,7 +34,8 @@ class Product extends ActiveRecord
         return [
             'id',
             'name',
-            'barcode'
+            'barcode',
+            'category_id'
         ];
     }
 
@@ -208,6 +210,7 @@ class Product extends ActiveRecord
         $esProduct->primaryKey = $product->id;
         $esProduct->id = $product->id;
         $esProduct->name = $product->name;
+        $esProduct->category_id = 0;
         $esProduct->save();
     }
 
@@ -215,6 +218,16 @@ class Product extends ActiveRecord
     {
         if ($esProduct = ElasticProduct::find()->andWhere(['id' => $product_id])->one()) {
             $esProduct->delete();
+        } else {
+            return false;
+        }
+    }
+
+    public static function setProductCategory($product_id, $category_id)
+    {
+        if ($esProduct = ElasticProduct::find()->andWhere(['id' => $product_id])->one()) {
+            $esProduct->category_id = $category_id;
+            return $esProduct->save();
         } else {
             return false;
         }

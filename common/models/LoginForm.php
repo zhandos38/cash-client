@@ -64,6 +64,7 @@ class LoginForm extends Model
      */
     public function login()
     {
+        Yii::$app->settings->clearCache();
         if ($this->validate() && $this->checkSerialNumberLocal()) {
             $flag = Yii::$app->user->login($this->getUserByPassword(), 0);
             Yii::$app->object->setShift();

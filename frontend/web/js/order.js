@@ -49,7 +49,14 @@ let orderListApp = new Vue({
         customerName: null,
         customerPhone: null,
         customers: [],
-        isPrintActive: 1
+        isPrintActive: 1,
+        categories: [],
+        currentCategories: [],
+        currentCategoryParent: {
+            'id': null,
+            'parent_id': null
+        },
+        currentCategoryParentId: null
     },
     computed: {
         preTotal() {
@@ -163,20 +170,112 @@ let orderListApp = new Vue({
                         // grid.masonry('destroy');
                         if (result) {
                             that.productCards = [];
-                            result.forEach(function(value) {
+                            result.forEach(function(item) {
                                 that.productCards.push({
-                                    id: value['id'],
-                                    name: value['label'],
+                                    id: item['id'],
+                                    name: item['label'],
                                 });
                             });
                             // grid.html(products).masonry(masonryOptions);
                         } else {
                             grid.html('Ничего не найдено!');
                         }
-                        $('#products-list').loading('toggle');
+                        $('#category-grid').loading('toggle');
                     });
                 }
             }, 1000);
+        },
+        getCategories() {
+            // $('.grid').masonry(masonryOptions);
+            $('#category-grid').loading({
+                message: 'Загрузка'
+            });
+
+            $.get({
+                url: 'get-categories',
+            }).done(result => {
+                if (result) {
+                    result.forEach(item => {
+                        this.categories.push({
+                            'id': item['id'],
+                            'name': item['name'],
+                            'parent_id': item['parent_id'] != null ? item['parent_id'] : 0,
+                        });
+
+                        if (!item['parent_id']) {
+                            this.currentCategories.push({
+                                'id': item['id'],
+                                'name': item['name'],
+                                'parent_id': item['parent_id'] != null ? item['parent_id'] : 0,
+                            });
+                        }
+                    });
+                } else {
+                    // grid.html('Ничего не найдено!');
+                }
+                $('#category-grid').loading('toggle');
+            });
+
+            this.getProductsByCategory(0);
+
+            console.log(this.currentCategories);
+        },
+        showCategories(id) {
+            this.currentCategories = [];
+
+            if (id === 0) {
+                this.categories.forEach(item => {
+                    if (item['parent_id'] === 0) {
+                        this.currentCategories.push({
+                            'id': item['id'],
+                            'name': item['name'],
+                            'parent_id': item['parent_id'] != null ? item['parent_id'] : 0,
+                        });
+                    }
+                });
+                this.currentCategoryParentId = null;
+            } else {
+                this.currentCategoryParent = this.categories.find(element => {
+                    return element['id'] === id;
+                });
+
+                this.currentCategoryParentId = this.currentCategoryParent['parent_id'];
+
+                this.categories.forEach(item => {
+                    console.log(typeof item['parent_id'] + ': ' + item['parent_id']);
+                    if (item['parent_id'] === id) {
+                        this.currentCategories.push({
+                            'id': item['id'],
+                            'name': item['name'],
+                            'parent_id': item['parent_id'] != null ? item['parent_id'] : 0,
+                        });
+                    }
+                });
+            }
+
+            this.getProductsByCategory(id);
+        },
+        getProductsByCategory(id) {
+            console.log(id);
+            $.get({
+                url: 'get-products-by-category',
+                data: {id: id},
+                success: result => {
+                    console.log(result);
+                    if (result) {
+                        this.productCards = [];
+                        result.forEach(item => {
+                            this.productCards.push({
+                                id: item['id'],
+                                name: item['label'],
+                            });
+                        });
+                    }
+                },
+                error: function () {
+                    alert('Возникла ошибка при выводе товаров по категорям');
+                }
+            });
         },
         openPayModal() {
             if (this.orders[this.currentOrder].products.length > 0)
@@ -236,28 +335,28 @@ let orderListApp = new Vue({
                 url: '/order/test-create',
                 data: {order: this.orders[this.currentOrder], print: this.isPrintActive}
             })
-            .done(result => {
-                this.closePayModal();
+                .done(result => {
+                    this.closePayModal();
 
-                if (this.orders.length > 1) {
-                    this.orders.splice(this.currentOrder, 1);
-                    this.currentOrder = 0;
-                } else {
-                    this.orders[0].customerId = null;
-                    this.orders[0].isDebt = null;
-                    this.orders[0].payMethod = 0;
-                    this.orders[0].takenCash = null;
-                    this.orders[0].preTotalSum = null;
-                    this.orders[0].totalSum = null;
-                    this.orders[0].discountSum = null;
-                    this.orders[0].discountPercentage = null;
-                    this.orders[0].comment = '';
-                    this.orders[0].products = [];
-                }
-            })
-            .fail(function () {
-                console.log('Something goes wrong on pay order!');
-            });
+                    if (this.orders.length > 1) {
+                        this.orders.splice(this.currentOrder, 1);
+                        this.currentOrder = 0;
+                    } else {
+                        this.orders[0].customerId = null;
+                        this.orders[0].isDebt = null;
+                        this.orders[0].payMethod = 0;
+                        this.orders[0].takenCash = null;
+                        this.orders[0].preTotalSum = null;
+                        this.orders[0].totalSum = null;
+                        this.orders[0].discountSum = null;
+                        this.orders[0].discountPercentage = null;
+                        this.orders[0].comment = '';
+                        this.orders[0].products = [];
+                    }
+                })
+                .fail(function () {
+                    console.log('Something goes wrong on pay order!');
+                });
         },
         setComment() {
             this.orders[this.currentOrder].comment = this.$refs.commentModalTextArea.value;
@@ -334,7 +433,8 @@ let orderListApp = new Vue({
         }
     },
     mounted() {
-        this.searchProduct();
+        // this.searchProduct();
+        this.getCategories();
 
         let Keyboard = window.SimpleKeyboard.default;
         let KeyboardLayouts = window.SimpleKeyboardLayouts.default;

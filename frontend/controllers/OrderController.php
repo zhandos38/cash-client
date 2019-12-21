@@ -69,7 +69,8 @@ class OrderController extends Controller
                             'set-shift',
                             'close-shift',
                             'check-shift',
-                            'get-categories'
+                            'get-categories',
+                            'get-products-by-category'
                         ],
                         'roles' => ['createOrder']
                     ],
@@ -524,42 +525,57 @@ class OrderController extends Controller
         return $data;
     }
 
-    public function actionGetCategories()
+    public function actionGetProductsByCategory($id)
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $categoriesTree = [];
+        $data = [];
 
-//        $categoriesModel = Category::findAll(['parent_id' => null]);
-        $categories = Category::find()->all();
+        if ($id != null) {
+            $searchResult = \common\models\es\Product::find()
+                ->where(['category_id' => $id])
+                ->asArray()
+                ->all();
 
-        $childIds = $this->getCategoryIds($categories, 1);
-
-        VarDumper::dump($childIds,10); die;
-
-//        foreach ($categoriesModel as $categoryModel) {
-
-
-
-//            $categoriesTree[] = [
-//                'name' => $category->name,
-//                'children' => $subCategories
-//            ];
-//        }
-
-        return $childIds;
-    }
-
-    private function getCategoryIds($categories, $category_id,  &$categoriesId = [])
-    {
-        foreach ($categories as $category) {
-            if ($category_id == $category->parent_id) {
-                $categoryIds[] = $category->id;
-            } elseif ($category_id == $category->id) {
-                $this->getCategoryIds($categories, $category->id, $categoriesId);
+            foreach ($searchResult as $value => $item) {
+                $data[] = [
+                    'id' => $item['_source']['id'],
+                    'label' => $item['_source']['name'],
+                ];
             }
         }
 
-        return $categoryIds;
+        return $data;
+    }
+
+    public function actionGetCategories()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $categories = Category::find()->all();
+
+        return $categories;
+    }
+
+
+    /* Building a category tree */
+    public function getCategoryTree($parent = null, $user_tree_array = '') {
+
+        if (!is_array($user_tree_array))
+            $user_tree_array = array();
+
+        $categories = Category::find()->where(['parent_id' => $parent])->orderBy(['id' => SORT_ASC])->all();
+
+        if ($categories > 0) {
+            foreach ($categories as $category) {
+                $user_tree_array[] = [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'color' => $category->color_id,
+                    'children' => $this->getCategoryTree($category->id)
+                ];
+            }
+        }
+
+        return $user_tree_array;
     }
 
     public function actionSetShift()

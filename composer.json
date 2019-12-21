@@ -36,7 +36,8 @@
         "npm-asset/vue-number-input-spinner": "*",
         "mike42/escpos-php": "^3.0",
         "pheme/yii2-settings": "*",
-        "yiisoft/yii2-httpclient": "*"
+        "yiisoft/yii2-httpclient": "*",
+        "kartik-v/yii2-widget-colorinput": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
