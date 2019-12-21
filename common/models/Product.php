@@ -164,7 +164,7 @@ class Product extends \yii\db\ActiveRecord
             }
 
             if (!empty($changedAttributes['category_id']) && $changedAttributes['category_id'] <> $this->category_id) {
-                ElasticProduct::setProductCategory($this->id, $changedAttributes['category_id']);
+                ElasticProduct::setProductCategory($this->id, (int)$this->category_id);
             }
 
         } else {
