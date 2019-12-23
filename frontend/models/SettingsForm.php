@@ -73,6 +73,7 @@ class SettingsForm extends Model
     public function init()
     {
         $settings = \Yii::$app->settings;
+
         $this->name = $settings->getName();
         $this->phone = $settings->getPhone();
         $this->address = $settings->getAddress();
@@ -86,8 +87,6 @@ class SettingsForm extends Model
         $this->type_id = $settings->getTypeId();
         $this->expired_at = $settings->getExpiredAt();
         $this->is_activated = $settings->getIsActivated();
-
-        $settings->clearCache();
 
         $this->_oldAttributes = $this->attributes;
     }
