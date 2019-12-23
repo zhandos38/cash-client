@@ -109,6 +109,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="checkout__comment" @click="openCommentModal">
             Коммент
         </div>
+        <div class="checkout__comment" @click="openCashDraw">
+            Открыть денежный ящик
+        </div>
         <div class="checkout__right-part">
             <div class="checkout__put-off" @click="addOrder">
                 Отложить

@@ -8,6 +8,7 @@ return [
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
+            'cachePath' => '@frontend/runtime/cache',
         ],
         'formatter' => [
             'class' => 'yii\i18n\Formatter',

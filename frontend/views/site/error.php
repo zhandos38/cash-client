@@ -8,6 +8,9 @@
 use yii\helpers\Html;
 
 $this->title = $name;
+if ($exception->getCode() == 1045) {
+    $this->title = 'Ошибка 002';
+}
 ?>
 <div class="site-error">
 
@@ -18,10 +21,7 @@ $this->title = $name;
     </div>
 
     <p>
-        The above error occurred while the Web server was processing your request.
-    </p>
-    <p>
-        Please contact us if you think this is a server error. Thank you.
+        Обратитесь в техническую поддержку: +7(777)777-77-77
     </p>
 
 </div>
