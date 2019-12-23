@@ -216,7 +216,7 @@ class ExportController extends Controller
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             /** @var Invoice $invoices */
-            $products = Product::find()->where('updated_at > exported_at')->all();
+            $products = Product::find()->where('is_sent = 0 or updated_at > exported_at')->all();
 
             if (!$products) {
                 throw new \Exception('All product have been already updated!');

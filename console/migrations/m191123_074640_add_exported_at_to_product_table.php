@@ -13,7 +13,7 @@ class m191123_074640_add_exported_at_to_product_table extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn($this->tableName, 'exported_at', $this->integer());
+        $this->addColumn($this->tableName, 'exported_at', $this->integer()->defaultValue(0));
     }
 
     /**
