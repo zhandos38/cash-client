@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'price_retail')->textInput(['type' => 'number']) ?>
 
-    <?= $form->field($model, 'wholesale_value')->textInput(['type' => 'number']) ?>
+    <?= $form->field($model, 'wholesale_value')->textInput(['type' => 'number', 'placeholder' => 'Количество товара, при котором включается оптовая цена']) ?>
 
     <?= $form->field($model, 'quantity')->textInput(['type' => 'number']) ?>
 

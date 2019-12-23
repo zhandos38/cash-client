@@ -28,13 +28,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'created_at',
                 'value' => function(Supplier $model) {
-                    return date('m.d.Y H:i', $model->created_at);
+                    return date('d.m.Y H:i', $model->created_at);
                 }
             ],
             [
                 'attribute' => 'updated_at',
                 'value' => function(Supplier $model) {
-                    return date('m.d.Y H:i', $model->created_at);
+                    return date('d.m.Y H:i', $model->created_at);
                 }
             ],
 

@@ -81,7 +81,7 @@ InvoiceAsset::register($this);
                             }
                             ?>
                             <div class="message-not-found alert alert-danger" role="alert" style="display: none">
-                                Товар в базе не найден, пожалуйста введите название или штрихкод товара вручную
+                                Товар в базе не найден, пожалуйста введите название и штрихкод товара вручную
                             </div>
                             <div class="row">
                                 <div class="col-sm-3">
