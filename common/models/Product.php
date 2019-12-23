@@ -74,17 +74,18 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'category_id' => 'Выберите категорию',
             'barcode' => 'Штрих код',
-            'name' => 'Название',
-            'quantity' => 'Количество',
-            'price_wholesale' => 'Цена оптовая',
-            'price_retail' => 'Цена розничная',
-            'wholesale_value' => 'Оптом',
+            'name' => 'Наименование товара',
+            'quantity' => 'Количество (Остаток на складе)',
+            'price_wholesale' => 'Оптовая цена',
+            'price_retail' => 'Розничная цена',
+            'wholesale_value' => 'Оптовое количество',
             'is_partial' => 'Частичный',
             'status' => 'Статус',
             'is_favourite' => 'Избранный',
-            'created_at' => 'Дата добавление',
-            'updated_at' => 'Дата обновление',
+            'created_at' => 'Дата добавления',
+            'updated_at' => 'Дата обновления',
         ];
     }
 

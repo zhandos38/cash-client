@@ -66,7 +66,7 @@ class Invoice extends \yii\db\ActiveRecord
             'number_in' => 'Входящий номер накладной',
             'is_debt' => 'В долг',
             'status' => 'Статус',
-            'created_at' => 'Дата добавление',
+            'created_at' => 'Дата добавления',
             'supplier_id' => 'Поставщик',
             'cost' => 'Сумма'
         ];
@@ -156,9 +156,9 @@ class Invoice extends \yii\db\ActiveRecord
     public static function getStatuses()
     {
         return [
-            self::STATUS_NOT_PAID => 'Нет оплочен',
-            self::STATUS_PAID => 'Оплочен',
-            self::STATUS_PARTIALLY_PAID => 'Оплочен частично'
+            self::STATUS_NOT_PAID => 'Не оплачен',
+            self::STATUS_PAID => 'Оплачен',
+            self::STATUS_PARTIALLY_PAID => 'Оплачен частично'
         ];
     }
 

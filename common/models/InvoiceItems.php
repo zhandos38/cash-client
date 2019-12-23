@@ -61,7 +61,7 @@ class InvoiceItems extends \yii\db\ActiveRecord
             'quantity' => 'Количество',
             'price_in' => 'Входная цена',
             'wholesale_price' => 'Оптовая цена',
-            'wholesale_value' => 'Оптовая кол-во',
+            'wholesale_value' => 'Оптовое кол-во',
             'is_partial' => 'Частичный товар',
             'percentage_rate' => 'Процентная ставка',
             'price_retail' => 'Розничная цена'
