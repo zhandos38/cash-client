@@ -60,10 +60,10 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at', 'exported_at', 'is_sent', 'exported_at', 'category_id'], 'integer'],
+            [['wholesale_value', 'is_partial', 'status', 'created_at', 'updated_at', 'exported_at', 'category_id'], 'integer'],
             [['quantity', 'price_wholesale', 'price_retail', 'percentage_rate'], 'number'],
             [['barcode', 'name'], 'string', 'max' => 255],
-            ['is_favourite', 'boolean']
+            [['is_favourite','is_sent'], 'boolean']
         ];
     }
 
@@ -156,7 +156,6 @@ class Product extends \yii\db\ActiveRecord
             }
 
             if (!empty($changedAttributes['quantity']) && $changedAttributes['quantity'] <> $this->quantity) {
-
                 if ($this->quantity <= 0 || $this->quantity == 0) {
                     ElasticProduct::deleteProductById($this->id);
                 } elseif ($this->quantity > 0 && !ElasticProduct::findProductById($this->id)) {
@@ -167,7 +166,6 @@ class Product extends \yii\db\ActiveRecord
             if (!empty($changedAttributes['category_id']) && $changedAttributes['category_id'] <> $this->category_id) {
                 ElasticProduct::setProductCategory($this->id, (int)$this->category_id);
             }
-
         } else {
             $elasticProduct = ElasticProduct::find()->where(['id' => $this->id])->one();
             if (!$elasticProduct) {
