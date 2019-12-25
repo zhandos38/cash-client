@@ -300,6 +300,7 @@
     text-align: center;
     cursor: pointer;
     height: fit-content;
+    margin-right: 10px;
     background-image: linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%);
 }
 .checkout__put-off {
@@ -319,9 +320,13 @@
     background-image: linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%);
     margin-left: 10px;
 }
+.checkout__left-part {
+    display: flex;
+    width: 70%;
+}
 .checkout__right-part {
     display: flex;
-    width: 77%;
+    width: 30%;
     justify-content: flex-end;
 }
 

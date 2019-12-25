@@ -97,20 +97,22 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="checkout__footer">
-        <div v-if="currentOrder != 0" type="button" class="checkout__clean" @click="deleteOrder">
-            Удалить
-        </div>
-        <div type="button" class="checkout__clean" @click="cleanProducts">
-            Очистить
-        </div>
-        <div class="checkout__discount" @click="openDiscountModal">
-            Скидка
-        </div>
-        <div class="checkout__comment" @click="openCommentModal">
-            Коммент
-        </div>
-        <div class="checkout__comment" @click="openCashDraw">
-            Открыть денежный ящик
+        <div class="checkout__left-part">
+            <div v-if="currentOrder != 0" type="button" class="checkout__clean" @click="deleteOrder">
+                Удалить
+            </div>
+            <div type="button" class="checkout__clean" @click="cleanProducts">
+                Очистить
+            </div>
+            <div class="checkout__discount" @click="openDiscountModal">
+                Скидка
+            </div>
+            <div class="checkout__comment" @click="openCommentModal">
+                Коммент
+            </div>
+            <div class="checkout__comment" @click="openCashDraw">
+                Открыть денежный ящик
+            </div>
         </div>
         <div class="checkout__right-part">
             <div class="checkout__put-off" @click="addOrder">
