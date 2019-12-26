@@ -43,6 +43,7 @@ Yii::$app->settings->checkExpireDate();
         <?= $content ?>
     </div>
 </div>
+
 <footer>
     <div class="support-block">
         <p>При возникновении вопросов по работе с платформой, обратитесь в техническую поддержку: <a href="tel:+77777777777">+7(777)777-77-77</a></p>
