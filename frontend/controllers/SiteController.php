@@ -164,7 +164,6 @@ class SiteController extends Controller
                 $responseSettings = $responseData['settings'];
 
                 Yii::$app->settings->setName($responseSettings['name']);
-//                Yii::$app->settings->setBalance($responseSettings['balance']);
                 Yii::$app->settings->setAddress($responseSettings['address']);
                 Yii::$app->settings->setPhone($responseSettings['phone']);
                 Yii::$app->settings->setToken($responseSettings['token']);
