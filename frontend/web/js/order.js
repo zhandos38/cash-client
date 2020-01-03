@@ -61,7 +61,13 @@ let orderListApp = new Vue({
     computed: {
         preTotal() {
             return this.orders[this.currentOrder].products.reduce(function(preTotal, item) {
-                return preTotal + (item.quantity * item.priceRetail);
+                item.quantity = parseFloat(item.quantity);
+                item.wholesaleValue = parseFloat(item.wholesaleValue);
+                if (item.quantity < item.wholesaleValue) {
+                    return preTotal + (item.quantity * item.priceRetail);
+                } else if (item.quantity >= item.wholesaleValue) {
+                    return preTotal + (item.quantity * item.priceWholesale);
+                }
             }, 0);
         },
         total() {
@@ -142,8 +148,11 @@ let orderListApp = new Vue({
                     barcode: data.barcode,
                     quantity: 1,
                     priceRetail: data.price_retail,
-                    isPartial: data.is_partial
+                    isPartial: data.is_partial,
+                    priceWholesale: data.price_wholesale,
+                    wholesaleValue: data.wholesale_value,
                 });
+                console.log(this.orders[this.currentOrder].products);
             }
         },
         cleanProducts() {
