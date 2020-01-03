@@ -209,14 +209,19 @@ class CashDrawController extends Controller
     {
         if (Yii::$app->request->isAjax) {
             $requestId = Yii::$app->request->post('id');
+            $isOpen = Yii::$app->request->post('isOpen');
+            if ($isOpen == 'false')
+                $isOpen = false;
+            else
+                $isOpen = true;
             $order = Order::findOne(['id' => $requestId]);
-            self::printCheck($order);
+            self::printCheck($order, $isOpen);
         }
 
         return false;
     }
 
-    public static function printCheck($order) {
+    public static function printCheck($order, $isOpen = true) {
         $orderTotalCost = 0;
         $profile = CapabilityProfile::load("CT-S651");
 //                            $connector = new FilePrintConnector("//DESKTOP-MKRQL8M/RP80Printer");
@@ -242,7 +247,8 @@ class CashDrawController extends Controller
         $printer -> text('Итого: ' . $orderTotalCost . ' тг.');
         $printer -> feed(2);
         $printer -> cut();
-        $printer -> pulse(0, 120, 240);
+        if ($isOpen == true)
+            $printer -> pulse(0, 120, 240);
         $printer -> close();
     }
 
