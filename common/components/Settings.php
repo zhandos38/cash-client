@@ -176,7 +176,7 @@ class Settings extends BaseSettings
 
     public function setCreatedAt($createdAt)
     {
-        $this->set('object.created_at', $createdAt, null, 'string');
+        return $this->set('object.created_at', $createdAt, null, 'string');
     }
 
     public function checkExpireDate($showMessage = true)
@@ -189,6 +189,15 @@ class Settings extends BaseSettings
                 Yii::$app->session->setFlash('error', 'У Вас истекла лицензия. Функциональность платформы ограничена. Пожалуйста, продлите лицензию!');
             }
         }
+
+        return false;
+    }
+
+    public function isActive()
+    {
+        $object_name = $this->getName();
+        if (!empty($object_name))
+            return true;
 
         return false;
     }
