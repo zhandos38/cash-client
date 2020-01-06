@@ -352,7 +352,7 @@ class OrderController extends Controller
                     $orderItem->barcode = $product['barcode'];
                     $orderItem->product_id = $product['id'];
                     $orderItem->quantity = $product['quantity'];
-                    $orderItem->real_price = $product['priceRetail'];
+                    $orderItem->real_price = (float)$product['quantity'] >= (float)$product['wholesaleValue'] ? $product['priceWholesale'] : $product['priceRetail'];
                     $orderItem->status = OrderItems::STATUS_SUCCESS;
 
                     $productStock = Product::findOne(['id' => $product['id']]);
@@ -440,7 +440,7 @@ class OrderController extends Controller
     public function actionGetProductById($id)
     {
         if (Yii::$app->request->isAjax) {
-            $product = Product::find()->select(['id', 'name', 'barcode', 'price_retail', 'is_partial'])->where(['id' => $id])->asArray()->one();
+            $product = Product::find()->select(['id', 'name', 'barcode', 'price_retail', 'is_partial', 'price_wholesale', 'wholesale_value'])->where(['id' => $id])->asArray()->one();
             return Json::encode($product);
         }
         return false;
@@ -450,7 +450,7 @@ class OrderController extends Controller
     {
         if (Yii::$app->request->isAjax) {
             $barcode = Yii::$app->request->post('barcode');
-            $product = Product::find()->select(['id', 'name', 'barcode', 'price_retail', 'is_partial'])->where(['barcode' => $barcode])->asArray()->one();
+            $product = Product::find()->select(['id', 'name', 'barcode', 'price_retail', 'is_partial', 'price_wholesale', 'wholesale_value'])->where(['barcode' => $barcode])->asArray()->one();
             return Json::encode($product);
         }
         return false;

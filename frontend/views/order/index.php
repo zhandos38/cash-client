@@ -84,6 +84,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]),
             ],
+
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view}{print-order}',
+                'buttons'=>[
+                    'view' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', Url::to(['order/view', 'id' => $model->id]), ['class' => 'btn btn-default btn-xs custom_button']);
+                    },
+                    'print-order' => function ($url, $model) {
+                        return Html::button('<span class="glyphicon glyphicon-print"></span>', ['data-id' => $model->id, 'class' => 'print-order btn btn-default btn-xs custom_button']);
+                    },
+                ],
+            ],
         ],
     ]); ?>
 
@@ -107,6 +120,20 @@ $(document).on("click", '.order__debt-btn', function() {
     $('#order-debt-modal').modal('show')
     .find('#order-debt-modal__content')
     .load('/order/add-debt', {'id': $( this ).data('id')});
+});
+
+$('.print-order').on('click', function() {
+    $.post({
+        url: '/cash-draw/print-order',
+        data: {id: $(this).data('id'), isOpen: false},
+        success: function(success) {
+            console.log(success);
+            console.log('Print order success');
+        },
+        error: function() {
+            console.log('Ошибка!');
+        }
+    });
 });
 JS;
 

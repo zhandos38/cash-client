@@ -47,13 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="panel-body">
                     <table class="table table-striped table-responsive">
                         <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Наименование</th>
-                            <th scope="col">Цена</th>
-                            <th scope="col">Кол.</th>
-                            <th scope="col">Всего</th>
-                        </tr>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Наименование</th>
+                                <th scope="col">Цена</th>
+                                <th scope="col">Кол.</th>
+                                <th scope="col">Всего</th>
+                            </tr>
                         </thead>
                         <tbody class="container-items">
                         <tr class="order-item" v-for="(product, i) in orders[currentOrder].products"><!-- widgetItem -->
@@ -63,8 +63,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             </th>
                             <th>{{ product.name }}</th>
                             <th>{{ product.priceRetail }}</th>
-                            <th><input type="text" :id="'order-item__quantity-'+product.id" class="order-item__quantity" v-model="product.quantity"></th>
-                            <th>{{ (product.quantity * product.priceRetail) | number }}</th>
+                            <th><input type="number" :id="'order-item__quantity-'+product.id" class="order-item__quantity" v-model="product.quantity"></th>
+                            <th v-if="parseFloat(product.quantity) < parseFloat(product.wholesaleValue)">{{ (product.quantity * product.priceRetail) | number }}</th>
+                            <th v-else-if="parseFloat(product.quantity) >= parseFloat(product.wholesaleValue)">{{ (product.quantity * product.priceWholesale) | number }}</th>
                         </tr>
 
                         </tbody>

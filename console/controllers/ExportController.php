@@ -32,7 +32,7 @@ class ExportController extends Controller
     const TARGET_INVOICES = 'invoices';
     const TARGET_CUSTOMERS = 'customers';
     const TARGET_SUPPLIERS = 'suppliers';
-    const TARGET_PRODUCT = 'product';
+    const TARGET_PRODUCT = 'products';
 //    const TARGET_BARCODE = 'barcode';
     const TARGET_BARCODE_TEMP = 'barcode-temp';
     const TARGET_SHIFT = 'shifts';

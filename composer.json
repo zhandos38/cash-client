@@ -37,7 +37,8 @@
         "mike42/escpos-php": "^3.0",
         "pheme/yii2-settings": "*",
         "yiisoft/yii2-httpclient": "*",
-        "kartik-v/yii2-widget-colorinput": "*"
+        "kartik-v/yii2-widget-colorinput": "*",
+        "loveorigami/yii2-modal-ajax": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
