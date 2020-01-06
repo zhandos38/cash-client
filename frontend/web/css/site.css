@@ -549,6 +549,10 @@ footer{
     background-color: #ffffff;
     border: 1px solid rgba(0,0,0,.2);
     color: #49555b;
+    height: 42px;
+}
+#login-time{
+    height: auto;
 }
 .info__date{
     margin-right: 5px;
