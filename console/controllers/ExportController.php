@@ -496,36 +496,38 @@ class ExportController extends Controller
 
     public function actionCheckExpireDate()
     {
-        $started_at = time();
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            $token = \Yii::$app->settings->getToken();
-            $expirationDate = Yii::$app->settings->getExpiredAt();
+        if (Yii::$app->settings->isActive()) {
+            $started_at = time();
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $token = \Yii::$app->settings->getToken();
+                $expirationDate = Yii::$app->settings->getExpiredAt();
 
-            $client = new Client();
-            $response = $client->createRequest()
-                ->setMethod('GET')
-                ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/' . self::TARGET_EXPIRE_DATE)
-                ->addHeaders(['Authorization' => 'Bearer ' . $token])
-                ->addHeaders(['content-type' => 'application/json'])
-                ->setData(['token' => $token])
-                ->send();
+                $client = new Client();
+                $response = $client->createRequest()
+                    ->setMethod('GET')
+                    ->setUrl(\Yii::$app->params['apiUrl'] . 'v1/' . self::TARGET_EXPIRE_DATE)
+                    ->addHeaders(['Authorization' => 'Bearer ' . $token])
+                    ->addHeaders(['content-type' => 'application/json'])
+                    ->setData(['token' => $token])
+                    ->send();
 
-            if ($response->content != $expirationDate) {
-                Yii::$app->settings->setExpiredAt($response->content);
-                $message = 'Expire date is checked successfully!';
-            } else {
-                $message = 'Expired date is up-to-date!';
+                if ($response->content != $expirationDate) {
+                    Yii::$app->settings->setExpiredAt($response->content);
+                    $message = 'Expire date is checked successfully!';
+                } else {
+                    $message = 'Expired date is up-to-date!';
+                }
+
+                $transaction->commit();
+                Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, $message, Log::STATUS_SUCCESS, $started_at);
+                $this->log(true);
+
+            } catch (\Exception $exception) {
+                $transaction->rollBack();
+                Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
+                throw new Exception($exception->getMessage());
             }
-
-            $transaction->commit();
-            Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, $message, Log::STATUS_SUCCESS, $started_at);
-            $this->log(true);
-
-        } catch (\Exception $exception) {
-            $transaction->rollBack();
-            Log::createLog(Log::SOURCE_CHECK_EXPIRE_DATE, $exception->getMessage(), Log::STATUS_EXCEPTION, $started_at);
-            throw new Exception($exception->getMessage());
         }
     }
 
