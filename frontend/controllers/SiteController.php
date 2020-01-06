@@ -119,8 +119,9 @@ class SiteController extends Controller
         $model = new InitForm();
         if ($model->load(Yii::$app->request->post())) {
             $objects = $model->initialization();
-            if (!$objects)
+            if (!$objects) {
                 return $this->redirect(['site/init']);
+            }
             Yii::$app->session->set('objects', $objects);
             return $this->redirect(['site/activate']);
         }
@@ -404,5 +405,10 @@ class SiteController extends Controller
         return $this->render('object-settings', [
             'settingForm' => $settingForm,
             ]);
+    }
+
+    public function actionCashbox()
+    {
+        return $this->render('cashbox');
     }
 }
