@@ -11,6 +11,7 @@ namespace common\components;
 use Exception;
 use pheme\settings\components\Settings as BaseSettings;
 use Yii;
+use yii\helpers\VarDumper;
 
 class Settings extends BaseSettings
 {
@@ -179,11 +180,21 @@ class Settings extends BaseSettings
         return $this->set('object.created_at', $createdAt, null, 'string');
     }
 
+    public function setFinalExpireDate($date)
+    {
+        return $this->set('object.final_expire_date', $date, null, 'integer');
+    }
+
+    public function getFinalExpireDate()
+    {
+        return $this->get('object.final_expire_date');
+    }
+
     public function checkExpireDate($showMessage = true)
     {
         $expired_at = Yii::$app->settings->getExpiredAt();
         if ($expired_at != null) {
-            if (Yii::$app->settings->getExpiredAt() >= time())
+            if ($expired_at >= time())
                 return true;
             elseif (!empty($expired_at) && $showMessage) {
                 Yii::$app->session->setFlash('error', 'У Вас истекла лицензия. Функциональность платформы ограничена. Пожалуйста, продлите лицензию!');
@@ -191,6 +202,17 @@ class Settings extends BaseSettings
         }
 
         return false;
+    }
+
+    public function checkFinalExpireDate()
+    {
+        $date = $this->getFinalExpireDate();
+
+        if ($date <= time()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public function isActive()

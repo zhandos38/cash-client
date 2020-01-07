@@ -513,7 +513,9 @@ class ExportController extends Controller
                     ->send();
 
                 if ($response->content != $expirationDate) {
-                    Yii::$app->settings->setExpiredAt($response->content);
+                    $response->content = Json::decode($response->content);
+                    Yii::$app->settings->setExpiredAt($response->content['expired_date']);
+                    Yii::$app->settings->setFinalExpiredDate($response->content['final_expire_date']);
                     $message = 'Expire date is checked successfully!';
                 } else {
                     $message = 'Expired date is up-to-date!';

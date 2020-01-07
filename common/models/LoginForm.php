@@ -53,6 +53,8 @@ class LoginForm extends Model
                 $this->addError($attribute, 'Ваша учетная запись заблокирована, обратитесь к руководству!');
             } elseif ($user && !$user->validatePinPassword($this->password)) {
                 $this->addError($attribute, 'Неверный пароль!');
+            } elseif (!Yii::$app->settings->checkFinalExpireDate()) {
+                $this->addError($attribute,'Срок лицензии истек! Для корректной работы программы приобретите лицензию!');
             }
         }
     }
@@ -66,6 +68,7 @@ class LoginForm extends Model
     {
         Yii::$app->settings->clearCache();
         if ($this->validate() && $this->checkSerialNumberLocal()) {
+            Yii::$app->settings->checkFinalExpireDate();
             $flag = Yii::$app->user->login($this->getUserByPassword(), 0);
             Yii::$app->object->setShift();
             return $flag;
