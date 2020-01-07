@@ -213,7 +213,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePinPassword($password)
     {
-        if ($password == $this->password)
+        if ($password === $this->password)
             return true;
         else
             return false;
