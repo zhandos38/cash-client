@@ -116,7 +116,7 @@ $this->title = 'Настройки объекта';
                                 'clientOptions' => [
                                     'removeMaskOnSubmit' => true
                                 ]
-                            ]) ?>
+                            ])->textInput(['placeholder' => 'Не указан']) ?>
                         </div>
                     </div>
                     <div class="col-md-6">
