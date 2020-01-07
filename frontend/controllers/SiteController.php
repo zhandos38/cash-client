@@ -174,7 +174,7 @@ class SiteController extends Controller
                 Yii::$app->settings->setLatitude($responseSettings['latitude']);
                 Yii::$app->settings->setTypeId($responseSettings['type_id']);
                 Yii::$app->settings->setCreatedAt($responseSettings['created_at']);
-                Yii::$app->settings->setFinalExpiredDate($responseSettings['final_expire_date']);
+                Yii::$app->settings->setFinalExpireDate($responseSettings['final_expire_date']);
                 if (!empty($responseSettings['whatsapp']))
                     Yii::$app->settings->setWhatsapp($responseSettings['whatsapp']);
                 if (!empty($responseSettings['facebook']))
